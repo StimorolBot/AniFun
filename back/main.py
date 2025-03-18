@@ -1,5 +1,6 @@
 import uvicorn
 from fastapi import FastAPI
+from fastapi_pagination import add_pagination
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.openapi.docs import get_redoc_html, get_swagger_ui_html, get_swagger_ui_oauth2_redirect_html
 
@@ -9,11 +10,9 @@ from fastapi_cache.backends.redis import RedisBackend
 from starlette.middleware.sessions import SessionMiddleware
 
 from src.redis.config import fast_api_cache, redis
-from src.app.auth.api_v1.router import auth_router
-from src.app.auth.api_v1.social.router import auth_social_router
-
-
-# from fastapi_pagination import add_pagination
+from src.app.auth.base.api_v1.router import auth_router
+from src.app.auth.social.api_v1.router import auth_social_router
+from src.app.anime.home.api_v1.router import anime_router
 
 
 @asynccontextmanager
@@ -23,27 +22,18 @@ async def lifespan(_: FastAPI) -> AsyncIterator[None]:
 
 
 app = FastAPI(title="AniFun", lifespan=lifespan, docs_url=None, redoc_url=None)
-# add_pagination(app)
-
+add_pagination(app)
 
 app.include_router(auth_router)
 app.include_router(auth_social_router)
-
-# add_pagination(app)
+app.include_router(anime_router)
 
 origins = [
     "http://localhost:5173",
     "http://127.0.0.1:5173",
-    "http://localhost:80",
-    "http://127.0.0.1:80",
-    "http://127.0.0.1",
-    "https://accounts.google.com",
-    "http://localhost:8000/login",
-    "http://localhost:5173",
 ]
-ALLOWED_HOSTS = ["*"]
-app.add_middleware(SessionMiddleware, secret_key="some-random-string")
 
+app.add_middleware(SessionMiddleware, secret_key="some-random-string")
 
 app.add_middleware(
     CORSMiddleware,
@@ -55,7 +45,6 @@ app.add_middleware(
         "Access-Control-Allow-Origin", "Authorization"
     ]
 )
-
 
 
 @app.get("/docs", include_in_schema=False)
@@ -81,8 +70,6 @@ async def redoc_html():
         title=app.title + " - ReDoc",
         redoc_js_url="https://unpkg.com/redoc@next/bundles/redoc.standalone.js",
     )
-
-
 
 
 if __name__ == '__main__':
