@@ -1,0 +1,64 @@
+@use "/src/style/color.sass" as * 
+
+    
+.auth
+    display: flex
+    max-height: 100dvh
+
+.auth__inner
+    display: flex
+    flex-direction: column
+    justify-content: center
+    align-items: center
+    flex-basis: 600px
+    margin: 0 auto
+    padding: 0 20px
+    overflow: hidden
+
+
+.auth__form
+    margin-top: 10px
+    margin-bottom: 20px
+    width: 80%
+
+.auth__link-list
+    font-size: 16px
+    display: flex
+    flex-direction: column
+    row-gap: 5px
+    align-items: center
+    color: $gray
+    margin-top: 10px
+
+.auth__link
+    border-bottom: 1px solid transparent
+    transition: border-bottom 0.3s
+
+    &:hover
+        border-bottom: 1px solid $gray
+
+.separation
+    font-size: 14px
+    margin: 15px 0
+    position: relative
+    width: 100%
+    text-align: center
+    color: $gray
+    opacity: 0.8
+
+    &::after,
+    &::before
+        content: " "
+        position: absolute
+        width: 30%
+        height: 1px
+        background-color: $gray
+        opacity: 0.8
+        top: 50%
+        transform: translate(0%, 50%)
+
+    &::after
+        right: 12%
+
+    &::before
+        left: 12%
