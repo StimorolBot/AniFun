@@ -1,0 +1,38 @@
+@use "/src/style/color.sass" as * 
+
+
+.error
+    display: flex
+    justify-content: center
+    align-items: center
+    flex-direction: column
+    min-height: 100dvh
+    row-gap: 10px
+    position: relative
+
+.error__status-code
+    font-size: 100px
+    font-weight: 900
+
+.error__detail
+    text-align: center
+    color: $gray
+    line-height: 0.9
+
+.error__link-container
+    margin-top: 15px
+
+.error__link
+    border-radius: 8px
+    background-color: $red
+    font-size: 18px
+    padding: 8px
+    transition: opacity 0.3s
+
+    &:hover
+        opacity: 0.8
+
+.error__link_back
+    background-color: $sub-black
+    margin-right: 15px
+
