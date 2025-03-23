@@ -3,9 +3,11 @@
     
 .auth
     display: flex
-    max-height: 100dvh
+    min-height: 100dvh
+    position: relative
+    overflow: hidden
 
-.auth__inner
+.auth__container
     display: flex
     flex-direction: column
     justify-content: center
@@ -15,10 +17,17 @@
     padding: 0 20px
     overflow: hidden
 
+.auth__inner
+    opacity: 1
+    visibility: visible
+    transition: visibility 0.3s, opacity 0.3s
+    
+.auth__inner-exit-active
+    opacity: 0
+    visibility: hidden
 
 .auth__form
-    margin-top: 10px
-    margin-bottom: 20px
+    margin: 10px auto 20px auto
     width: 80%
 
 .auth__link-list
