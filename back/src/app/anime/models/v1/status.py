@@ -7,3 +7,4 @@ class StatusTable(Base):
     __tablename__ = "status_table"
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    status: Mapped[str] = mapped_column()
