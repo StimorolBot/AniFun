@@ -13,6 +13,7 @@ from src.redis.config import fast_api_cache, redis
 from src.app.auth.base.api_v1.router import auth_router
 from src.app.auth.social.api_v1.router import auth_social_router
 from src.app.anime.home.api_v1.router import anime_router
+from src.app.admin.anime.api_v1.router import admin_router
 
 
 @asynccontextmanager
@@ -27,6 +28,7 @@ add_pagination(app)
 app.include_router(auth_router)
 app.include_router(auth_social_router)
 app.include_router(anime_router)
+app.include_router(admin_router)
 
 origins = [
     "http://localhost:5173",
