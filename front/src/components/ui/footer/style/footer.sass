@@ -1,0 +1,47 @@
+@use "/src/style/color.sass" as * 
+
+.footer
+    color: $gray
+    font-size: 16px
+
+.footer__top
+    display: flex
+    justify-content: space-between
+    column-gap: 10px
+
+.footer__top-inner
+    display: flex
+
+.footer__logo-svg
+    width: 120px
+    height: 120px
+
+.footer__title
+    font-size: 20px
+    color: $white
+    font-weight: 900
+
+.footer__title-desc
+    margin-top: 5px
+
+.footer__item + .footer__item
+    opacity: 0.7
+    margin-top: 5px
+
+.footer__item_title
+    font-weight: 900
+    margin-bottom: 10px
+    text-transform: uppercase
+
+.footer__separation
+    display: block
+    background-color: $gray
+    width: 100%
+    height: 1px
+    opacity: 0.6
+    margin: 25px 0
+
+.footer__bottom
+    display: flex
+    justify-content: space-between
+    column-gap: 10px
