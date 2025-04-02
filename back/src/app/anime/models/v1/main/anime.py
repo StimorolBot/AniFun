@@ -1,0 +1,34 @@
+from uuid import UUID
+from typing import TYPE_CHECKING
+
+from sqlalchemy import ForeignKey
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+
+from src.model import Base
+from src.utils.utils import generate_uuid
+
+if TYPE_CHECKING:
+    from src.app.anime.models.v1.sub.type import TypeTable
+    from src.app.anime.models.v1.sub.season import SeasonTable
+    from src.app.anime.models.v1.sub.status import StatusTable
+    from src.app.anime.models.v1.sub.age_restrictions import AgeRestrictTable
+
+
+class AnimeTable(Base):
+    __tablename__ = "anime_table"
+
+    uuid: Mapped[UUID] = mapped_column(primary_key=True, default=generate_uuid, unique=True, index=True)
+    title: Mapped[str] = mapped_column(unique=True)
+    description: Mapped[str] = mapped_column()
+    year: Mapped[int] = mapped_column()
+    episodes: Mapped[int] = mapped_column()
+
+    type: Mapped[str] = mapped_column(ForeignKey("type_table.type"))
+    season: Mapped[str] = mapped_column(ForeignKey("season_table.season"))
+    age_restrict: Mapped[str] = mapped_column(ForeignKey("age_restrict_table.restrict"))
+    status: Mapped[str] = mapped_column(ForeignKey("status_table.status"))
+
+    type_rs: Mapped["TypeTable"] = relationship(back_populates="anime_rs")
+    season_rs: Mapped["SeasonTable"] = relationship(back_populates="anime_rs")
+    age_restrict_rs: Mapped["AgeRestrictTable"] = relationship(back_populates="anime_rs")
+    status_rs: Mapped["StatusTable"] = relationship(back_populates="anime_rs")
