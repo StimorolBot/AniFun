@@ -1,7 +1,7 @@
 from .season import Season
 from .type import Type
 from .genres import Genres
-from .age_restrictions import AgeRestrictions
+from .restrict import Restrict
 from .status import Status
 
-__all__ = ["Season", "Type", "Genres", "AgeRestrictions", "Status"]
+__all__ = (Type, Restrict, Season, Status, Genres)
