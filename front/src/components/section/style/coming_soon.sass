@@ -1,0 +1,29 @@
+@use "/src/style/color.sass" as * 
+
+    
+.coming-soon__header
+    display: flex
+    justify-content: space-between
+
+.coming-soon__list
+    margin-top: 20px
+    display: flex
+    flex-wrap: wrap
+    gap: 20px
+
+.coming-soon__switch-container
+    display: flex
+    align-items: center
+    column-gap: 15px
+
+.coming-soon__switch
+    transition: background-color 0.3s
+    cursor: pointer
+    border-radius: 6px
+    padding: 4px 8px
+    font-weight: 600
+
+.coming-soon__switch_active
+    background-color: $red
+    
+    
