@@ -1,0 +1,40 @@
+@use "/src/style/color.sass" as * 
+
+    
+.franchises__list
+    display: flex
+    column-gap: 20px
+
+.franchises__item
+    flex-basis: 450px
+    display: flex
+    background-color: $sub-black
+    border-radius: 6px
+    overflow: hidden
+
+.franchises__bg-container
+    flex-basis: 50%
+    position: relative
+    overflow: hidden
+
+.franchises__bg
+    height: 100%
+    position: absolute
+    top: 50%
+    left: 50%
+    transform: translate(-50%, -50%)
+
+.franchises__container
+    padding: 10px 18px
+    font-size: 17px
+    color: $gray
+    line-height: 1.4
+
+.franchises__desc_title
+    color: $white
+    font-size: 20px
+    font-weight: 900
+    line-height: normal
+
+.franchises__desc-list + .franchises__desc-list
+    margin-top: 30px
