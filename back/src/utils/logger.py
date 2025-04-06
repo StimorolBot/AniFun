@@ -36,6 +36,10 @@ class CustomLogger(ColoredFormatter):
 
 PATH = f"{os.path.dirname(os.path.abspath(__file__))}/../../.log"
 
-CustomLogger(loger_name="auth_logger", path=f"{PATH}/auth.log")
+CustomLogger(loger_name="auth_log", path=f"{PATH}/auth.log")
+CustomLogger(loger_name="os_log", path=f"{PATH}/os.log")
+CustomLogger(loger_name="anime_log", path=f"{PATH}/anime.log")
 
-auth_logger = logging.getLogger("auth_logger")
+auth_log = logging.getLogger("auth_logger")
+os_log = logging.getLogger("os_logger")
+anime_log = logging.getLogger("anime_log")
