@@ -1,23 +1,29 @@
 import uvicorn
+
 from fastapi import FastAPI
 from fastapi_pagination import add_pagination
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi_cache.backends.redis import RedisBackend
 from fastapi.openapi.docs import get_redoc_html, get_swagger_ui_html, get_swagger_ui_oauth2_redirect_html
 
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
-from fastapi_cache.backends.redis import RedisBackend
 from starlette.middleware.sessions import SessionMiddleware
 
+from src.database.session import async_session_maker
 from src.redis.config import fast_api_cache, redis
 from src.app.auth.base.api_v1.router import auth_router
 from src.app.auth.social.api_v1.router import auth_social_router
 from src.app.anime.home.api_v1.router import anime_router
 from src.app.admin.anime.api_v1.router import admin_router
 
+from src.utils.check_content_table import check_content_table
+
 
 @asynccontextmanager
 async def lifespan(_: FastAPI) -> AsyncIterator[None]:
+    async with async_session_maker() as session:
+        await check_content_table(session)
     fast_api_cache.init(RedisBackend(redis), prefix="fastapi-cache")
     yield
 
