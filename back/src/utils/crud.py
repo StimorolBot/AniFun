@@ -10,7 +10,6 @@ class Crud(CrudAbs):
     async def create(session: AsyncSession, table: DeclarativeAttributeIntercept, data: dict):
         stmt = table(**data)
         session.add(stmt)
-        await session.commit()
         return stmt
 
     @staticmethod
@@ -22,14 +21,13 @@ class Crud(CrudAbs):
     @staticmethod
     async def update(session: AsyncSession, table: DeclarativeAttributeIntercept, data: dict, **kwargs):
         query = update(table).filter_by(**kwargs).values(**data)
-        await session.execute(query)
-        await session.commit()
+        result = await session.execute(query)
+        return result
 
     @staticmethod
     async def delite(session: AsyncSession, table: DeclarativeAttributeIntercept, **kwargs):
         stmt = delete(table).filter_by(**kwargs)
         await session.execute(stmt)
-        await session.commit()
 
 
 crud = Crud()
