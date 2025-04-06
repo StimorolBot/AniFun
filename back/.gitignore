@@ -4,6 +4,7 @@
 __pycache__
 .log
 .env
+.pytest_cache
 poetry.lock
 file_manager.py
 
