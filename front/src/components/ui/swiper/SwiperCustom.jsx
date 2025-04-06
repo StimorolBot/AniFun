@@ -1,5 +1,9 @@
+import { useEffect, useState } from "react"
 import { Swiper, SwiperSlide } from "swiper/react"
 import { Pagination, Navigation, Autoplay } from "swiper/modules"
+
+import { api } from "../../../config/api"
+import { useFetch } from "../../hook/useFetch"
 
 import { SlideMain } from "./slide/SlideMain"
 
@@ -10,19 +14,36 @@ import "./style/swiper_custom.sass"
 
 
 export function SwiperCustom() {
+  const [response, setResponse] = useState([{
+    "age_restrict": null, "description": null, "episodes": null, "img_rs": {"banner": null},
+    "season": null, "title": null, "type": null, "uuid": null, "year": null
+  }])
 
+  const [request, isLoading, error] = useFetch(
+    async () => {
+      await api.get("/slides").then((r) => setResponse(r.data))
+    }
+  )
+
+  useEffect(() => {(
+    async () => {
+      await request()
+    })()
+  }, [])
+  
   return (
     <div className="container">
       <Swiper className="mySwiper" id="swiper-custom" slidesPerView={1} spaceBetween={30} loop={true}
         pagination={{clickable: true}} navigation={true} modules={[Pagination, Navigation, Autoplay]}
         autoplay={{delay: 3500, disableOnInteraction: false}}
       >
-        <SwiperSlide>
-          <SlideMain/>
-        </SwiperSlide>
-        <SwiperSlide>
-          <SlideMain/>
-        </SwiperSlide>
+        {response.map((slide) => {
+          return(
+            <SwiperSlide key={slide["uuid"]}>
+              <SlideMain slide={slide}/>
+            </SwiperSlide>
+          )
+        })}
       </Swiper>
     </div>
   )
