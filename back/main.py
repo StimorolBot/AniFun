@@ -17,13 +17,13 @@ from src.app.auth.social.api_v1.router import auth_social_router
 from src.app.anime.home.api_v1.router import anime_router
 from src.app.admin.anime.api_v1.router import admin_router
 
-from src.utils.check_content_table import check_content_table
+from src.utils.table import fill_table
 
 
 @asynccontextmanager
 async def lifespan(_: FastAPI) -> AsyncIterator[None]:
     async with async_session_maker() as session:
-        await check_content_table(session)
+        await fill_table(session)
     fast_api_cache.init(RedisBackend(redis), prefix="fastapi-cache")
     yield
 
