@@ -1,0 +1,32 @@
+import os
+from typing import TYPE_CHECKING
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+
+from src.model import Base
+from src.utils.crud import crud
+from src.utils.utils import get_base64
+from src.app.anime.enums.v1.sub.genres import Genres
+
+if TYPE_CHECKING:
+    from src.app.anime.models.v1.main.genres_anime import GenresAnimeTable
+
+
+class GenresTable(Base):
+    __tablename__ = "genres_table"
+
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    genres: Mapped[str] = mapped_column(unique=True)
+    poster: Mapped[str] = mapped_column(nullable=False)
+
+    genres_anime_rs: Mapped["GenresAnimeTable"] = relationship(back_populates="genres_rs")
+
+    @classmethod
+    async def fill(cls, session: AsyncSession):
+        path = f"{os.getcwd()}\\..\\front\\public\\.genres"
+        poster_base64 = await get_base64(path)
+        for data in Genres:
+            await crud.create(
+                session=session, table=cls,
+                data={"genres": data.value, "poster": poster_base64[data.value]}
+            )
