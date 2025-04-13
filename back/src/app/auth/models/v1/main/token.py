@@ -5,10 +5,10 @@ from sqlalchemy import ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from src.model import Base
-from src.utils.utils import generate_uuid, get_unc_now
+from src.utils.utils import get_unc_now
 
 if TYPE_CHECKING:
-    from src.app.auth.models.v1.auth import AuthTable
+    from src.app.auth.models.v1.main.auth import AuthTable
 
 
 class TokenTable(Base):
@@ -19,4 +19,4 @@ class TokenTable(Base):
     date_update: Mapped[datetime] = mapped_column(default=get_unc_now)
     is_black_list: Mapped[bool] = mapped_column(default=False)
 
-    auth_relationship: Mapped["AuthTable"] = relationship(back_populates="token_relationship")
+    auth_rs: Mapped["AuthTable"] = relationship(back_populates="token_rs")
