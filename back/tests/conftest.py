@@ -16,6 +16,10 @@ from src.model import Base
 
 from src.database.session import get_async_session
 
+from src.utils.table import fill_table as ft
+from src.app.auth.models.v1 import sub as auth_sub_table
+from src.app.anime.models.v1 import sub as anime_sub_table
+
 engine_test = create_async_engine(config_test.get_db_url, poolclass=NullPool)
 async_session_maker = sessionmaker(engine_test, class_=AsyncSession, expire_on_commit=False)
 Base.metadata.bind = engine_test
@@ -26,10 +30,14 @@ async def get_test_async_session() -> AsyncGenerator[AsyncSession, None]:
         yield session
 
 
-#
 app.dependency_overrides[get_async_session] = get_test_async_session
-# app.dependency_overrides = get_test_async_session
 add_pagination(app)
+
+
+async def fill_table():
+    async with async_session_maker() as session:
+        await ft(session, auth_sub_table.__all__)
+        await ft(session, anime_sub_table.__all__)
 
 
 @pytest.fixture(autouse=True, scope="module")
@@ -37,6 +45,7 @@ async def prepare_database():
     assert config_test.MODE == "TEST"
     async with engine_test.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
+    await fill_table()
     yield
     async with engine_test.begin() as conn:
         await conn.run_sync(Base.metadata.drop_all)
