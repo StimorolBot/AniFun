@@ -1,4 +1,5 @@
 from uuid import UUID
+from typing import List
 from typing import TYPE_CHECKING
 
 from sqlalchemy import ForeignKey
@@ -36,5 +37,5 @@ class AnimeTable(Base):
     age_restrict_rs: Mapped["AgeRestrictTable"] = relationship(back_populates="anime_rs")
     status_rs: Mapped["StatusTable"] = relationship(back_populates="anime_rs")
     img_rs: Mapped["ImgTable"] = relationship(back_populates="anime_rs")
-    genres_rs: Mapped["GenresAnimeTable"] = relationship(back_populates="anime_rs")
+    genres_rs: Mapped[List["GenresAnimeTable"]] = relationship(back_populates="anime_rs")
     episode_rs: Mapped["EpisodeTable"] = relationship(back_populates="anime_rs")
