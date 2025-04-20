@@ -17,7 +17,7 @@ class TestAuthPos:
     @pytest.mark.dependency()
     async def test_register(self, ac: AsyncClient):
         user_data = {
-            "email": TEST_USER_EMAIL, "user_name": "string123",
+            "identifier": TEST_USER_EMAIL, "user_name": "string123",
             "password": "string123", "password_confirm": "string123"
         }
         response = await ac.post("/auth/register", json=user_data)
@@ -29,15 +29,15 @@ class TestAuthPos:
     @pytest.mark.dependency(depends=["TestAuthPos::test_register"])
     async def test_verify_email(self, ac: AsyncClient):
         redis_data = await redis_manager.get_value(pytest.recaptcha_token)
-        user_data = {"email_token": redis_data["email_token"], "recaptcha_token": pytest.recaptcha_token}
+        user_data = {"identifier_token": redis_data["identifier_token"], "recaptcha_token": pytest.recaptcha_token}
         response = await ac.post("/auth/verify-email", json=user_data)
 
         assert response.status_code == status.HTTP_201_CREATED
 
     @pytest.mark.dependency()
     async def test_login(self, ac: AsyncClient):
-        user_data = {"email": TEST_USER_EMAIL, "password": "string123"}
-        response = await ac.post("/auth/login", json=user_data)
+        user_data = {"identifier": TEST_USER_EMAIL, "password": "string123"}
+        response = await ac.patch("/auth/login", json=user_data)
         pytest.access_token = response.json()
 
         assert response.status_code == status.HTTP_200_OK
@@ -49,7 +49,7 @@ class TestAuthPos:
 
     @pytest.mark.dependency()
     async def test_token_password(self, ac: AsyncClient):
-        response = await ac.post("/auth/token-password", json={"user_email": TEST_USER_EMAIL})
+        response = await ac.post("/auth/token-password", json={"identifier": TEST_USER_EMAIL})
         pytest.recaptcha_token = response.json()
         assert response.status_code == status.HTTP_200_OK
 
@@ -58,7 +58,7 @@ class TestAuthPos:
         redis_data = await redis_manager.get_value(pytest.recaptcha_token["recaptcha_token"])
         data = {
             "password": "TestPassword123", "password_confirm": "TestPassword123",
-            "email_token": redis_data["email_token"], **pytest.recaptcha_token
+            "identifier_token": redis_data["identifier_token"], **pytest.recaptcha_token
         }
         response = await ac.patch("/auth/reset-password", json=data)
         assert response.status_code == status.HTTP_200_OK
@@ -72,7 +72,7 @@ class TestAuthPos:
 # pytest -vv -s tests/test_auth/api_v1/base/test_auth.py::TestAuthNeg
 class TestAuthNeg:
     @pytest.mark.parametrize(
-        "user_name, email, password, password_confirm",
+        "user_name, identifier, password, password_confirm",
         [
             (" ", "email@gmail.com", "string123", "string123"),
             ("123", "email@gmail.com", "string123", "string123"),
@@ -88,9 +88,9 @@ class TestAuthNeg:
             ("userName", "email@email.com", "pas@swor_d1", "pas@swor_d1")
         ]
     )
-    async def test_register(self, ac: AsyncClient, user_name, email, password, password_confirm):
+    async def test_register(self, ac: AsyncClient, user_name, identifier, password, password_confirm):
         user_data = {
-            "user_name": user_name, "email": email,
+            "user_name": user_name, "identifier": identifier,
             "password": password, "password_confirm": password_confirm
         }
         response = await ac.post("/auth/register", json=user_data)
@@ -101,8 +101,8 @@ class TestAuthNeg:
             assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
 
     async def test_login(self, ac: AsyncClient):
-        user_data = {"email": "fake_email@mail.com", "password": "fake_password"}
-        response = await ac.post("/auth/login", json=user_data)
+        user_data = {"identifier": "fake_email@mail.com", "password": "fake_password"}
+        response = await ac.patch("/auth/login", json=user_data)
         assert response.status_code == status.HTTP_401_UNAUTHORIZED
 
     async def test_logout(self, ac: AsyncClient):
