@@ -2,10 +2,12 @@ import { useEffect, useState } from "react"
 import { Swiper, SwiperSlide } from "swiper/react"
 import { Pagination, Navigation, Autoplay } from "swiper/modules"
 
-import { api } from "../../../config/api"
+import { api } from "../../api"
 import { useFetch } from "../../hook/useFetch"
 
 import { SlideMain } from "./slide/SlideMain"
+import { LoaderSlider } from "../../components/loader/LoaderSlider"
+
 
 import "swiper/css"
 import "swiper/css/pagination"
@@ -33,18 +35,21 @@ export function SwiperCustom() {
   
   return (
     <div className="container">
-      <Swiper className="mySwiper" id="swiper-custom" slidesPerView={1} spaceBetween={30} loop={true}
-        pagination={{clickable: true}} navigation={true} modules={[Pagination, Navigation, Autoplay]}
-        autoplay={{delay: 3500, disableOnInteraction: false}}
-      >
-        {response.map((slide) => {
-          return(
-            <SwiperSlide key={slide["uuid"]}>
-              <SlideMain slide={slide}/>
-            </SwiperSlide>
-          )
-        })}
-      </Swiper>
+      { isLoading
+        ? <LoaderSlider isLoading={isLoading}/>
+        : <Swiper className="mySwiper" id="swiper-custom" slidesPerView={1} spaceBetween={30} loop={true}
+            pagination={{clickable: true}} navigation={true} modules={[Pagination, Navigation, Autoplay]}
+            autoplay={{delay: 3500, disableOnInteraction: false}}
+          >
+            {response.map((slide) => {
+            return(
+              <SwiperSlide key={slide["uuid"]}>
+                  <SlideMain slide={slide}/>
+                </SwiperSlide>
+              )
+            })}
+          </Swiper>
+        }  
     </div>
   )
 }
