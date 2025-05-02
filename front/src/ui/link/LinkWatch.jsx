@@ -3,11 +3,11 @@ import { Link } from "react-router-dom"
 import "./style/link_watch.sass"
 
 
-export function LinkWatch(){
+export function LinkWatch({url="#"}){
     return(
-        <Link className="link__watch" to={"#заглушка"}>
+        <Link className="link__watch" to={url}>
             <svg className="link__watch-svg">
-                <use  xlinkHref="/public/main.svg#rectangle-svg"></use>
+                <use  xlinkHref="/main.svg#rectangle-svg"/>
             </svg>                 
             Смотреть
         </Link>
