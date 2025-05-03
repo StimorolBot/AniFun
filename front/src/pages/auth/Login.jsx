@@ -20,7 +20,7 @@ import { Error } from "../../ui/popup/Error"
 
 export function Login(){    
     const navigate = useNavigate()
-    const loadingRef = useRef(null)
+    const transitionRef = useRef(null)
     const clickRef = useRef(false)
     const {register, handleSubmit, watch, formState: {errors, isValid}, reset} = useForm({
         mode: "onChange",
@@ -48,8 +48,8 @@ export function Login(){
         <main className="auth">
             <AuthBg/>
             <div className="auth__container">
-                <TransitionLoader transitionRef={loadingRef} isLoading={isLoading}>
-                    <div className="auth__inner transition-loader" ref={loadingRef}>
+                <TransitionLoader transitionRef={transitionRef} isLoading={isLoading}>
+                    <div className="auth__inner transition-loader" ref={transitionRef}>
                         <AuthTitle title={"Авторизация"} 
                             desc={<>
                                 Введите имя пользователя и пароль, чтобы войти в свою учетную запись
