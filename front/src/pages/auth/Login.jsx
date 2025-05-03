@@ -1,45 +1,45 @@
-import { useRef, useState } from "react"
+import { useRef } from "react"
 import { useForm } from "react-hook-form"
 import { Link, useNavigate } from "react-router-dom"
 
-import { api } from "../../config/api"
-import { cookies } from "../../config/cookie"
-import { useFetch } from "../../components/hook/useFetch"
+import { api } from "../../api"
+import { cookies } from "../../cookie"
+import { useFetch } from "../../hook/useFetch"
 
-import { InputEmail } from "../../components/ui/input/InputEmail"
-import { InputPassword } from "../../components/ui/input/InputPassword"
-import { BtnAuth } from "../../components/ui/btn/BtnAuth"
+import { InputEmail } from "../../ui/input/InputEmail"
+import { InputPassword } from "../../ui/input/InputPassword"
+import { BtnAuth } from "../../ui/btn/BtnAuth"
 
 import { AuthBg } from "../../components/auth/AuthBg"
 import { AuthTitle } from "../../components/auth/AuthTitle"
 import { AuthSocial } from "../../components/auth/AuthSocial"
 import { AuthWarning } from "../../components/auth/AuthWarning"
-import { Loader } from "../../components/ui/loader/Loader"
-import { CSSTransition } from "react-transition-group"
-import { Error } from "../../components/ui/popup/Error"
+import { TransitionLoader } from "../../transition/TransitionLoader"
+import { Error } from "../../ui/popup/Error"
 
 
 export function Login(){    
     const navigate = useNavigate()
     const loadingRef = useRef(null)
     const clickRef = useRef(false)
-    const [errorData, setErrorData] = useState({"status_code": null, "detail": "", "is_hidden": true})
-    const {register, handleSubmit, watch, formState: {errors, isValid}, resetField} = useForm({mode: "onChange"})
+    const {register, handleSubmit, watch, formState: {errors, isValid}, reset} = useForm({
+        mode: "onChange",
+        defaultValues:{
+            "identifier": "",
+            "password": ""
+        }
+    })
         
     const [request, isLoading, error] = useFetch(
         async (data, event) => {
             event.preventDefault()
-            await api.post("/auth/login", data)
+            await api.patch("/auth/login", data)
             .then((r) => {
                 cookies.set(
-                    "refresh_token", r.data["access_token"],
+                    "access_token", r.data["access_token"],
                     {path: "/"}
                 )
                 navigate("/")
-            })
-            .catch((e) => {
-                setErrorData({"status_code": e?.response.status,"detail": e?.response?.data?.detail, "is_hidden": false})
-                resetField("password")
             })
         }
     )
@@ -48,9 +48,8 @@ export function Login(){
         <main className="auth">
             <AuthBg/>
             <div className="auth__container">
-                <Loader isLoading={isLoading} loaderMsg={<>Пожалуйста, подождите. <br />Идет проверка данных</>}/>
-                <CSSTransition classNames="auth__inner" nodeRef={loadingRef} in={isLoading} timeout={400}>
-                    <div className="auth__inner" ref={loadingRef}>
+                <TransitionLoader transitionRef={loadingRef} isLoading={isLoading}>
+                    <div className="auth__inner transition-loader" ref={loadingRef}>
                         <AuthTitle title={"Авторизация"} 
                             desc={<>
                                 Введите имя пользователя и пароль, чтобы войти в свою учетную запись
@@ -71,16 +70,16 @@ export function Login(){
                                 </Link>
                             </li>
                             <li>
-                                <Link className="auth__link" to={"/auth/auth-token"}>
+                                <Link className="auth__link" to={"/auth/reset-password-token"}>
                                     Восстановить пароль
                                 </Link>
                             </li>
                         </ul>
                         <AuthWarning/>
                     </div>
-                </CSSTransition>            
+                </TransitionLoader>            
             </div>
-            <Error errorData={errorData} setErrorData={setErrorData}/>
+            <Error error={error} resetForm={reset}/>
         </main>
     )
 }
