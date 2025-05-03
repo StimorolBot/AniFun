@@ -1,30 +1,36 @@
-import { useRef, useState } from "react"
+import { useRef } from "react"
 import { useForm } from "react-hook-form"
 import { Link, useNavigate } from "react-router-dom"
-import { CSSTransition } from "react-transition-group"
 
-import { api } from "/src/config/api"
-import { useFetch } from "/src/components/hook/useFetch"
+import { api } from "../../api"
+import { useFetch } from "../../hook/useFetch"
 
 import { AuthBg } from "../../components/auth/AuthBg"
 import { AuthTitle } from "../../components/auth/AuthTitle"
 import { AuthSocial } from "../../components/auth/AuthSocial"
 import { AuthWarning } from "../../components/auth/AuthWarning"
-import { BtnAuth } from "../../components/ui/btn/BtnAuth"
+import { BtnAuth } from "../../ui/btn/BtnAuth"
 
-import { InputEmail } from "../../components/ui/input/InputEmail"
-import { InputPassword } from "../../components/ui/input/InputPassword"
-import { InputName } from "../../components/ui/input/InputName"
-import { Loader } from "../../components/ui/loader/Loader"
-import { Error } from "../../components/ui/popup/Error"
+import { InputEmail } from "../../ui/input/InputEmail"
+import { InputPassword } from "../../ui/input/InputPassword"
+import { InputName } from "../../ui/input/InputName"
+import { TransitionLoader } from "../../transition/TransitionLoader"
+import { Error } from "../../ui/popup/Error"
 
 
 export function Register(){
     const navigate = useNavigate()
     const clickRef = useRef(false)
     const registerRef = useRef(null)
-    const [errorData, setErrorData] = useState({"status_code": null, "detail": "", "is_hidden": true})
-    const {register, handleSubmit, watch, formState: {errors, isValid}, reset} = useForm({mode: "onChange"})
+    const {register, handleSubmit, watch, formState: {errors, isValid}, reset} = useForm({
+        mode: "onChange",
+        defaultValues:{
+            "user_name": "",
+            "identifier": "",
+            "password": "",
+            "password_confirm": ""
+        }
+    })
     
     const [request, isLoading, error] = useFetch(
         async (data, event) => {
@@ -33,35 +39,23 @@ export function Register(){
             .then((r) => {
                 navigate("/auth/verify-email", {state: {recaptcha_token: r.data.recaptcha_token}})
             })
-            .cath((e) => {
-                setErrorData({"status_code": e?.response.status,"detail": e?.response?.data?.detail, "is_hidden": false})
-                reset()
-            })
         }
     )
-
-    const validFrom = async (data, event) => {
-        if (data.password !== data.password_confirm)
-            setErrorData({"status_code": 400, "detail": "Пароль не совпадают", "is_hidden": false})
-        else
-            await request(data, event)
-    }
 
     return(
         <main className="auth">
             <AuthBg/>
             <div className="auth__container">
-                <Loader isLoading={isLoading} loaderMsg={<>Пожалуйста, подождите. <br />Идет проверка данных</>}/>
-                <CSSTransition classNames="auth__inner" nodeRef={registerRef} in={isLoading} timeout={400}>
-                    <div className="auth__inner" ref={registerRef}>
+                <TransitionLoader transitionRef={registerRef} isLoading={isLoading}>
+                    <div className="auth__inner transition-loader" ref={registerRef}>
                         <AuthTitle title={"Регистрация"} 
                             desc={<>
-                                Введите Ваши данные, чтобы создать свою учетную запись
+                                Введите Ваши данные, чтобы создать свою учетную запись.
                                 <br/>
                                 Также, можно зарегистрироваться через социальные сети
                             </>}
                         />
-                        <form className="auth__form" ref={clickRef} onSubmit={handleSubmit(validFrom)}>
+                        <form className="auth__form" ref={clickRef} onSubmit={handleSubmit(request)}>
                             <InputName register={register} errors={errors} clickRef={clickRef} watch={watch}/>
                             <InputEmail register={register} errors={errors} clickRef={clickRef} watch={watch}/>
                             <InputPassword register={register} errors={errors} clickRef={clickRef} watch={watch}/>
@@ -90,9 +84,9 @@ export function Register(){
                         </ul>
                         <AuthWarning/>
                     </div>
-                </CSSTransition>
+                </TransitionLoader>
             </div>
-            <Error errorData={errorData} setErrorData={setErrorData}/>
+            <Error error={error} resetForm={reset}/>
         </main>
     )
 }
