@@ -1,0 +1,70 @@
+@use "/src/style/color.sass" as * 
+
+
+@keyframes progress 
+    100% 
+        left: 100%
+
+.error-popup
+    position: absolute
+    bottom: 10px
+    right: 30px
+    border-radius: 8px
+    background-color: $red
+    padding: 10px 15px 10px 10px
+    box-shadow: 0 6px 20px -5px rgba(0, 0, 0, 0.1)
+    overflow: hidden
+    font-size: medium
+    max-width: 505px
+    transform: translateX(calc(100% + 30px))
+
+    &-enter
+        transform: translateX(calc(100% + 30px))
+        transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.35)
+
+    &-enter-active
+        transform: translateX(0%) 
+        
+        .error-popup__progress::before
+            animation: progress 1.8s linear forwards
+
+    &-exit
+        transform: translateX(0%)
+
+        .error-popup__progress::before
+            animation: progress 1.8s linear forwards
+
+    &-exit-active
+        transform: translateX(calc(100% + 30px))
+        transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.35) 
+
+.error-popup__status-code
+    span
+        font-weight: 900
+
+.error-popup__progress 
+    position: absolute
+    bottom: 0
+    left: 0
+    height: 5px
+    width: 100%
+
+    &::before
+        content: ""
+        position: absolute
+        bottom: 0
+        left: 0
+        height: 100%
+        width: 100%
+        background-color: $sub-red
+        border-radius: 8px
+        
+.error-popup-svg
+    width: 25px
+    height: 25px
+    stroke: $black
+    cursor: pointer
+    position: absolute
+    top: 2px
+    right: 2px
+    z-index: 999
