@@ -21,7 +21,7 @@ import { Error } from "../../ui/popup/Error"
 export function Register(){
     const navigate = useNavigate()
     const clickRef = useRef(false)
-    const registerRef = useRef(null)
+    const transitionRef = useRef(null)
     const {register, handleSubmit, watch, formState: {errors, isValid}, reset} = useForm({
         mode: "onChange",
         defaultValues:{
@@ -46,8 +46,8 @@ export function Register(){
         <main className="auth">
             <AuthBg/>
             <div className="auth__container">
-                <TransitionLoader transitionRef={registerRef} isLoading={isLoading}>
-                    <div className="auth__inner transition-loader" ref={registerRef}>
+                <TransitionLoader transitionRef={transitionRef} isLoading={isLoading}>
+                    <div className="auth__inner transition-loader" ref={transitionRef}>
                         <AuthTitle title={"Регистрация"} 
                             desc={<>
                                 Введите Ваши данные, чтобы создать свою учетную запись.
