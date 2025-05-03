@@ -1,11 +1,12 @@
-import { Footer } from "../components/ui/footer/Footer"
-import { Header } from "../components/ui/headers/Header"
-import { Genres } from "../components/section/Genres"
-import { ComingSoon } from "../components/section/ComingSoon"
-import { Franchises } from "../components/section/Franchises"
-import { NewEpisodes } from "../components/section/NewEpisodes"
-import { SwiperCustom } from "../components/ui/swiper/SwiperCustom"
-import { Announcements } from "../components/section/Announcements"
+import { Header } from "../components/header/Header"
+import { Footer } from "../components/footer/Footer"
+
+import { SwiperCustom } from "../components/swiper/SwiperCustom"
+import { LastEpisodes } from "../module/LastEpisodes"
+import { ComingSoon } from "../module/ComingSoon"
+import { Franchises } from "../module/Franchises"
+import { Genres } from "../module/Genres"
+import { Announcements } from "../module/Announcements"
 
 
 export function Home(){
@@ -17,7 +18,7 @@ export function Home(){
                     Главная страница 
                 </h1>
                 <SwiperCustom/>
-                <NewEpisodes/>
+                <LastEpisodes/>
                 <ComingSoon/>
                 <Franchises/>
                 <Genres/>
