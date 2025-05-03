@@ -1,24 +1,54 @@
+import { useRef } from "react"
+import { Link, useNavigate } from "react-router-dom"
 import { useForm } from "react-hook-form"
+
+import { api } from "../../api"
+import { useFetch } from "../../hook/useFetch"
+
+import { BtnAuth } from "../../ui/btn/BtnAuth"
 import { AuthBg } from "../../components/auth/AuthBg"
 import { AuthTitle } from "../../components/auth/AuthTitle"
-import { Loader } from "../../components/ui/loader/Loader"
+import { AuthSocial } from "../../components/auth/AuthSocial"
+import { AuthWarning } from "../../components/auth/AuthWarning"
+
+import { Error } from "../../ui/popup/Error"
+import { InputEmail } from "../../ui/input/InputEmail"
+import { TransitionLoader } from "../../transition/TransitionLoader"
 
 
 export function ResetPasswordToken(){
-    const {register, handleSubmit, watch, formState: {errors, isValid}, resetField} = useForm({mode: "onChange"})
+    const clickRef = useRef(null)
+    const navigate = useNavigate()
+    const transitionRef = useRef(null)
+    const {register, handleSubmit, watch, formState: {errors, isValid}, reset} = useForm({
+        mode: "onChange",
+        defaultValues:{
+            "identifier": ""
+        }
+    })
+    
+    const [request, isLoading, error] = useFetch(
+        async (data, event) => {
+            event.preventDefault()
+            await api.post("/auth/token-password", data)
+            .then((r) => {
+                navigate("/auth/reset-password")
+            })
+        }
+    )
     
     return(
         <main className="auth">
             <AuthBg/>
             <div className="auth__container">
-                <Loader isLoading={isLoading} loaderMsg={<>Пожалуйста, подождите. <br />Идет проверка данных</>}/>
-                <CSSTransition classNames="auth__inner" nodeRef={loadingRef} in={isLoading} timeout={400}>
-                    <div className="auth__inner" ref={loadingRef}>
+                <TransitionLoader transitionRef={transitionRef} isLoading={isLoading}>
+                    <div className="auth__inner transition-loader" ref={transitionRef}>
                         <AuthTitle title={"Восстановление пароля"} 
                             desc={<>
                                 Вы можете восстановить забытый пароль и сгенировать новый.
                                 <br/>
-                                Введите Вашу почту, на которую вы зарегистрировали аккаунт, мы пришлем Вам письмо с дальнейшими инструкциями
+                                Введите Вашу почту, на которую вы зарегистрировали аккаунт, мы пришлем 
+                                Вам письмо с дальнейшими инструкциями.
                             </>}
                         />
                         <form className="auth__form" ref={clickRef} onSubmit={handleSubmit(request)}>
@@ -35,8 +65,9 @@ export function ResetPasswordToken(){
                         </ul>
                         <AuthWarning/>
                     </div>
-                </CSSTransition>            
+                </TransitionLoader>          
             </div>
+            <Error error={error} resetForm={reset}/>
         </main>
     )
 }
