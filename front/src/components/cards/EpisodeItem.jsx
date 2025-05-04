@@ -2,19 +2,18 @@ import { memo } from "react"
 import { LinkWatch } from "../../ui/link/LinkWatch"
 import { BtnAddQueue } from "../../ui/btn/BtnAddQueue"
 
-import "./style/episode.sass"
+import "./style/episode_item.sass"
 
 
-export const Episode = memo(({episode}) => {
-
-    const data = episode["episode_data"]["anime_data"]
+export const EpisodeItem = memo(({item, ...props}) => {
+    const data = item["episode_data"]["anime_data"]
 
     return(
-        <li className="episode__item" key={data["uuid"]}>
-            <img className="episode__img" src={`data:image/webp;base64,${episode["poster"]}`} alt="new-episode"/>
+        <li className="episode__item" {...props}>
+            <img className="episode__img" src={`data:image/webp;base64,${item["poster"]}`} alt="new-episode"/>
             <div className="episode__description">
                 <p className="episode__number">
-                    {episode["episode_data"]["number"]} эпизод
+                    {item["episode_data"]["number"]} эпизод
                 </p>
                 <p className="episode__title">
                     {data["title"]}
@@ -34,7 +33,7 @@ export const Episode = memo(({episode}) => {
                     </li>
                 </ul>
                 <ul className="episode__desc-list">
-                    {episode["genres"]?.slice(-2)?.map((genre, index) => {
+                    {item["genres"]?.slice(-2)?.map((genre, index) => {
                         return(
                             <li className="episode__desc-item episode__desc-item_tag" key={index}>
                                 {genre}
@@ -43,7 +42,7 @@ export const Episode = memo(({episode}) => {
                     })}
                 </ul>
                 <div className="episode-btn__container">
-                    <LinkWatch/>
+                    <LinkWatch url={`/anime/releases/${data["alias"]}/episodes`}/>
                     <BtnAddQueue/>
                 </div>
             </div>
