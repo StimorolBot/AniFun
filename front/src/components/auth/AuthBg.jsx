@@ -1,8 +1,8 @@
 import { memo, useEffect, useState } from "react"
 
-import { api } from "../../config/api"
-import { useFetch } from "../hook/useFetch"
-import { Loader } from "../../components/ui/loader/Loader"
+import { api } from "../../api"
+import { useFetch } from "../../hook/useFetch"
+import { Loader } from "../../components/loader/Loader"
 
 import "./style/auth_bg.sass"
 
