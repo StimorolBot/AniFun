@@ -7,7 +7,7 @@ import { EpisodeItem } from "../components/cards/EpisodeItem"
 import { HeaderSection } from "../components/header/HeaderSection"
 import { Loader } from "../components/loader/Loader"
 
-import "./style/new_episodes.sass"
+import "./style/last_episodes.sass"
 
 
 export const LastEpisodes= memo(() => {
