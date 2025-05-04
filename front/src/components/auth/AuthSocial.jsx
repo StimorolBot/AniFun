@@ -2,7 +2,7 @@ import { memo } from "react"
 
 import { api } from "../../api"
 import { useFetch } from "../../hook/useFetch"
-import { BtnTelegramAuth } from "../../ui/btn/BtnTelegramAuth"
+import { LinkTelegramAuth } from "../../ui/link/LinkTelegramAuth"
 
 import "./style/auth_social.sass"
 
@@ -32,7 +32,7 @@ export const AuthSocial = memo(() => {
                 </button>
             </li>
             <li className="auth__social-item">
-                <BtnTelegramAuth/> 
+                <LinkTelegramAuth/> 
             </li>
         </ul>
     )
