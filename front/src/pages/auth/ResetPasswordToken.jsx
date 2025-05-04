@@ -58,7 +58,7 @@ export function ResetPasswordToken(){
                         <AuthSocial/>
                         <ul className="auth__link-list">
                             <li>
-                                <Link className="auth__link" to={"/auth/register"}>
+                                <Link className="auth__link" to={"/auth/reset-password"}>
                                     У меня уже есть токен
                                 </Link>
                             </li>

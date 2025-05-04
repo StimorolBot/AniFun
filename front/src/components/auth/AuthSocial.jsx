@@ -1,9 +1,8 @@
-import { memo, useEffect } from "react"
+import { memo } from "react"
 
-import { api } from "../../config/api"
-import { useFetch } from "../../components/hook/useFetch"
-import { Link } from "react-router-dom"
-import { BtnTelegramAuth } from "../ui/btn/BtnTelegramAuth"
+import { api } from "../../api"
+import { useFetch } from "../../hook/useFetch"
+import { BtnTelegramAuth } from "../../ui/btn/BtnTelegramAuth"
 
 import "./style/auth_social.sass"
 
@@ -33,13 +32,7 @@ export const AuthSocial = memo(() => {
                 </button>
             </li>
             <li className="auth__social-item">
-                <BtnTelegramAuth/>
-                {/* <Link className="auth__social-link" to={"#"} >  */}
-                {/* onClick={async () => await request("telegram")} */}
-                    {/* <svg> */}
-                        {/* <use xlinkHref="/public/main.svg#tg-svg"/> */}
-                    {/* </svg> */}
-                {/* </Link> */}
+                <BtnTelegramAuth/> 
             </li>
         </ul>
     )
