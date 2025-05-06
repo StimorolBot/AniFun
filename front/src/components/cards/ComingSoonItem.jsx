@@ -3,11 +3,11 @@ import { Link } from "react-router-dom"
 import "./style/coming_soon_item.sass"
 
 
-export function ComingSoonItem({item, index}){
+export function ComingSoonItem({item, ...props}){
     
     return(
-        <li className="coming-soon__item" key={index}>
-            <Link className="coming-soon__link" to={"/link"}>  
+        <li className="coming-soon__item" {...props}>
+            <Link className="coming-soon__link" to={`/anime/releases/${item["alias"]}/episodes`}>  
                 <img className="coming-soon__bg" src={`data:image/webp;base64,${item["poster"]}`} loading="lazy" alt="preview" />
                 <p className="coming-soon__title">
                     {item["schedule_data"]["title"]}
