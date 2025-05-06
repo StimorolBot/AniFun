@@ -1,0 +1,21 @@
+@use "/src/style/color.sass" as * 
+
+    
+.switch-container
+    display: flex
+    align-items: center
+    column-gap: 10px
+    padding: 10px
+    border-radius: 10px
+    background-color: $sub-gray
+    font-size: 18px
+
+.switch
+    transition: background-color 0.3s
+    cursor: pointer
+    border-radius: 6px
+    padding: 4px 8px
+    font-weight: 600
+    
+    &_active
+        background-color: $red
