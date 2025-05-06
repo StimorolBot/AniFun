@@ -1,0 +1,42 @@
+@use "/src/style/color.sass" as *
+    
+
+.genres__item
+    flex-basis: 220px
+    position: relative
+    border-radius: 10px
+    overflow: hidden
+    max-height: 390px
+    max-width: fit-content
+
+    &:hover
+        .genres__bg
+            opacity: 0.8
+
+.genres__item-link
+    display: flex
+    justify-content: center
+
+.genres__bg
+    transition: opacity 0.3s
+    max-height: 390px
+    opacity: 0.6
+
+.genres__desc-list
+    position: absolute
+    bottom: 20px
+    width: 100%
+    text-align: center
+    transition: color 0.3s
+    color: $white
+
+.genres__desc-item
+    font-weight: 600
+    opacity: 0.6
+    font-size: 14px
+
+.genres__desc_title
+    font-size: 16px
+    font-weight: 900
+    opacity: 1
+    
