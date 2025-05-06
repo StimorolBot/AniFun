@@ -5,8 +5,10 @@ import { api } from "../api"
 import { useFetch } from "../hook/useFetch"
 
 import { HeaderSection } from "../components/header/HeaderSection"
-import { SwitchDay } from "../ui/switch/SwitchDay"
 import { ComingSoonItem } from "../components/cards/ComingSoonItem"
+
+import { SwitchDay } from "../ui/switch/SwitchDay"
+import { Loader } from "../components/loader/Loader"
 
 import "./style/coming_soon.sass"
 
@@ -22,7 +24,8 @@ export function ComingSoon(){
         "age_restrict": null,
         "genres": [""],
         "season": null,
-        "year": null
+        "year": null,
+        "alias": null
     }])
 
     const [request, isLoading, error] = useFetch(
@@ -37,6 +40,13 @@ export function ComingSoon(){
         })()
     }, [schedule])
 
+    const breakpoints = {
+        default: 4,
+        1280: 3,
+        880: 2,
+        590: 1
+    }
+
     return(
         <section className="coming-soon">
             <div className="container">
@@ -46,13 +56,16 @@ export function ComingSoon(){
                 >
                     <SwitchDay value={schedule} setValue={setSchedule}/>                    
                 </HeaderSection>
-                <Masonry breakpointCols={4} className="masonry" columnClassName="masonry__column">
-                    {response?.map((item, index) => {
-                        return(
-                            <ComingSoonItem item={item} index={index}/>
-                        )
-                    })}
-                </Masonry>
+                { isLoading
+                    ? <Loader isLoading={isLoading}/>
+                    : <Masonry breakpointCols={breakpoints} className="masonry" columnClassName="masonry__column">
+                        {response?.map((item, index) => {
+                            return(
+                                <ComingSoonItem item={item} key={index}/>
+                            )
+                        })}
+                    </Masonry>
+                }
             </div>
         </section>
     )
