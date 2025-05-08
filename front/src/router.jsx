@@ -1,16 +1,14 @@
 import { createBrowserRouter } from "react-router-dom"
 
 import { Home } from "./pages/Home"
-import { Error } from "./pages/Error"
-
+ 
 import { Login } from "./pages/auth/Login"
 import { Register } from "./pages/auth/Register"
-import { ResetPassword } from "./pages/auth/ResetPassword"
-
 import { VerifyEmail } from "./pages/auth/VerifyEmail"
 import { ResetPasswordToken } from "./pages/auth/ResetPasswordToken"
-
+import { ResetPassword } from "./pages/auth/ResetPassword"
 import { SocialAuth } from "./pages/auth/social/SocialAuth"
+import { Error } from "./pages/Error"
 
 
 const router = createBrowserRouter([
@@ -34,12 +32,12 @@ const router = createBrowserRouter([
                 element: <VerifyEmail/>
             },
             {
-                path: "reset-password",
-                element: <ResetPassword/>
-            },
-            {
                 path: "reset-password-token",
                 element: <ResetPasswordToken/>
+            },
+            {
+                path: "reset-password",
+                element: <ResetPassword/>
             },
             {
                 path: "social",
@@ -54,7 +52,7 @@ const router = createBrowserRouter([
                     },
                     {
                         path: "login-telegram",
-                        element:<SocialAuth url={"auth/social/auth-telegram"}/>
+                        element:<SocialAuth url={"auth/social/auth-telegram"} isTelegram={true}/>
                     }
                 ]
             }
