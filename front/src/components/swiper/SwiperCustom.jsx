@@ -6,7 +6,7 @@ import { api } from "../../api"
 import { useFetch } from "../../hook/useFetch"
 
 import { SlideMain } from "./slide/SlideMain"
-import { LoaderSlider } from "../../components/loader/LoaderSlider"
+import { Loader } from "../../components/loader/Loader"
 
 
 import "swiper/css"
@@ -35,21 +35,20 @@ export function SwiperCustom() {
   
   return (
     <div className="container">
-      { isLoading
-        ? <LoaderSlider isLoading={isLoading}/>
-        : <Swiper className="mySwiper" id="swiper-custom" slidesPerView={1} spaceBetween={30} loop={true}
+      <Loader isLoading={isLoading}/>
+      <Swiper className="mySwiper" id="swiper-custom" slidesPerView={1} spaceBetween={30} loop={true}
             pagination={{clickable: true}} navigation={true} modules={[Pagination, Navigation, Autoplay]}
             autoplay={{delay: 3500, disableOnInteraction: false}}
           >
-            {response.map((slide) => {
-            return(
-              <SwiperSlide key={slide["uuid"]}>
-                  <SlideMain slide={slide}/>
-                </SwiperSlide>
-              )
-            })}
+            {response?.map((slide, index) => {
+              return(
+                <SwiperSlide key={index}>
+                    <SlideMain slide={slide}/>
+                  </SwiperSlide>
+                )
+              })
+            }
           </Swiper>
-        }  
     </div>
   )
 }
