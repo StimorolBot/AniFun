@@ -1,10 +1,10 @@
 import { useEffect } from "react"
 
 
-export const useClickOutside = (ref, setVal, watchVal="") =>{
+export const useClickOutside = (ref, setVal, watch="") =>{
     
     const handleClick = (e) => {
-        if (ref.current && !ref.current.contains(e.target) && (watchVal === "")) {
+        if ((ref.current && !ref.current.contains(e.target)) && (watch === "")) {
             setVal(false)
         }
       }
