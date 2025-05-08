@@ -1,5 +1,6 @@
 import { memo } from "react"
-import { Link, useNavigate,  } from "react-router-dom"
+import {Helmet} from "react-helmet"
+import { Link, useNavigate } from "react-router-dom"
 
 import "./style/error.sass"
 
@@ -7,7 +8,10 @@ import "./style/error.sass"
 export const Error = memo(() => {
     const navigate = useNavigate()
     
-    return(
+    return(<>
+        <Helmet>
+            <title>404</title>
+        </Helmet>
         <main className="error">
             <h1 className="error__status-code">
                 404
@@ -28,5 +32,5 @@ export const Error = memo(() => {
                 </Link>
             </div>
         </main>
-    )
+    </>)
 })
