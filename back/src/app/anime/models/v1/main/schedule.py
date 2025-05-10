@@ -12,5 +12,6 @@ class ScheduleTable(Base):
     episode_number: Mapped[int] = mapped_column()
     day_week: Mapped[str] = mapped_column()
     date: Mapped[str] = mapped_column()
+    episode_name: Mapped[str] = mapped_column()
 
     __table_args__ = (UniqueConstraint("title", "episode_number", "day_week", "date"),)
