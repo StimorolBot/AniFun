@@ -15,7 +15,7 @@ import { InputEmail } from "../../ui/input/InputEmail"
 import { InputPassword } from "../../ui/input/InputPassword"
 import { InputName } from "../../ui/input/InputName"
 import { TransitionLoader } from "../../transition/TransitionLoader"
-import { Error } from "../../ui/popup/Error"
+import { Error } from "../../ui/alert/Error"
 
 
 export function Register(){

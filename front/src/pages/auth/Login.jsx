@@ -15,7 +15,7 @@ import { AuthTitle } from "../../components/auth/AuthTitle"
 import { AuthSocial } from "../../components/auth/AuthSocial"
 import { AuthWarning } from "../../components/auth/AuthWarning"
 import { TransitionLoader } from "../../transition/TransitionLoader"
-import { Error } from "../../ui/popup/Error"
+import { Error } from "../../ui/alert/Error"
 
 
 export function Login(){    

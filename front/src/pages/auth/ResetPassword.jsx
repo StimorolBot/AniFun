@@ -12,7 +12,7 @@ import { BtnAuth } from "../../ui/btn/BtnAuth"
 import { InputToken } from "../../ui/input/InputToken"
 import { InputPassword } from "../../ui/input/InputPassword"
 import { TransitionLoader } from "../../transition/TransitionLoader"
-import { Error } from "../../ui/popup/Error"
+import { Error } from "../../ui/alert/Error"
 
 
 export function ResetPassword(){
