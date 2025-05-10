@@ -9,12 +9,14 @@ from sqlalchemy import pool
 # alembic revision --autogenerate -m "create_token_table"
 # alembic upgrade head
 
+from src.app.auth.models.v1.main.auth import AuthTable
+from src.app.auth.models.v1.sub.auth_type import AuthTypeTable
+
+from src.app.anime.models.v1.main.anime import AnimeTable
+from src.app.anime.models.v1.sub.status import StatusTable
+
 from src.database.config import setting
 
-from src.app.anime.models.v1.sub.type import TypeTable
-from src.app.anime.models.v1.main.anime import AnimeTable
-from src.app.auth.models.v1.auth import AuthTable
-from src.app.user.models.v1.user import UserTable
 from src.model import Base
 
 config = context.config

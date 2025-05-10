@@ -4,8 +4,8 @@ from enum import Enum
 class DayWeek(Enum):
     MONDAY = "Понедельник"
     TUESDAY = "Вторник"
-    WEDNESDAY = "Среда "
+    WEDNESDAY = "Среда"
     THURSDAY = "Четверг"
-    FRIDAY = "Пятница "
-    SATURDAY = "Суббота "
+    FRIDAY = "Пятница"
+    SATURDAY = "Суббота"
     SUNDAY = "Воскресенье"

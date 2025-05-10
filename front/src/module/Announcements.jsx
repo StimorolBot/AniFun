@@ -32,7 +32,7 @@ export function Announcements(){
                 { isLoading
                     ? <Loader isLoading={isLoading}/>
                     : <ul className="announce__list">
-                        {response.map((item, index) => {
+                        {response?.map((item, index) => {
                             return(<AnnounceItem item={item} key={index}/>)
                         })}
                     </ul>
