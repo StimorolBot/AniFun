@@ -1,0 +1,52 @@
+@use "/src/style/color.sass" as * 
+
+
+.coming-soon__bg
+    position: absolute
+    top: 50%
+    left: 0
+    width: 100%
+    transform: translate(0, -50%)
+    opacity: 0
+    visibility: hidden
+    transition: opacity 0.3s, visibility 0.3s
+    object-fit: cover
+    display: block
+
+.coming-soon__item
+    background-color: $sub-gray
+    font-size: 14px
+    border-radius: 10px
+    overflow: hidden
+    height: fit-content
+
+    +.coming-soon__item
+        margin-top: 10px
+    
+    &:hover
+        .coming-soon__bg
+            opacity: 0.2 
+            visibility: visible
+
+.coming-soon__link
+    display: block
+    padding: 8px 16px
+    position: relative
+    overflow: hidden
+
+.coming-soon__title
+    font-size: 18px
+    font-weight: 900
+
+.coming-soon__episode
+    margin-top: 10px
+    margin-bottom: 5px
+    font-size: 14px
+    opacity: 0.7
+    font-weight: 600
+
+.coming-soon__desc-list
+    display: flex
+    column-gap: 10px
+    font-size: 12px
+    color: $gray
