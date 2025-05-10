@@ -2,7 +2,7 @@ from uuid import UUID
 from typing import List
 from typing import TYPE_CHECKING
 
-from sqlalchemy import ForeignKey
+from sqlalchemy import ForeignKey, CheckConstraint
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from src.model import Base
@@ -23,9 +23,12 @@ class AnimeTable(Base):
 
     uuid: Mapped[UUID] = mapped_column(primary_key=True, default=generate_uuid, unique=True)
     title: Mapped[str] = mapped_column(unique=True, index=True)
+    alias: Mapped[str] = mapped_column()
+    year: Mapped[int] = mapped_column(CheckConstraint("year>1970"))
+    episodes: Mapped[int] = mapped_column(CheckConstraint("episodes>=1"))
     description: Mapped[str] = mapped_column()
-    year: Mapped[int] = mapped_column()
-    episodes: Mapped[int] = mapped_column()
+
+    is_origin: Mapped[bool] = mapped_column(default=True)
 
     type: Mapped[str] = mapped_column(ForeignKey("type_table.type"))
     season: Mapped[str] = mapped_column(ForeignKey("season_table.season"))
