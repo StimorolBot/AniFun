@@ -6,5 +6,5 @@ __pycache__
 .env
 .pytest_cache
 poetry.lock
-file_manager.py
 .videos
+.test
