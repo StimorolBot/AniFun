@@ -10,7 +10,9 @@ from sqlalchemy.orm import selectinload
 
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
+from starlette.responses import JSONResponse
 
+from src.utils.valid import ValidTitle
 from src.utils.logger import sql_log, anime_log
 from src.database.session import get_async_session
 
@@ -142,3 +144,34 @@ async def get_genres(session: AsyncSession = Depends(get_async_session)):
 @anime_router.get("/announcements", status_code=status.HTTP_200_OK, summary="Получить анонсы")
 async def get_announcements(session: AsyncSession = Depends(get_async_session)):
     ...
+
+
+@anime_router.get("/random-title", summary="Получить случайный тайтл")
+async def get_random_title(session: AsyncSession = Depends(get_async_session)):
+    query = select(main_table.AnimeTable.alias).limit(1).order_by(func.random())
+    result = await session.execute(query)
+    return JSONResponse(
+        status_code=status.HTTP_200_OK,
+        content=schemas.RandomTitleDTO(**result.mappings().one()).model_dump()
+    )
+
+
+@anime_router.get("/search-title", status_code=status.HTTP_200_OK, summary="Поиск аниме по названию")
+async def search_title(title: ValidTitle, session: AsyncSession = Depends(get_async_session)):
+    query = (
+        select(
+            main_table.AnimeTable.title,
+            main_table.AnimeTable.year,
+            main_table.AnimeTable.type,
+            main_table.AnimeTable.alias,
+            main_table.ImgTable.poster,
+        )
+        .select_from(main_table.AnimeTable)
+        .join(main_table.ImgTable, main_table.ImgTable.title == main_table.AnimeTable.title)
+        .filter(main_table.AnimeTable.title.ilike(f"%{title}%"))
+    )
+
+    result = await session.execute(query)
+    items = result.mappings().all()
+
+    return [schemas.SearchTitleDTO.model_validate(item, from_attributes=True) for item in items]
