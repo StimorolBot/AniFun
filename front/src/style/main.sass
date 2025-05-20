@@ -41,6 +41,9 @@ img[alt]
     visibility: hidden
     position: absolute
 
+.scroll_block
+    overflow: hidden
+
 body
     background-color: $sub-black
     color: $white
@@ -59,3 +62,21 @@ body
         background-color: #525151
         border-radius: 10px
         cursor: pointer
+
+.transition-enter
+    opacity: 0
+    visibility: hidden
+
+.transition-enter-active
+    opacity: 1
+    visibility: visible
+    transition: opacity 0.3s, visibility 0.3s
+  
+.transition-exit
+    opacity: 1
+    visibility: visible
+    
+.transition-exit-active 
+    opacity: 0
+    visibility: hidden
+    transition: opacity 0.3s, visibility 0.3s 
