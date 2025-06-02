@@ -1,0 +1,105 @@
+@use "/src/style/color.sass" as * 
+
+    
+.search-popup
+    position: absolute
+    min-height: 100%
+    min-width: 100%
+    background-color: $t-black
+    z-index: 999
+    align-items: center
+    justify-content: center
+    display: flex
+    flex-direction: column
+
+.btn-close-popup
+    position: absolute
+    top: 0
+    right: -55px
+    cursor: default
+    padding: 0
+    
+    svg
+        width: 50px
+        height: 50px
+
+        use
+            stroke: $sub-white
+            cursor: pointer
+            transition: stroke 0.3s
+
+            &:hover
+                stroke: $white
+
+.search-popup__container
+    max-width: 400px
+    max-height: 400px
+    flex: 1 1 auto
+    padding: 10px
+    display: flex
+    flex-direction: column
+    width: 100%
+    position: relative 
+    background-color: $sub-gray
+    border-radius: 10px
+    color: $white
+    font-family: sans-serif
+
+.search-popup__svg
+    flex: 1 1 100%
+    display: flex
+    flex-direction: column
+    justify-content: center
+    align-items: center 
+
+    svg
+        width: 150px
+        height: 150px
+
+    p
+        &:last-child
+            font-size: 13px
+            color: $gray
+            margin-top: 10px
+            overflow: hidden
+            display: -webkit-box
+            -webkit-line-clamp: 1
+            -webkit-box-orient: vertical
+            text-overflow: ellipsis
+            max-width: 370px
+            text-align: center
+            word-break: break-all
+
+.search-popup__list
+    display: flex
+    flex: 1 1 auto
+    overflow-x: hidden
+  
+    &::-webkit-scrollbar
+        width: 5px
+
+    &::-webkit-scrollbar-track
+        background: linear-gradient(#1E1E1E, #2c2c2c)
+    
+    &::-webkit-scrollbar-thumb
+        background-color: #525151
+        border-radius: 10px
+        cursor: pointer
+
+.search-popup__info
+    margin-top: 15px
+    font-size: 13px
+    color: $white
+
+    p
+        text-align: center
+        
+        &:last-child
+            margin-top: 5px
+
+    code
+        margin-left: 5px
+        border: 1px solid $gray
+        padding: 1px 3px
+        border-radius: 4px
+        background-color: $black
