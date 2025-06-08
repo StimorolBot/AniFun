@@ -19,7 +19,7 @@ export function SwiperCustom() {
   const transitionRef = useRef()
   const [response, setResponse] = useState([{
     "age_restrict": null, "description": null, "episodes": null, "img_rs": {"banner": null},
-    "season": null, "title": null, "type": null, "uuid": null, "year": null
+    "season": null, "title": null, "type": null, "year": null
   }])
 
   const [request, isLoading, error] = useFetch(
@@ -50,14 +50,15 @@ export function SwiperCustom() {
                 pagination={{clickable: true}} navigation={true} modules={[Pagination, Navigation, Autoplay]}
                 autoplay={{delay: 3500, disableOnInteraction: false}} 
               >
-                {response?.map((slide, index) => {
-                  return(
-                    <SwiperSlide key={index}>
-                      <SlideMain slide={slide}/>
-                    </SwiperSlide>
-                  )
-                })
-              }
+                {response[0]?.alias &&
+                  response.map((slide, index) => {
+                    return(
+                      <SwiperSlide key={index}>
+                        <SlideMain slide={slide}/>
+                      </SwiperSlide>
+                    )
+                  })
+                }
               </Swiper>
             }
           </div> 
