@@ -13,7 +13,9 @@ import "./style/last_episodes.sass"
 export const LastEpisodes= memo(() => {
   const [response, setResponse] = useState([{
     "episode_data":{
-      "number": null,
+      "schedule_rs":{
+        "episode_number": null
+      },
       "anime_data":{
         "alias": null,
         "title": null,
@@ -24,7 +26,7 @@ export const LastEpisodes= memo(() => {
       }
     },
     "genres":[""],
-    "poster": null 
+    "poster": null
   }])
     
   const [request, isLoading, error] = useFetch(
@@ -32,7 +34,7 @@ export const LastEpisodes= memo(() => {
       await api.get("/last-title").then((r) => setResponse(r.data))
     }
   )
-    
+
   useEffect(() => {(
     async () => {
       await request()
