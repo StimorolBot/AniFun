@@ -3,13 +3,13 @@ import { Link } from "react-router-dom"
 import "./style/link_watch.sass"
 
 
-export function LinkWatch({url="#"}){
+export function LinkWatch({alias, children}){
     return(
-        <Link className="link__watch" to={url}>
+        <Link className="link__watch" to={alias}>
             <svg className="link__watch-svg">
                 <use  xlinkHref="/main.svg#rectangle-svg"/>
             </svg>                 
-            Смотреть
+            {children}
         </Link>
     )
 }
