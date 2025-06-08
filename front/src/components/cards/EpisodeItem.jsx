@@ -6,14 +6,14 @@ import "./style/episode_item.sass"
 
 
 export const EpisodeItem = memo(({item, ...props}) => {
-    const data = item["episode_data"]["anime_data"]
+    const data = item?.episode_data?.anime_data
 
     return(
         <li className="episode__item" {...props}>
             <img className="episode__img" src={`data:image/webp;base64,${item["poster"]}`} alt="new-episode"/>
             <div className="episode__description">
                 <p className="episode__number">
-                    {item["episode_data"]["number"]} эпизод
+                    {item?.episode_data?.schedule_rs?.episode_number} эпизод
                 </p>
                 <p className="episode__title">
                     {data["title"]}
@@ -42,7 +42,7 @@ export const EpisodeItem = memo(({item, ...props}) => {
                     })}
                 </ul>
                 <div className="episode-btn__container">
-                    <LinkWatch url={`/anime/releases/${data["alias"]}/episodes`}/>
+                    <LinkWatch alias={`/anime/releases/release/${data["alias"]}/episodes`}/>
                     <BtnAddQueue/>
                 </div>
             </div>
