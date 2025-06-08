@@ -3,6 +3,7 @@ import { Footer } from "../components/footer/Footer"
 
 import { SwiperCustom } from "../components/swiper/SwiperCustom"
 import { LastEpisodes } from "../module/LastEpisodes"
+import { Helmet } from "react-helmet"
 import { ComingSoon } from "../module/ComingSoon"
 import { Franchises } from "../module/Franchises"
 import { Genres } from "../module/Genres"
@@ -10,7 +11,10 @@ import { Announcements } from "../module/Announcements"
 
 
 export function Home(){
-    return(
+    return(<>
+        <Helmet>
+            <title>AniFun</title>
+        </Helmet>
         <div className="wrapper">
             <Header/>
             <main className="main">
@@ -25,6 +29,6 @@ export function Home(){
                 <Announcements/>
             </main>
             <Footer/>            
-        </div>
+        </div></>
     )
 }
