@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
+import { CSSTransition, SwitchTransition } from "react-transition-group"
 
 import { api } from "../api"
 import { useFetch } from "../hook/useFetch"
@@ -11,6 +12,7 @@ import "./style/franchises.sass"
 
 
 export function Franchises(){
+    const transitionRef = useRef()
     const [response, setResponse] = useState([{
         "age_restrict": null, "alias": null, 
         "poster": null, "season": null,
@@ -35,17 +37,28 @@ export function Franchises(){
         <section className="franchises">
             <div className="container">
                 <HeaderSection 
-                    title={"Популярный франшизы"} to={"/anime/franchises/"}
+                    title={"Популярный франшизы"} link={"/anime/franchises/"}
                     description={"Франшизы, которые могут заинтересовать вас"}
                 />
-                    {isLoading
-                        ? <Loader isLoading={isLoading}/>
-                        :<ul className="franchises__list">                    
-                            {response?.map((item, index) => {
-                                return(<FranchisesItem item={item} key={index}/>)
-                            })}  
-                        </ul> 
-                    }
+                <SwitchTransition mode="out-in">
+                    <CSSTransition 
+                        classNames="transition" 
+                        key={isLoading}
+                        nodeRef={transitionRef} 
+                        timeout={300}
+                    >
+                        <div className="transition" ref={transitionRef}>
+                            {isLoading
+                                ?<Loader/>
+                                :<ul className="franchises__list">                    
+                                    {response?.map((item, index) => {
+                                        return(<FranchisesItem item={item} key={index}/>)
+                                    })}  
+                                </ul> 
+                            }
+                        </div>
+                    </CSSTransition>
+                </SwitchTransition>
             </div>
         </section>
     )
