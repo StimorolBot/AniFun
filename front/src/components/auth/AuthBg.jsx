@@ -1,4 +1,5 @@
-import { memo, useEffect, useState } from "react"
+import { memo, useEffect, useRef, useState } from "react"
+import { CSSTransition, SwitchTransition } from "react-transition-group"
 
 import { api } from "../../api"
 import { useFetch } from "../../hook/useFetch"
@@ -9,6 +10,7 @@ import "./style/auth_bg.sass"
 
 export const AuthBg = memo (() => {
     const [response, setResponse] = useState({"":""})
+    const transitionRef = useRef()
     
     const [request, isLoading, error] = useFetch(
         async () => {
@@ -25,11 +27,20 @@ export const AuthBg = memo (() => {
     const randomIndex =  Math.floor(Math.random() * Object.keys(response).length)
     
     return(
-        <div className="auth__bg-inner">
-            {isLoading
-                ? <Loader/>
-                :<img className="auth__bg" src={`data:image/jpeg;base64,${Object.values(response)[randomIndex]}`} alt="auth-bg" />
-            }
-        </div>
+        <SwitchTransition mode="out-in">
+            <CSSTransition 
+                classNames="transition" 
+                key={isLoading}
+                nodeRef={transitionRef} 
+                timeout={300}
+            >
+                <div className="auth__bg-inner transition" ref={transitionRef}>
+                    {isLoading
+                        ? <Loader/>
+                        : <img className="auth__bg" src={`data:image/jpeg;base64,${Object.values(response)[randomIndex]}`} alt="auth-bg" />
+                    }
+                </div>
+            </CSSTransition>
+        </SwitchTransition>
     )
 })
