@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import Masonry from "react-masonry-css"
+import { CSSTransition, SwitchTransition } from "react-transition-group"
 
 import { api } from "../api"
 import { useFetch } from "../hook/useFetch"
@@ -14,6 +15,7 @@ import "./style/coming_soon.sass"
 
 
 export function ComingSoon(){
+    const transitionRef = useRef()
     const [schedule, setSchedule] = useState("today")
     const [response, setResponse] = useState([{
         "schedule_data": {
@@ -56,16 +58,31 @@ export function ComingSoon(){
                 >
                     <SwitchDay value={schedule} setValue={setSchedule}/>                    
                 </HeaderSection>
-                { isLoading
-                    ? <Loader isLoading={isLoading}/>
-                    : <Masonry breakpointCols={breakpoints} className="masonry" columnClassName="masonry__column">
-                        {response?.map((item, index) => {
-                            return(
-                                <ComingSoonItem item={item} key={index}/>
-                            )
-                        })}
-                    </Masonry>
-                }
+                <SwitchTransition mode="out-in">
+                    <CSSTransition 
+                        classNames="transition" 
+                        key={isLoading}
+                        nodeRef={transitionRef} 
+                        timeout={300}
+                    >
+                        <div className="container-coming-soon transition" ref={transitionRef}>
+                            { isLoading
+                                ? <Loader/>
+                                : response[0]?.alias
+                                    ? <Masonry breakpointCols={breakpoints} className="masonry" columnClassName="masonry__column">
+                                        {response?.map((item, index) => {
+                                            return(
+                                                <ComingSoonItem item={item} key={index}/>
+                                            )
+                                        })}
+                                    </Masonry>
+                                    :<p className="coming-soon__empty">
+                                        К сожалению, в ближайшее время новых серий не ожидается :( 
+                                    </p>
+                            }
+                        </div>
+                    </CSSTransition>
+                </SwitchTransition>
             </div>
         </section>
     )
