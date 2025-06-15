@@ -1,4 +1,5 @@
-import { memo, useEffect, useState } from "react"
+import { memo, useEffect, useRef, useState } from "react"
+import { CSSTransition, SwitchTransition } from "react-transition-group"
 
 import { api } from "../api"
 import { useFetch } from "../hook/useFetch"
@@ -11,6 +12,7 @@ import "./style/last_episodes.sass"
 
 
 export const LastEpisodes= memo(() => {
+  const transitionRef = useRef()
   const [response, setResponse] = useState([{
     "episode_data":{
       "schedule_rs":{
@@ -48,14 +50,25 @@ export const LastEpisodes= memo(() => {
           title={"Новые эпизоды"} link={"anime/releases/latest/"} 
           description={"Недавно добавленные эпизоды с аниме"}
         />
-        { isLoading
-          ? <Loader isLoading={isLoading}/>
-          :<ul className="episode__list">
-            {response?.map((item, index) => {
-              return <EpisodeItem item={item} key={index}/>
-            })}
-          </ul>
-        }                            
+        <SwitchTransition mode="out-in">
+          <CSSTransition 
+            classNames="transition" 
+            key={isLoading}
+            nodeRef={transitionRef} 
+            timeout={300}
+          >
+            <div className="container-new-episodes transition" ref={transitionRef}>
+              { isLoading
+                ? <Loader/>
+                :<ul className="episode__list">
+                  {response?.map((item, index) => {
+                    return <EpisodeItem item={item} key={index}/>
+                  })}
+                </ul>
+              }
+            </div>
+          </CSSTransition>
+        </SwitchTransition>                            
       </div>
     </section>
   )
