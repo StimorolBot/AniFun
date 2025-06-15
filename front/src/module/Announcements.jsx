@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
+import { CSSTransition, SwitchTransition } from "react-transition-group"
 import { HeaderSection } from "../components/header/HeaderSection"
 
 import { api } from "../api"
@@ -11,7 +12,8 @@ import "./style/announcements.sass"
 
 
 export function Announcements(){
-    const [response, setResponse] = useState([{"1":1, "2":2},{"1":1, "2":2}])
+    const transitionRef = useRef()
+    const [response, setResponse] = useState()
 
     const [request, isLoading, error] = useFetch(
         async () => {
@@ -29,15 +31,26 @@ export function Announcements(){
         <section className="announcements">
             <div className="container">
                 <HeaderSection title={"Анонсы"} link={"/anime/announce"} description={"Самые горячие и свежие анонсы с аниме"}/>
-                { isLoading
-                    ? <Loader isLoading={isLoading}/>
-                    : <ul className="announce__list">
-                        {response?.map((item, index) => {
-                            return(<AnnounceItem item={item} key={index}/>)
-                        })}
-                    </ul>
-                }                       
+                <SwitchTransition mode="out-in">
+                    <CSSTransition 
+                        classNames="transition" 
+                        key={isLoading}
+                        nodeRef={transitionRef} 
+                        timeout={300}
+                    >
+                        <div className="transition" ref={transitionRef}>
+                            { isLoading
+                                ? <Loader/>
+                                : <ul className="announce__list">
+                                    {response?.map((item, index) => {
+                                        return(<AnnounceItem item={item} key={index}/>)
+                                    })}
+                                </ul>
+                            }
+                        </div>
+                    </CSSTransition>
+                </SwitchTransition>                       
             </div>
         </section>
     )
-} 
+}
