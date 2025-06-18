@@ -44,4 +44,4 @@ def get_alias(text: str, language_code: str = "ru") -> str:
     """
         language_code: ['bg', 'el', 'hy', 'ka', 'l1', 'mk', 'mn', 'ru', 'sr', 'uk']
     """
-    return translit(value=text, language_code=language_code, reversed=True).strip().replace(" ", "-").lower()
+    return translit(value=text, language_code=language_code, reversed=True).strip().replace(" ", "-").replace("?", "").lower()
