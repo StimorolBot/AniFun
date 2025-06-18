@@ -1,0 +1,46 @@
+@use "/src/style/color.sass" as * 
+
+    
+.franchises__link
+    max-width: 430px
+    display: flex
+    background-color: $sub-gray
+    border-radius: 8px
+    overflow: hidden
+    max-height: 200px
+
+    &:hover
+        .franchises__bg-container
+            opacity: 1
+
+.franchises__bg-container
+    flex-basis: 70%
+    overflow: hidden
+    transition: opacity 0.3s
+    opacity: 0.7
+    max-height: 399px
+
+.franchises__bg
+    height: 100%
+    display: block
+    width: 100%
+    object-fit: cover
+
+.franchises__container
+    padding: 10px 18px
+    color: $gray
+    display: flex
+    flex-direction: column
+    justify-content: space-between
+    row-gap: 20px
+
+.franchises__desc_title
+    color: $white
+    font-size: 20px
+    font-weight: 900
+
+.franchises__desc_alt-title
+    font-size: 16px
+
+.franchises__desc-list + .franchises__desc-list
+    font-size: 12px
