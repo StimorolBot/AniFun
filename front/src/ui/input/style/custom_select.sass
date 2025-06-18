@@ -1,0 +1,28 @@
+@use "/src/style/color.sass" as * 
+
+
+.custom-select
+    width: 100% !important
+    max-width: 350px !important
+    font-size: 14px
+    color: $black
+    font-family: sans-serif !important
+
+    &__control
+        background-color: $white !important
+        border-radius: 4px !important
+        border-style: none !important
+        cursor: pointer !important
+        padding: 0 4px !important
+
+        &--is-focused
+            box-shadow: none !important
+
+    &__input-container
+        height: 30px !important
+
+    &__menu
+        width: 100% !important
+        max-width: 350px !important
+        top: 45px !important
+        background-color: $white !important
