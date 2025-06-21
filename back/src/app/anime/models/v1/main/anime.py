@@ -25,7 +25,6 @@ class AnimeTable(Base):
     title: Mapped[str] = mapped_column(unique=True, index=True)
     alias: Mapped[str] = mapped_column()
     year: Mapped[int] = mapped_column(CheckConstraint("year>1970"))
-    episodes: Mapped[int] = mapped_column(CheckConstraint("episodes>=1"))
     description: Mapped[str] = mapped_column()
 
     is_origin: Mapped[bool] = mapped_column(default=True)
