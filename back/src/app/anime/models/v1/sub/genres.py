@@ -13,11 +13,14 @@ if TYPE_CHECKING:
 
 
 class GenresTable(Base):
+    """Таблица с перечнем всех жанров"""
+
     __tablename__ = "genres_table"
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     genres: Mapped[str] = mapped_column(unique=True)
-    poster: Mapped[str] = mapped_column(nullable=False)
+    poster: Mapped[str] = mapped_column()
+    alias: Mapped[str] = mapped_column()
 
     genres_anime_rs: Mapped["GenresAnimeTable"] = relationship(back_populates="genres_rs")
 
@@ -28,5 +31,5 @@ class GenresTable(Base):
         for data in Genres:
             await crud.create(
                 session=session, table=cls,
-                data={"genres": data.value, "poster": poster_base64[data.value]}
+                data={"genres": data.value, "poster": poster_base64[data.value], "alias": data.name.lower()}
             )
