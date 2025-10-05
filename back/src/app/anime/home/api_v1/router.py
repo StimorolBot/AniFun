@@ -22,11 +22,11 @@ from src.database.session import get_async_session
 from src.utils.logger import anime_log
 from src.utils.valid import ValidTitle
 
-anime_router = APIRouter(tags=["home"])
+home_router = APIRouter(tags=["home"])
 
 
 @cache(expire=120, namespace="home-page")
-@anime_router.get("/slides", status_code=status.HTTP_200_OK, summary="Получить слайды с аниме")
+@home_router.get("/slides", status_code=status.HTTP_200_OK, summary="Получить слайды с аниме")
 async def get_slide(session: AsyncSession = Depends(get_async_session)):
     query = (
         select(main_table.AnimeTable)
@@ -45,7 +45,7 @@ async def get_slide(session: AsyncSession = Depends(get_async_session)):
         anime_log.warning("При попытке получить слайд возникла ошибка: %s", e)
 
 
-@anime_router.get("/new-episode", status_code=status.HTTP_200_OK, summary="Получить новые эпизоды")
+@home_router.get("/new-episode", status_code=status.HTTP_200_OK, summary="Получить новые эпизоды")
 async def get_new_episode(limit: LimitEpisode, session: AsyncSession = Depends(get_async_session)):
     genres_sq = subquery_genres()
     query = (
@@ -63,7 +63,7 @@ async def get_new_episode(limit: LimitEpisode, session: AsyncSession = Depends(g
 
 
 @cache(expire=120, namespace="home-page")
-@anime_router.get("/schedules", status_code=status.HTTP_200_OK, summary="Получить расписание релизов")
+@home_router.get("/schedules", status_code=status.HTTP_200_OK, summary="Получить расписание релизов")
 async def get_release_schedule(
         schedule: Literal["today", "tomorrow"] = "today",
         session: AsyncSession = Depends(get_async_session)
@@ -92,7 +92,7 @@ async def get_release_schedule(
 
 
 @cache(expire=120, namespace="home-page")
-@anime_router.get("/franchises", status_code=status.HTTP_200_OK, summary="Получить франшизы")
+@home_router.get("/franchises", status_code=status.HTTP_200_OK, summary="Получить франшизы")
 async def get_franchise(session: AsyncSession = Depends(get_async_session)):
     query = (
         select(
@@ -112,7 +112,7 @@ async def get_franchise(session: AsyncSession = Depends(get_async_session)):
 
 
 @cache(expire=60, namespace="home-page")
-@anime_router.get("/genres", status_code=status.HTTP_200_OK, summary="Получить жанры")
+@home_router.get("/genres", status_code=status.HTTP_200_OK, summary="Получить жанры")
 async def get_genres(session: AsyncSession = Depends(get_async_session)):
     query = (
         select(
@@ -132,7 +132,7 @@ async def get_genres(session: AsyncSession = Depends(get_async_session)):
     return [schemas.ResponseGenresDTO.model_validate(item, from_attributes=True) for item in items]
 
 
-@anime_router.get("/random-title", summary="Получить случайный тайтл")
+@home_router.get("/random-title", summary="Получить случайный тайтл")
 async def get_random_title(session: AsyncSession = Depends(get_async_session)):
     try:
         query = select(main_table.AnimeTable.alias).limit(1).order_by(func.random())
@@ -149,7 +149,7 @@ async def get_random_title(session: AsyncSession = Depends(get_async_session)):
         ) from e
 
 
-@anime_router.get("/search-title", status_code=status.HTTP_200_OK, summary="Поиск аниме по названию")
+@home_router.get("/search-title", status_code=status.HTTP_200_OK, summary="Поиск аниме по названию")
 async def search_title(
         title: ValidTitle,
         session: AsyncSession = Depends(get_async_session)
