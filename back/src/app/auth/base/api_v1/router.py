@@ -1,36 +1,29 @@
 from typing import Annotated
 
+from fastapi import APIRouter, Cookie, Depends, HTTPException, status
+from fastapi.responses import FileResponse, JSONResponse
 from fastapi_cache.decorator import cache
-from fastapi.responses import FileResponse
-from fastapi.responses import JSONResponse
-from fastapi import APIRouter, status, Depends, HTTPException, Cookie
-
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from src.app.auth.base.api_v1.dependency import get_user_by_token
+from src.app.auth.base.api_v1.jwt.jwt_token import jwt_token
+from src.app.auth.base.api_v1.jwt.token_type import TokenType
+from src.app.auth.base.api_v1.password_auth import password_auth
+from src.app.auth.base.api_v1.schemas import (Email, Login, Register,
+                                              ResetPassword, VerifyToken)
+from src.app.auth.base.api_v1.utils import get_reg_dict
+from src.app.auth.enums.v1.auth_type import AuthType
+from src.app.auth.models.v1.main.auth import AuthTable
+from src.app.auth.models.v1.main.token import TokenTable
+from src.app.auth.utils.v1.create_user import create_user
+from src.celery_task.config import celery
+from src.celery_task.smtp.type_email import TypeEmail
+from src.celery_task.tasks import send_email
+from src.database.session import get_async_session
+from src.redis.redis_manager import redis_manager
 from src.utils.crud import crud
 from src.utils.logger import auth_log, os_log
 from src.utils.utils import generate_code
-from src.app.auth.utils.v1.create_user import create_user
-
-from src.redis.redis_manager import redis_manager
-from src.database.session import get_async_session
-
-from src.app.auth.base.api_v1.utils import get_reg_dict
-from src.app.auth.base.api_v1.dependency import get_user_by_token
-
-from src.app.auth.base.api_v1.jwt.jwt_token import jwt_token
-from src.app.auth.base.api_v1.jwt.token_type import TokenType
-from src.app.auth.models.v1.main.token import TokenTable
-
-from src.app.auth.models.v1.main.auth import AuthTable
-from src.app.auth.base.api_v1.password_auth import password_auth
-from src.app.auth.base.api_v1.schemas import Register, VerifyToken, ResetPassword, Login, Email
-
-from src.app.auth.enums.v1.auth_type import AuthType
-
-from src.celery_task.config import celery
-from src.celery_task.tasks import send_email
-from src.celery_task.smtp.type_email import TypeEmail
 
 auth_router = APIRouter(prefix="/auth", tags=["auth"])
 
@@ -86,7 +79,11 @@ async def verify_email(verify_data: VerifyToken, session: AsyncSession = Depends
 @auth_router.patch("/login", summary="Вход")
 async def login(login_data: Login, session: AsyncSession = Depends(get_async_session)):
     unauthorized_error = HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Неверный логин/пароль")
-    user = await crud.read(session=session, table=AuthTable, identifier=login_data.identifier, auth_type=AuthType.BASE.value)
+    user = await crud.read(
+        session=session, table=AuthTable,
+        identifier=login_data.identifier,
+        auth_type=AuthType.BASE.value
+    )
 
     if not user:
         raise unauthorized_error
@@ -163,22 +160,24 @@ async def reset_password(reset_password_data: ResetPassword, session: AsyncSessi
 
 @auth_router.post("/refresh-token", status_code=status.HTTP_200_OK, summary="Обновить токен")
 async def refresh(
-        access_token: Annotated[str | None, Cookie()] = None,
+        refresh_token: Annotated[str | None, Cookie()] = None,
         session: AsyncSession = Depends(get_async_session)
-):
+) -> JSONResponse:
     try:
-        user = jwt_token.decode(access_token)
-        refresh_token = await crud.read(session=session, table=TokenTable, uuid=user["sub"])
-        return jwt_token.refresh(refresh_token=refresh_token.refresh_token)  # ! JSONResponse
-    except TypeError:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Пользователь не авторизован")
-
+        if await crud.read(session=session, table=TokenTable, refresh_token=refresh_token, is_black_list=True):
+            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Токен добавлен в черный список")
+        return JSONResponse(
+            status_code=status.HTTP_200_OK,
+            content={"access_token": jwt_token.refresh(refresh_token=refresh_token)}
+        )
+    except TypeError as e:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Пользователь не авторизован") from e
 
 @cache(expire=120, namespace="background-img")
 @auth_router.get("/background-img", status_code=status.HTTP_200_OK, summary="Получить фон")
 async def get_background_img() -> FileResponse:
     try:
         return FileResponse("./public/auth.json")
-    except FileNotFoundError:
+    except FileNotFoundError as e:
         os_log.warning("Не удалось найти файл: 'auth.json'")
-        raise FileNotFoundError("Не удалось найти файл: 'auth.json'")
+        raise FileNotFoundError("Не удалось найти файл: 'auth.json'") from e
