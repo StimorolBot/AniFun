@@ -1,28 +1,26 @@
+from datetime import datetime, timedelta
 from typing import Literal
-from datetime import date as datetime_date, timedelta
-from pydantic_core._pydantic_core import ValidationError
 
-from fastapi import APIRouter, status, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi_cache.decorator import cache
-
-from sqlalchemy import select, asc, func
-from sqlalchemy.orm import selectinload
-
-from sqlalchemy.exc import IntegrityError
+from fastapi_pagination import Page
+from fastapi_pagination.ext.sqlalchemy import paginate
+from pydantic_core._pydantic_core import ValidationError
+from sqlalchemy import asc, func, select
+from sqlalchemy.exc import NoResultFound
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import selectinload
 from starlette.responses import JSONResponse
 
-from src.utils.valid import ValidTitle
-from src.utils.logger import sql_log, anime_log
-from src.database.session import get_async_session
-
-from src.app.anime.models.v1 import main as main_table
-from src.app.anime.models.v1.sub.genres import GenresTable
-
+from src.app.anime.enums.v1.sub.limit_episode import LimitEpisode
 from src.app.anime.home.api_v1 import schemas
+from src.app.anime.models.v1 import main as main_table
 from src.app.anime.models.v1.main.genres_anime import GenresAnimeTable
-
-from src.app.anime.home.api_v1.subquery import subquery_genres
+from src.app.anime.models.v1.sub.genres import GenresTable
+from src.app.anime.subquery.v_1.subquery import subquery_genres
+from src.database.session import get_async_session
+from src.utils.logger import anime_log
+from src.utils.valid import ValidTitle
 
 anime_router = APIRouter(tags=["home"])
 
@@ -37,37 +35,31 @@ async def get_slide(session: AsyncSession = Depends(get_async_session)):
         .join(main_table.AnimeTable.genres_rs)
         .options(selectinload(main_table.AnimeTable.genres_rs))
         .select_from(main_table.ImgTable)
-        .filter(main_table.ImgTable.banner != None)
+        .filter(main_table.ImgTable.banner != "")
     )
     result = await session.execute(query.distinct())
     items = result.scalars().all()
     try:
         return [schemas.ResponseBannerDTO.model_validate(item, from_attributes=True) for item in items]
     except ValidationError as e:
-        sql_log.warning("В таблице %s не заполнено поле: %s", main_table.AnimeTable.__tablename__, e)
+        anime_log.warning("При попытке получить слайд возникла ошибка: %s", e)
 
 
-@cache(expire=120, namespace="home-page")
-@anime_router.get("/last-title", status_code=status.HTTP_200_OK, summary="Получить недавно обновленные тайтлы")
-async def get_last_title(session: AsyncSession = Depends(get_async_session)):
-    subquery = subquery_genres()
+@anime_router.get("/new-episode", status_code=status.HTTP_200_OK, summary="Получить новые эпизоды")
+async def get_new_episode(limit: LimitEpisode, session: AsyncSession = Depends(get_async_session)):
+    genres_sq = subquery_genres()
     query = (
-        select(main_table.EpisodeTable, main_table.ImgTable.poster, subquery)
+        select(main_table.EpisodeTable, main_table.ImgTable.poster, genres_sq)
         .join(main_table.EpisodeTable.anime_rs)
         .options(selectinload(main_table.EpisodeTable.anime_rs))
         .join(main_table.ImgTable, main_table.ImgTable.title == main_table.EpisodeTable.title)
-        # отдавать максимум 2 жанра
-        .join(subquery, subquery.c.title == main_table.EpisodeTable.title)
+        .join(genres_sq, main_table.AnimeTable.alias == genres_sq.c.alias)
         .order_by(asc(main_table.EpisodeTable.date_add))
-        .limit(6)
+        .limit(limit.value)
     )
-    try:
-        result = await session.execute(query)
-        items = result.mappings().all()
-        return [schemas.ResponseTitleDTO.model_validate(item, from_attributes=True) for item in items]
-    except IntegrityError as e:
-        anime_log.warning("Дублирование эпизодов", e)
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Серия уже была добавлена")
+    result = await session.execute(query)
+    items = result.mappings().all()
+    return [schemas.ResponseTitleDTO.model_validate(item, from_attributes=True) for item in items]
 
 
 @cache(expire=120, namespace="home-page")
@@ -80,17 +72,18 @@ async def get_release_schedule(
     query = (
         select(
             main_table.ScheduleTable, main_table.ImgTable.poster, main_table.AnimeTable.year,
-            main_table.AnimeTable.season, main_table.AnimeTable.age_restrict, main_table.AnimeTable.alias, subquery
+            main_table.AnimeTable.type, main_table.AnimeTable.season, main_table.AnimeTable.age_restrict,
+            main_table.AnimeTable.alias, subquery
         )
         .select_from(main_table.ScheduleTable)
         .join(main_table.ImgTable, main_table.ImgTable.title == main_table.ScheduleTable.title)
         .join(main_table.AnimeTable, main_table.AnimeTable.title == main_table.ScheduleTable.title)
-        .join(subquery, subquery.c.title == main_table.ScheduleTable.title)
+        .join(subquery, main_table.ScheduleTable.title == subquery.c.title)
         .where(
-            main_table.ScheduleTable.date == datetime_date.today().strftime("%d-%m-%Y")
+            main_table.ScheduleTable.date == datetime.now().date()
             if schedule == "today"
             else
-            main_table.ScheduleTable.date == (datetime_date.today() + timedelta(hours=24)).strftime("%d-%m-%Y")
+            main_table.ScheduleTable.date == (datetime.now().date() + timedelta(hours=24))
         )
     )
     result = await session.execute(query)
@@ -103,19 +96,18 @@ async def get_release_schedule(
 async def get_franchise(session: AsyncSession = Depends(get_async_session)):
     query = (
         select(
-            main_table.RelationAnime, main_table.ImgTable.poster,
-            main_table.AnimeTable.year, main_table.AnimeTable.alias,
-            main_table.AnimeTable.type, main_table.AnimeTable.season,
-            main_table.AnimeTable.age_restrict, main_table.AnimeTable.title
+            main_table.RelationAnime.title,
+            main_table.ImgTable.poster,
+            main_table.AnimeTable.alias
         )
         .join(main_table.ImgTable, main_table.RelationAnime.title == main_table.ImgTable.title)
         .join(main_table.AnimeTable, main_table.RelationAnime.title == main_table.AnimeTable.title)
-        .limit(3)
         .order_by(func.random())
+        .limit(3)
     )
-    result = await session.execute(query)
-    items = result.mappings().all()
 
+    result = await session.execute(query)
+    items = result.mappings().unique()
     return [schemas.FranchisesDTO.model_validate(item, from_attributes=True) for item in items]
 
 
@@ -140,38 +132,37 @@ async def get_genres(session: AsyncSession = Depends(get_async_session)):
     return [schemas.ResponseGenresDTO.model_validate(item, from_attributes=True) for item in items]
 
 
-@cache(expire=120, namespace="home-page")
-@anime_router.get("/announcements", status_code=status.HTTP_200_OK, summary="Получить анонсы")
-async def get_announcements(session: AsyncSession = Depends(get_async_session)):
-    ...
-
-
 @anime_router.get("/random-title", summary="Получить случайный тайтл")
 async def get_random_title(session: AsyncSession = Depends(get_async_session)):
-    query = select(main_table.AnimeTable.alias).limit(1).order_by(func.random())
-    result = await session.execute(query)
-    return JSONResponse(
-        status_code=status.HTTP_200_OK,
-        content=schemas.RandomTitleDTO(**result.mappings().one()).model_dump()
-    )
+    try:
+        query = select(main_table.AnimeTable.alias).limit(1).order_by(func.random())
+        result = await session.execute(query)
+        return JSONResponse(
+            status_code=status.HTTP_200_OK,
+            content=schemas.RandomTitleDTO(**result.mappings().one()).model_dump()
+        )
+    except NoResultFound as e:
+        anime_log.warning("При попытке получить случайный тайтл возникла ошибка: %s", e)
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Не удалось получить случайный тайтл, пожалуйста, повторите попытку позже"
+        ) from e
 
 
 @anime_router.get("/search-title", status_code=status.HTTP_200_OK, summary="Поиск аниме по названию")
-async def search_title(title: ValidTitle, session: AsyncSession = Depends(get_async_session)):
+async def search_title(
+        title: ValidTitle,
+        session: AsyncSession = Depends(get_async_session)
+) -> Page[schemas.SearchTitleDTO]:
     query = (
-        select(
-            main_table.AnimeTable.title,
-            main_table.AnimeTable.year,
-            main_table.AnimeTable.type,
-            main_table.AnimeTable.alias,
-            main_table.ImgTable.poster,
-        )
-        .select_from(main_table.AnimeTable)
-        .join(main_table.ImgTable, main_table.ImgTable.title == main_table.AnimeTable.title)
+        select(main_table.AnimeTable)
         .filter(main_table.AnimeTable.title.ilike(f"%{title}%"))
+        .join(main_table.AnimeTable.img_rs)
+        .options(selectinload(main_table.AnimeTable.img_rs))
+        .join(main_table.AnimeTable.genres_rs)
+        .options(selectinload(main_table.AnimeTable.genres_rs))
+        .select_from(main_table.ImgTable)
+        .distinct()
     )
 
-    result = await session.execute(query)
-    items = result.mappings().all()
-
-    return [schemas.SearchTitleDTO.model_validate(item, from_attributes=True) for item in items]
+    return await paginate(session, query)
