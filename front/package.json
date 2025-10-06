@@ -1,0 +1,43 @@
+{
+  "name": "vite-project",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "lint": "eslint .",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@telegram-auth/react": "^1.0.4",
+    "@use-form/use-form": "^3.2.6",
+    "axios": "^1.11.0",
+    "nouislider": "^15.8.1",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1",
+    "react-helmet": "^6.1.0",
+    "react-hook-form": "^7.62.0",
+    "react-masonry-css": "^1.0.16",
+    "react-range-slider-input": "^3.2.1",
+    "react-router-dom": "^7.9.3",
+    "react-select": "^5.10.2",
+    "react-transition-group": "^4.4.5",
+    "sass": "^1.89.2",
+    "swiper": "^11.2.10",
+    "universal-cookie": "^8.0.1",
+    "video.js": "^8.23.3"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.19.0",
+    "@types/react": "^19.1.9",
+    "@types/react-dom": "^19.1.7",
+    "@vitejs/plugin-react": "^4.7.0",
+    "eslint": "^9.32.0",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "eslint-plugin-react-refresh": "^0.4.20",
+    "globals": "^15.15.0",
+    "vite": "^7.0.6"
+  }
+}
