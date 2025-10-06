@@ -7,7 +7,6 @@ import { Helmet } from "react-helmet"
 import { ComingSoon } from "../module/ComingSoon"
 import { Franchises } from "../module/Franchises"
 import { Genres } from "../module/Genres"
-import { Announcements } from "../module/Announcements"
 
 
 export function Home(){
@@ -26,7 +25,6 @@ export function Home(){
                 <ComingSoon/>
                 <Franchises/>
                 <Genres/>
-                <Announcements/>
             </main>
             <Footer/>            
         </div></>
