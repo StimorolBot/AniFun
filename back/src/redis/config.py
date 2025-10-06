@@ -1,6 +1,7 @@
-from redis import asyncio as aioredis
 from fastapi_cache import FastAPICache
 from pydantic_settings import BaseSettings
+
+from redis import asyncio as aioredis
 
 
 class Settings(BaseSettings):
