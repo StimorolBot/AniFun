@@ -1,8 +1,8 @@
-from src.utils.abs_model.crud import CrudAbs
-
+from sqlalchemy import delete, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, update, delete
 from sqlalchemy.orm.decl_api import DeclarativeAttributeIntercept
+
+from src.utils.abs_model.crud import CrudAbs
 
 
 class Crud(CrudAbs):
