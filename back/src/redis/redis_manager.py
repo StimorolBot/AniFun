@@ -1,7 +1,7 @@
 import json
 
-from src.redis.config import redis
 from src.redis.abs_model.redis import RedisAbs
+from src.redis.config import redis
 
 
 class RedisManager(RedisAbs):
