@@ -1,23 +1,20 @@
 from logging.config import fileConfig
 
 from alembic import context
-from sqlalchemy import engine_from_config
-from sqlalchemy import pool
+from sqlalchemy import engine_from_config, pool
+
+from src.app.anime.models.v1.main.anime import AnimeTable
+from src.app.anime.models.v1.sub.status import StatusTable
+from src.app.auth.models.v1.main.auth import AuthTable
+from src.app.auth.models.v1.sub.auth_type import AuthTypeTable
+from src.app.user.models.v1.avatar import AvatarTable
+from src.database.config import setting
+from src.model import Base
 
 # миграция таблиц
 # cd src
 # alembic revision --autogenerate -m "create_token_table"
 # alembic upgrade head
-
-from src.app.auth.models.v1.main.auth import AuthTable
-from src.app.auth.models.v1.sub.auth_type import AuthTypeTable
-
-from src.app.anime.models.v1.main.anime import AnimeTable
-from src.app.anime.models.v1.sub.status import StatusTable
-
-from src.database.config import setting
-
-from src.model import Base
 
 config = context.config
 section = config.config_ini_section
