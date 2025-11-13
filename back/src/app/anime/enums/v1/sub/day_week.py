@@ -2,10 +2,10 @@ from enum import Enum
 
 
 class DayWeek(Enum):
-    MONDAY = "Понедельник"
-    TUESDAY = "Вторник"
-    WEDNESDAY = "Среда"
-    THURSDAY = "Четверг"
-    FRIDAY = "Пятница"
-    SATURDAY = "Суббота"
-    SUNDAY = "Воскресенье"
+    MONDAY = "Monday"
+    TUESDAY = "Tuesday"
+    WEDNESDAY = "Wednesday"
+    THURSDAY = "Thursday"
+    FRIDAY = "Friday"
+    SATURDAY = "Saturday"
+    SUNDAY = "Sunday"
