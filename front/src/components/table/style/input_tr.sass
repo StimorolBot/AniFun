@@ -1,0 +1,15 @@
+@use "/src/style/color.sass" as * 
+
+
+.input-tr__item-container[data-required="false"]
+    .input-tr__title
+        width: fit-content
+        position: relative
+
+        &::after
+            content: "*"
+            position: absolute
+            top: 0
+            right: -15px
+            width: 10px
+            color: $red
