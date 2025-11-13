@@ -1,0 +1,98 @@
+@use "/src/style/color.sass" as * 
+
+
+.root-anime__item
+    margin: 20px 0
+    padding: 0 10px
+    border-radius: 10px
+    overflow: hidden
+    position: relative
+    
+    &_post 
+        border: 1px solid $green
+        background-color: $t-green
+
+    &_patch
+        border: 1px solid $sub-green
+        background-color: $t-sub-green
+
+    &_delete 
+        border: 1px solid $red
+        background-color: $t-red
+
+.root-anime__item-header
+    display: flex
+    column-gap: 40px
+    align-items: center
+
+.root-anime__method
+    padding: 4px 14px
+    border-radius: 4px
+    font-weight: 900
+    font-size: 16px
+    height: fit-content
+    text-transform: uppercase
+    
+    &_post
+        background-color: $green
+    
+    &_patch
+        background-color: $sub-green
+
+    &_delete
+        background-color: $red
+
+.root__btn-switch
+    margin-right: 0
+    margin-left: auto
+
+.root-anime__form
+    max-height: 0
+    opacity: 0
+    visibility: hidden
+    transition: max-height 0.3s, opacity 0.3s, visibility 0.3s
+    overflow-y: scroll
+    overflow-x: hidden
+    scrollbar-width: thin
+    scrollbar-color: transparent transparent
+
+    &_is-show
+        max-height: 950px
+        opacity: 1
+        visibility: visible
+
+.root-anime__table
+    width: 100%
+    table-layout: fixed
+    text-align: start
+
+    thead
+        border-bottom: 1px solid $gray
+
+        th
+            padding: 10px 0
+            text-align: start
+            vertical-align: middle
+
+.root-anime__tbody
+    tr
+        th
+            padding: 10px 0
+            text-align: start
+            vertical-align: middle
+
+.main-root-input
+    border-radius: 4px
+    padding: 0 4px
+    height: 30px
+    width: 100%
+    max-width: 550px
+    font-size: 16px
+    font-family: "Jura", sans-serif
+    font-weight: 600
+
+.root__btn-container
+    display: flex
+    justify-content: center
+    gap: 15px
+    margin: 10px 0
