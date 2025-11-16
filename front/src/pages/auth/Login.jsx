@@ -1,6 +1,8 @@
-import { useRef } from "react"
+import { Helmet } from "react-helmet"
+import { useRef, useState } from "react"
 import { useForm } from "react-hook-form"
 import { Link, useNavigate } from "react-router-dom"
+import { CSSTransition, SwitchTransition } from "react-transition-group"
 
 import { api } from "../../api"
 import { cookies } from "../../cookie"
@@ -12,16 +14,17 @@ import { BtnAuth } from "../../ui/btn/BtnAuth"
 
 import { AuthBg } from "../../components/auth/AuthBg"
 import { AuthTitle } from "../../components/auth/AuthTitle"
-import { AuthSocial } from "../../components/auth/AuthSocial"
 import { AuthWarning } from "../../components/auth/AuthWarning"
-import { TransitionLoader } from "../../transition/TransitionLoader"
-import { Error } from "../../ui/alert/Error"
+import { Loader } from "../../components/loader/Loader"
+import { AlertResponse } from "../../ui/alert/AlertResponse"
+import { OAuth } from "../../components/auth/OAuth"
 
 
 export function Login(){    
     const navigate = useNavigate()
     const transitionRef = useRef(null)
     const clickRef = useRef(false)
+    const [updateAlert, setUpdateAlert] = useState()
     const {register, handleSubmit, watch, formState: {errors, isValid}, reset} = useForm({
         mode: "onChange",
         defaultValues:{
@@ -31,8 +34,7 @@ export function Login(){
     })
         
     const [request, isLoading, error] = useFetch(
-        async (data, event) => {
-            event.preventDefault()
+        async (data) => {
             await api.patch("/auth/login", data)
             .then((r) => {
                 cookies.set(
@@ -44,42 +46,65 @@ export function Login(){
         }
     )
 
-    return(
+    return(<>
+        <Helmet>
+            <title>Авторизация</title>
+        </Helmet>
         <main className="auth">
             <AuthBg/>
             <div className="auth__container">
-                <TransitionLoader transitionRef={transitionRef} isLoading={isLoading}>
-                    <div className="auth__inner transition-loader" ref={transitionRef}>
-                        <AuthTitle title={"Авторизация"} 
-                            desc={<>
-                                Введите имя пользователя и пароль, чтобы войти в свою учетную запись
-                                <br/>
-                                Также, можно авторизоваться через социальные сети
-                            </>}
-                        />
-                        <form className="auth__form" ref={clickRef} onSubmit={handleSubmit(request)}>
-                            <InputEmail register={register} errors={errors} clickRef={clickRef} watch={watch}/>
-                            <InputPassword register={register} errors={errors} clickRef={clickRef} watch={watch}/>
-                            <BtnAuth text={"Авторизация"} isValid={isValid}/>
-                        </form>
-                        <AuthSocial/>
-                        <ul className="auth__link-list">
-                            <li>
-                                <Link className="auth__link" to={"/auth/register"}>
-                                    Регистрация
-                                </Link>
-                            </li>
-                            <li>
-                                <Link className="auth__link" to={"/auth/reset-password-token"}>
-                                    Восстановить пароль
-                                </Link>
-                            </li>
-                        </ul>
-                        <AuthWarning/>
-                    </div>
-                </TransitionLoader>            
+                <SwitchTransition mode="out-in">
+                    <CSSTransition 
+                        classNames="transition" 
+                        key={isLoading}
+                        nodeRef={transitionRef} 
+                        timeout={300}
+                    >
+                    {isLoading
+                        ?<Loader/>
+                        :<div className="auth__inner transition" ref={transitionRef}>
+                            <AuthTitle title={"Авторизация"} 
+                                desc={<>
+                                    Введите имя пользователя и пароль, чтобы войти в свою учетную запись
+                                    <br/>
+                                    Также, можно авторизоваться через социальные сети
+                                </>}
+                            />
+                            <form className="auth__form" ref={clickRef} onSubmit={handleSubmit(request)}>
+                                <InputEmail register={register} errors={errors} clickRef={clickRef} watch={watch}/>
+                                <InputPassword register={register} errors={errors} clickRef={clickRef} watch={watch}/>
+                                <BtnAuth isValid={isValid} callback={() => setUpdateAlert(Date.now())}>
+                                    Авторизация
+                                </BtnAuth>
+                            </form>
+                            <OAuth/>
+                            <ul className="auth__link-list">
+                                <li>
+                                    <Link className="auth__link" to={"/auth/register"}>
+                                        Регистрация
+                                    </Link>
+                                </li>
+                                <li>
+                                    <Link className="auth__link" to={"/auth/reset-password-token"}>
+                                        Восстановить пароль
+                                    </Link>
+                                </li>
+                            </ul>
+                            <AuthWarning/>
+                        </div>
+                    }
+                    </CSSTransition>
+                </SwitchTransition>
             </div>
-            <Error error={error} resetForm={reset}/>
+            {isLoading === false &&
+                <AlertResponse
+                    msg={error?.response?.data} 
+                    statusCode={error?.status} 
+                    update={updateAlert}
+                    setResponse={reset}
+                    prefix={error?.response && "error"}
+                />
+            }
         </main>
-    )
+    </>)
 }
