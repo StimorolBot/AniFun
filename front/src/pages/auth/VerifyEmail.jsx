@@ -1,11 +1,12 @@
-import { useRef } from "react"
+import { Helmet } from "react-helmet"
+import { useRef, useState } from "react"
 import { useForm } from "react-hook-form"
 import { useLocation, useNavigate } from "react-router-dom"
+import { CSSTransition, SwitchTransition } from "react-transition-group"
 
 import { api } from "../../api"
 import { cookies } from "../../cookie"
 import { useFetch } from "../../hook/useFetch"
-
 
 import { BtnAuth } from "../../ui/btn/BtnAuth"
 import { InputToken } from "../../ui/input/InputToken"
@@ -13,8 +14,7 @@ import { InputToken } from "../../ui/input/InputToken"
 import { AuthBg } from "../../components/auth/AuthBg"
 import { AuthTitle } from "../../components/auth/AuthTitle"
 import { AuthWarning } from "../../components/auth/AuthWarning"
-import { TransitionLoader } from "../../transition/TransitionLoader"
-import { Error } from "../../ui/popup/Error"
+import { AlertResponse } from "../../ui/alert/AlertResponse"
 
 
 export function VerifyEmail(){
@@ -23,6 +23,7 @@ export function VerifyEmail(){
     const location = useLocation()
     const token = location.state?.recaptcha_token
     const navigate = useNavigate()
+    const [updateAlert, setUpdateAlert] = useState()
     const {register, handleSubmit, watch, formState: {errors, isValid}, reset} = useForm({
         mode: "onChange",
         defaultValues:{
@@ -42,32 +43,63 @@ export function VerifyEmail(){
                     "access_token", r.data["access_token"],
                     {path: "/"}
                 )
+                cookies.set(
+                    "refresh_token", r.data["refresh_token"],
+                    {path: "/"}
+                )
                 navigate("/")
             })
         }
     )
 
-    return(
+    return(<>
+        <Helmet>
+             <title>Подтверждение почты</title>
+        </Helmet>
         <main className="auth">
             <AuthBg/>
             <div className="auth__container">
-                <TransitionLoader transitionRef={transitionRef} isLoading={isLoading}>
-                    <div className="auth__inner transition-loader" ref={transitionRef}>
-                        <AuthTitle title={"Подтверждение почты"}
-                            desc={<>
-                                Проверьте Вашу почту и найдите письмо с токеном подтверждения почты
-                                <br />
-                                Вы сможете авторизоваться в Вашу учетную запись только после подтверждения почты
-                        </>}/>
-                        <form className="auth__form" ref={clickRef} onSubmit={handleSubmit(request)}>
-                            <InputToken labelTitle={"Токен из письма"} register={register} errors={errors} clickRef={clickRef} watch={watch}/>
-                            <BtnAuth text={"Подтвердить почту"} isValid={isValid}/>
-                        </form>
-                        <AuthWarning/>
-                    </div>
-                </TransitionLoader>
+                <SwitchTransition mode="out-in">
+                    <CSSTransition 
+                        classNames="transition" 
+                        key={isLoading}
+                        nodeRef={transitionRef} 
+                        timeout={300}
+                    >
+                        {isLoading
+                            ? <Loader/>
+                            : <div className="auth__inner transition-loader" ref={transitionRef}>
+                                <AuthTitle title={"Подтверждение почты"}
+                                    desc={<>
+                                        Проверьте Вашу почту и найдите письмо с токеном подтверждения почты
+                                        <br />
+                                        Вы сможете авторизоваться в Вашу учетную запись только после подтверждения почты
+                                </>}/>
+                                <form className="auth__form" ref={clickRef} onSubmit={handleSubmit(request)}>
+                                    <InputToken 
+                                        labelTitle={"Токен из письма"} 
+                                        register={register} errors={errors} 
+                                        clickRef={clickRef} watch={watch}
+                                    />
+                                    <BtnAuth isValid={isValid} callback={() => setUpdateAlert(Date.now())}>
+                                        Подтвердить почту
+                                    </BtnAuth>
+                                </form>
+                                <AuthWarning/>
+                            </div>
+                        }
+                    </CSSTransition>
+                </SwitchTransition>
             </div>
-            <Error error={error} resetForm={reset}/>
+            {isLoading === false &&
+                <AlertResponse
+                    msg={error?.response?.data} 
+                    statusCode={error?.status} 
+                    update={updateAlert}
+                    setResponse={reset}
+                    prefix={error?.response && "error"}
+                />
+            }
         </main>
-    )
+    </>)
 }
