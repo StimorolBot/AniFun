@@ -3,10 +3,15 @@ import { memo } from "react"
 import "./style/btn_auth.sass"
 
 
-export const BtnAuth = memo(({text, isValid, ...props}) => {
+export const BtnAuth = memo(({isValid, callback, children, ...props}) => {
     return(
-        <button className="btn__auth" disabled={!isValid} {...props}>
-            { text }
+        <button 
+            className="btn__auth"
+            disabled={!isValid}
+            onClick={callback}
+            {...props}
+        >
+            { children }
         </button>
     )
 })
