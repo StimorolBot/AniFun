@@ -2,8 +2,8 @@ import pytest
 from fastapi import status
 from httpx import AsyncClient
 
-from tests.conftest import ac
 from src.redis.redis_manager import redis_manager
+from tests.conftest import ac
 
 TEST_USER_EMAIL = "user@example.com"
 
@@ -31,6 +31,9 @@ class TestAuthPos:
         redis_data = await redis_manager.get_value(pytest.recaptcha_token)
         user_data = {"identifier_token": redis_data["identifier_token"], "recaptcha_token": pytest.recaptcha_token}
         response = await ac.post("/auth/verify-email", json=user_data)
+
+        response_dist = response.json()
+        pytest.refresh_token = response_dist["refresh_token"]
 
         assert response.status_code == status.HTTP_201_CREATED
 
@@ -63,9 +66,9 @@ class TestAuthPos:
         response = await ac.patch("/auth/reset-password", json=data)
         assert response.status_code == status.HTTP_200_OK
 
-    @pytest.mark.dependency(depends=["TestAuthPos::test_login"])
-    async def test_refresh_token(self, ac: AsyncClient):
-        response = await ac.post("/auth/refresh-token", cookies=pytest.access_token)
+    @pytest.mark.dependency(depends=["TestAuthPos::test_verify_email"])
+    async def test_verify_email(self, ac: AsyncClient):
+        response = await ac.post("/auth/refresh-token", cookies={"refresh_token": pytest.refresh_token})
         assert response.status_code == status.HTTP_200_OK
 
 
