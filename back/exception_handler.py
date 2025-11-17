@@ -22,10 +22,27 @@ def exception_handler(app: FastAPI):
             content="Не удалось обработать запрос."
         )
 
+    @app.exception_handler(status.HTTP_405_METHOD_NOT_ALLOWED)
+    def handler_method_not_allowed(request: Request, exp):
+        server_log.warning("Метод не разрешен: %s", exp)
+        return JSONResponse(
+            status_code=status.HTTP_405_METHOD_NOT_ALLOWED,
+            content="Метод неразрешен."
+        )
+
     @app.exception_handler(status.HTTP_500_INTERNAL_SERVER_ERROR)
     def handler_server_error(request: Request, exp):
         server_log.error("Ошибка сервера %s", exp)
         return JSONResponse(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             content="Сервер временно недоступен, пожалуйста, повторите попытку позже."
+        )
+
+    @app.exception_handler(status.HTTP_503_SERVICE_UNAVAILABLE)
+    def handler_service_unavailable(request: Request, exp):
+        server_log.warning("Сервис временно недоступен: %s", exp)
+        return JSONResponse(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            content="Сервис временно недоступен.\n"
+                    "Пожалуйста, повторите попытку позже."
         )
