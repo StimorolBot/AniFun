@@ -50,6 +50,9 @@ export function Register(){
             <title>Регистрация</title>
         </Helmet>
         <main className="auth">
+            <h1 className="title-page">
+                Регистрация учетной записи
+            </h1>
             <AuthBg/>
             <div className="auth__container">
                 <SwitchTransition mode="out-in">

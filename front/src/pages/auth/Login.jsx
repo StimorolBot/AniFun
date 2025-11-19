@@ -52,6 +52,9 @@ export function Login(){
         </Helmet>
         <main className="auth">
             <AuthBg/>
+            <h1 className="title-page">
+                Вход в учетную запись
+            </h1>
             <div className="auth__container">
                 <SwitchTransition mode="out-in">
                     <CSSTransition 

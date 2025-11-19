@@ -57,6 +57,9 @@ export function VerifyEmail(){
              <title>Подтверждение почты</title>
         </Helmet>
         <main className="auth">
+            <h1 className="title-page">
+                Подтверждение почты
+            </h1>
             <AuthBg/>
             <div className="auth__container">
                 <SwitchTransition mode="out-in">
