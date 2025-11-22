@@ -43,6 +43,10 @@ async def get_slide(session: AsyncSession = Depends(get_async_session)):
         return [schemas.ResponseBannerDTO.model_validate(item, from_attributes=True) for item in items]
     except ValidationError as e:
         anime_log.warning("При попытке получить слайд возникла ошибка: %s", e)
+        return JSONResponse(
+            status_code=status.HTTP_204_NO_CONTENT,
+            content="Слайдер пуст."
+        )
 
 
 @home_router.get("/new-episode", status_code=status.HTTP_200_OK, summary="Получить новые эпизоды")
@@ -53,7 +57,7 @@ async def get_new_episode(limit: LimitEpisode, session: AsyncSession = Depends(g
         .join(main_table.EpisodeTable.anime_rs)
         .options(selectinload(main_table.EpisodeTable.anime_rs))
         .join(main_table.ImgTable, main_table.ImgTable.title == main_table.EpisodeTable.title)
-        .join(genres_sq, main_table.AnimeTable.alias == genres_sq.c.alias)
+        .join(genres_sq, main_table.AnimeTable.title == genres_sq.c.title)
         .order_by(asc(main_table.EpisodeTable.date_add))
         .limit(limit.value)
     )
@@ -144,9 +148,9 @@ async def get_random_title(session: AsyncSession = Depends(get_async_session)):
     except NoResultFound as e:
         anime_log.warning("При попытке получить случайный тайтл возникла ошибка: %s", e)
         raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Не удалось получить случайный тайтл, пожалуйста, повторите попытку позже"
-        ) from e
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Не удалось найти тайтл."
+        )
 
 
 @home_router.get("/search-title", status_code=status.HTTP_200_OK, summary="Поиск аниме по названию")
