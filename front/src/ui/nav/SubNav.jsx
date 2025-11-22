@@ -11,9 +11,9 @@ export const SubNav = memo(({subNav}) => {
             <ul className="sub-nav__list">
                 { subNav.map((item) => {
                     return(
-                        <li className="sub-nav__item" key={item["path"]}>
-                            <Link className="sub-nav__link" to={item["path"]}>
-                                {item["name"]}
+                        <li className="sub-nav__item" key={item.path}>
+                            <Link className="sub-nav__link" to={item.path}>
+                                {item.name}
                             </Link>
                         </li>
                     )
