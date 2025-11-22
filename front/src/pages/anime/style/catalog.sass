@@ -1,0 +1,60 @@
+@use "/src/style/color.sass" as *
+    
+
+.catalog__container
+    margin-top: 91px
+
+.catalog__title
+    margin: 10px 0
+
+.catalog__search
+    display: flex
+    column-gap: 20px
+    align-items: center
+
+.catalog__inner
+    display: flex
+    column-gap: 20px
+
+.catalog__list
+    margin-top: 10px
+    border-radius: 10px
+    background-color: $sub-gray
+    padding: 10px
+    height: fit-content
+    flex-basis: 100%
+
+.catalog__separation
+    margin: 5px 0
+    width: 100%
+    height: 1px
+    display: block
+    background-color: $gray
+
+.last-element
+    width: 100%
+    display: block
+    height: 20px
+
+.empty-response
+    display: flex
+    align-items: center
+    gap: 20px
+    white-space: nowrap
+
+    h4
+        font-size: 18px
+    p
+        font-size: 16px
+        color: $gray
+        max-width: 600px
+        overflow: hidden
+        text-overflow: ellipsis
+
+.empty-response__svg
+    width: 55px
+    height: 55px
+
+.catalog__btn-filter
+    border-radius: 8px
+    background-color: $sub-gray
