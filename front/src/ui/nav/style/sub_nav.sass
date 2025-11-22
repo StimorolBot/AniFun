@@ -1,0 +1,33 @@
+@use "/src/style/color.sass" as * 
+
+    
+.sub-nav
+    font-size: 14px
+
+.sub-nav__list
+    display: flex
+    column-gap: 20px
+
+.sub-nav__item
+    position: relative
+    color: $gray
+    
+    &:last-child
+        pointer-events: none
+        cursor: default
+        color: $white
+        overflow: hidden
+        display: -webkit-box
+        -webkit-line-clamp: 1
+        -webkit-box-orient: vertical
+        text-overflow: ellipsis
+        max-width: 500px
+
+    &::after
+        position: absolute
+        content: ">"
+        color: $gray
+        top: 50%
+        transform: translateY(-50%)
+        font-size: 16px
+        right: -15px
