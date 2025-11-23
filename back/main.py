@@ -11,13 +11,14 @@ from starlette.middleware.sessions import SessionMiddleware
 
 from exception_handler import exception_handler
 from src.app.admin.anime.api_v1.router import admin_router
-from src.app.anime.catalog.api_v1.router import catalog_router
-from src.app.anime.home.api_v1.router import anime_router
 from src.app.anime.models.v1 import sub as anime_sub_table
-from src.app.anime.releases.api_v1.router import releases_router
+from src.app.anime.page.catalog.api_v1.router import catalog_router
+from src.app.anime.page.home.api_v1.router import home_router
+from src.app.anime.page.releases.api_v1.router import releases_router
+from src.app.anime.page.releases.mini_app.api_v1.router import mini_app_router
 from src.app.auth.base.api_v1.router import auth_router
 from src.app.auth.models.v1 import sub as auth_sub_table
-from src.app.auth.social.api_v1.router import auth_social_router
+from src.app.auth.oauth.api_v1.router import oauth_router
 from src.app.user.api_v1.router import user_router
 from src.database.session import async_session_maker
 from src.redis.config import fast_api_cache, redis
@@ -37,13 +38,17 @@ app = FastAPI(title="AniFun", lifespan=lifespan, docs_url=None, redoc_url=None)
 add_pagination(app)
 exception_handler(app)
 
-app.include_router(auth_router)
-app.include_router(auth_social_router)
-app.include_router(anime_router)
 app.include_router(admin_router)
-app.include_router(releases_router)
-app.include_router(user_router)
+
+app.include_router(auth_router)
+app.include_router(oauth_router)
+
+app.include_router(home_router)
 app.include_router(catalog_router)
+app.include_router(releases_router)
+app.include_router(mini_app_router)
+
+app.include_router(user_router)
 
 origins = [
     "http://localhost:5173",
