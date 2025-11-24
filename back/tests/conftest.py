@@ -1,24 +1,20 @@
-import pytest
 import asyncio
-
 from typing import AsyncGenerator
-from httpx import AsyncClient, ASGITransport
+
+import pytest
 from fastapi_pagination import add_pagination
-
-from sqlalchemy.pool import NullPool
-from sqlalchemy.orm import sessionmaker
+from httpx import ASGITransport, AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
-
-from tests.config import config_test
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy.pool import NullPool
 
 from main import app
-from src.model import Base
-
-from src.database.session import get_async_session
-
-from src.utils.table import fill_table as ft
-from src.app.auth.models.v1 import sub as auth_sub_table
 from src.app.anime.models.v1 import sub as anime_sub_table
+from src.app.auth.models.v1 import sub as auth_sub_table
+from src.database.session import get_async_session
+from src.model import Base
+from src.utils.table import fill_table as ft
+from tests.config import config_test
 
 engine_test = create_async_engine(config_test.get_db_url, poolclass=NullPool)
 async_session_maker = sessionmaker(engine_test, class_=AsyncSession, expire_on_commit=False)
