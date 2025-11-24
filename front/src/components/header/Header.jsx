@@ -5,6 +5,7 @@ import { CSSTransition } from "react-transition-group"
 import { BtnSearch } from "../../ui/btn/BtnSearch"
 import { BtnRandomAnime } from "../../ui/btn/BtnRandomAnime"
 import { Search } from "../popup/Search"
+import { Loader } from "../loader/Loader"
 
 import { api } from "../../api"
 import { useFetch } from "../../hook/useFetch"
@@ -17,7 +18,7 @@ export function Header() {
     const [isShowPopup, setIsShowPopup] = useState(false)
     const [response, setResponse] = useState({
         "avatar": "",
-        "user_name": ""
+        "uuid": ""
     })
 
     const handleKeyDown = (e) => {
@@ -47,6 +48,7 @@ export function Header() {
     useEffect(() => {(
         async () => {
             await request()
+            document.body.classList.remove("scroll_block")
         })()
     }, [])
 
@@ -91,17 +93,12 @@ export function Header() {
                             </Link>
                         </li>
                         <li className="header__list-item">
-                            {response?.user_name
-                                ? <div className="header__avatar-container">
-                                    <Link className="header__link header__link_auth" to={"/settings/account"}>
-                                    {response?.avatar
-                                        ?<img className="header__avatar" src={response.avatar} alt="user_avatar" />
-                                        :<div className="header__avatar">
-                                            {response.user_name[0]}
-                                        </div>
-                                    }
-                                    </Link>
-                                </div>
+                            {isLoading
+                            ? <Loader size={"small"}/>
+                            : response?.uuid
+                                ?<Link className="header__avatar-link" to={`/users/settings/${response.uuid}`}>
+                                    <img className="header__avatar" src={`data:image/webp;base64,${response.avatar}`} alt="user_avatar" />
+                                </Link>
                                 :<Link className="header__link header__link_auth" to={"/auth/login"} title="Войти">
                                     <svg className="header__svg">
                                         <use xlinkHref="/main.svg#login-svg"/>
