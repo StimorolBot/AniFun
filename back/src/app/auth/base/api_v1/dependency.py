@@ -1,5 +1,6 @@
 from typing import Annotated
-from fastapi import Cookie, HTTPException, status, Depends
+
+from fastapi import Cookie, HTTPException, status
 
 from src.app.auth.base.api_v1.jwt.jwt_token import jwt_token
 
