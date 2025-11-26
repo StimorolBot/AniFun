@@ -1,8 +1,8 @@
 from fastapi import HTTPException, status
-from pydantic_core.core_schema import FieldValidationInfo
 from pydantic import BaseModel, ConfigDict, EmailStr, field_validator
+from pydantic_core.core_schema import FieldValidationInfo
 
-from src.utils.valid import ValidPassword, ValidName
+from src.utils.valid import ValidName, ValidPassword
 
 
 class Register(BaseModel):
