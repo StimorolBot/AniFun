@@ -14,20 +14,24 @@ import "./style/search.sass"
 
 
 export const Search = memo(({ref, setIsShow}) => {    
-    const transitionRef = useRef()
     const clickRef = useRef()
+    const transitionRef = useRef()
+
     const [searchVal, setSearchVal] = useState("")
-    const [response, setResponse] = useState({"isFirstRequest": true})
     const debounceSearchVal = useDebounce(searchVal)
+
+    const [response, setResponse] = useState({"isFirstRequest": true})
     
     const [request, isLoading, error] = useFetch(
         async () => {
-            await api.get("/search-title", {params:{"title":searchVal}})
+            await api.get("/search-title", {params: {"size": 20, "page": 1, "title": searchVal}})
             .then((r) => {
-                setResponse(r.data)
+                setResponse(r.data?.items)
             })
         }
     )
+
+    useClickOutside(clickRef, setIsShow)
 
     useEffect(() => {(
         async () => {
@@ -36,11 +40,9 @@ export const Search = memo(({ref, setIsShow}) => {
             })()
     }, [debounceSearchVal])
 
-    useClickOutside(clickRef, setIsShow)
-
-   return(
+    return(
         <dialog className="search-popup transition" ref={ref}>
-             <div className="search-popup__container" ref={clickRef}>
+            <div className="search-popup__container" ref={clickRef}>
                 <button className="btn-close-popup">
                     <svg>
                         <use xlinkHref="/main.svg#close-svg" onClick={
@@ -53,7 +55,7 @@ export const Search = memo(({ref, setIsShow}) => {
                 </button>
                 <search>
                     <form action="/search-title" method="get">
-                        <InputSearch setVal={setSearchVal} val={searchVal}/>
+                        <InputSearch setVal={setSearchVal} val={searchVal} autocomplete={"off"}/>
                     </form>
                 </search>
 
@@ -76,8 +78,11 @@ export const Search = memo(({ref, setIsShow}) => {
                                     >
                                         {response[0]
                                             ? <>{response?.map((item, index) => {
-                                                return <SearchItem item={item} key={index}/>
-                                            })}</>  
+                                                return (
+                                                    <SearchItem item={item} key={index}/>
+                                                )
+                                            })}
+                                            </>  
                                             :<li className="search-popup__svg">
                                                 {response?.isFirstRequest
                                                     ?<>
@@ -99,7 +104,7 @@ export const Search = memo(({ref, setIsShow}) => {
                                                             Нет подходящих тайтлов :(
                                                         </p>
                                                         <p>
-                                                            {`Не удалось найти тайтил с именем ${debounceSearchVal}`}
+                                                            {`Не удалось найти тайтл с именем: ${debounceSearchVal}`}
                                                         </p>
                                                     </>
                                                 }
