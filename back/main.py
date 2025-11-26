@@ -10,12 +10,14 @@ from fastapi_pagination import add_pagination
 from starlette.middleware.sessions import SessionMiddleware
 
 from exception_handler import exception_handler
-from src.app.admin.anime.api_v1.router import admin_router
+from src.app.admin.page.anime.api_v1.router import admin_anime_router
+from src.app.admin.page.user.api_v1.router import admin_user_router
 from src.app.anime.models.v1 import sub as anime_sub_table
 from src.app.anime.page.catalog.api_v1.router import catalog_router
 from src.app.anime.page.home.api_v1.router import home_router
 from src.app.anime.page.releases.api_v1.router import releases_router
 from src.app.anime.page.releases.mini_app.api_v1.router import mini_app_router
+from src.app.anime.page.video.api_v1.router import video_router
 from src.app.auth.base.api_v1.router import auth_router
 from src.app.auth.models.v1 import sub as auth_sub_table
 from src.app.auth.oauth.api_v1.router import oauth_router
@@ -38,7 +40,8 @@ app = FastAPI(title="AniFun", lifespan=lifespan, docs_url=None, redoc_url=None)
 add_pagination(app)
 exception_handler(app)
 
-app.include_router(admin_router)
+app.include_router(admin_anime_router)
+app.include_router(admin_user_router)
 
 app.include_router(auth_router)
 app.include_router(oauth_router)
@@ -47,6 +50,8 @@ app.include_router(home_router)
 app.include_router(catalog_router)
 app.include_router(releases_router)
 app.include_router(mini_app_router)
+
+app.include_router(video_router)
 
 app.include_router(user_router)
 
