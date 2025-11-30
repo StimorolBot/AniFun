@@ -13,19 +13,20 @@ from sqlalchemy.orm import selectinload
 from starlette.responses import JSONResponse
 
 from src.app.anime.enums.v1.sub.limit_episode import LimitEpisode
-from src.app.anime.home.api_v1 import schemas
 from src.app.anime.models.v1 import main as main_table
 from src.app.anime.models.v1.main.genres_anime import GenresAnimeTable
 from src.app.anime.models.v1.sub.genres import GenresTable
+from src.app.anime.page.home.api_v1 import schemas
 from src.app.anime.subquery.v_1.subquery import subquery_genres
 from src.database.session import get_async_session
+from src.redis.name_space import RadisNameSpace
 from src.utils.logger import anime_log
 from src.utils.valid import ValidTitle
 
 home_router = APIRouter(tags=["home"])
 
 
-@cache(expire=120, namespace="home-page")
+@cache(expire=120, namespace=RadisNameSpace.HOME_PAGE.value)
 @home_router.get("/slides", status_code=status.HTTP_200_OK, summary="Получить слайды с аниме")
 async def get_slide(session: AsyncSession = Depends(get_async_session)):
     query = (
@@ -66,7 +67,7 @@ async def get_new_episode(limit: LimitEpisode, session: AsyncSession = Depends(g
     return [schemas.ResponseTitleDTO.model_validate(item, from_attributes=True) for item in items]
 
 
-@cache(expire=120, namespace="home-page")
+@cache(expire=120, namespace=RadisNameSpace.HOME_PAGE.value)
 @home_router.get("/schedules", status_code=status.HTTP_200_OK, summary="Получить расписание релизов")
 async def get_release_schedule(
         schedule: Literal["today", "tomorrow"] = "today",
@@ -95,7 +96,7 @@ async def get_release_schedule(
     return [schemas.ResponseSchedulesDTO.model_validate(item, from_attributes=True) for item in items]
 
 
-@cache(expire=120, namespace="home-page")
+@cache(expire=120, namespace=RadisNameSpace.HOME_PAGE.value)
 @home_router.get("/franchises", status_code=status.HTTP_200_OK, summary="Получить франшизы")
 async def get_franchise(session: AsyncSession = Depends(get_async_session)):
     query = (
@@ -115,7 +116,7 @@ async def get_franchise(session: AsyncSession = Depends(get_async_session)):
     return [schemas.FranchisesDTO.model_validate(item, from_attributes=True) for item in items]
 
 
-@cache(expire=60, namespace="home-page")
+@cache(expire=60, namespace=RadisNameSpace.HOME_PAGE.value)
 @home_router.get("/genres", status_code=status.HTTP_200_OK, summary="Получить жанры")
 async def get_genres(session: AsyncSession = Depends(get_async_session)):
     query = (
