@@ -86,13 +86,6 @@ export function Header() {
                             <BtnSearch setVal={setIsShowPopup} />
                         </li>
                         <li className="header__list-item">
-                            <Link className="header__link header__link_auth" to={"/settings/site"} title="Настройки">
-                                <svg className="header__svg">
-                                    <use xlinkHref="/main.svg#settings-svg"/>
-                                </svg>
-                            </Link>
-                        </li>
-                        <li className="header__list-item">
                             {isLoading
                             ? <Loader size={"small"}/>
                             : response?.uuid
