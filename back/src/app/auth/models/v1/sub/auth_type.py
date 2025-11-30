@@ -1,9 +1,9 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import Mapped, mapped_column
 
+from src.app.auth.enums.v1.auth_type import AuthType
 from src.model import Base
 from src.utils.crud import crud
-from src.app.auth.enums.v1.auth_type import AuthType
 
 
 class AuthTypeTable(Base):

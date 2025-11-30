@@ -1,5 +1,6 @@
+from src.app.auth.base.api_v1.abs_model.password_auth_abs import \
+    PasswordAuthABC
 from src.app.auth.base.api_v1.config import myctx
-from src.app.auth.base.api_v1.abs_model.password_auth_abs import PasswordAuthABC
 
 
 class PasswordAuth(PasswordAuthABC):
