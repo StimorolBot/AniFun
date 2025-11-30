@@ -1,8 +1,9 @@
-from .season import Season
-from .type import Type
-from .genres import Genres
-from .restrict import Restrict
-from .status import Status
 from .day_week import DayWeek
+from .genres import Genres
+from .limit_episode import LimitEpisode
+from .restrict import Restrict
+from .season import Season
+from .status import Status
+from .type import Type
 
-__all__ = (Type, Restrict, Season, Status, Genres, DayWeek)
+__all__ = (Type, Restrict, Season, Status, Genres, DayWeek, LimitEpisode)
