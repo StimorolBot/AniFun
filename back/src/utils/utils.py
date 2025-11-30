@@ -1,12 +1,11 @@
-import os
 import base64
-import string
+import os
 import secrets
+import string
+from datetime import UTC, datetime
 from uuid import uuid4
-from datetime import datetime, UTC
 
 import aiofiles
-from transliterate import translit
 
 from src.utils.file_manager import file_manager
 
@@ -38,10 +37,3 @@ async def get_base64(path: str, is_save: bool = False) -> dict:
             except FileNotFoundError:
                 raise FileNotFoundError(f"Не удалось найти файл: '{filename}'")
     return data
-
-
-def get_alias(text: str, language_code: str = "ru") -> str:
-    """
-        language_code: ['bg', 'el', 'hy', 'ka', 'l1', 'mk', 'mn', 'ru', 'sr', 'uk']
-    """
-    return translit(value=text, language_code=language_code, reversed=True).strip().replace(" ", "-").replace("?", "").lower()
