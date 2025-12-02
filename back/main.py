@@ -16,7 +16,10 @@ from src.app.anime.models.v1 import sub as anime_sub_table
 from src.app.anime.page.catalog.api_v1.router import catalog_router
 from src.app.anime.page.home.api_v1.router import home_router
 from src.app.anime.page.releases.api_v1.router import releases_router
-from src.app.anime.page.releases.mini_app.api_v1.router import mini_app_router
+from src.app.anime.page.releases.mini_app.comment.api_v1.router import \
+    comment_router
+from src.app.anime.page.releases.mini_app.rating.api_v1.router import \
+    rating_router
 from src.app.anime.page.video.api_v1.router import video_router
 from src.app.auth.base.api_v1.router import auth_router
 from src.app.auth.models.v1 import sub as auth_sub_table
@@ -49,7 +52,9 @@ app.include_router(oauth_router)
 app.include_router(home_router)
 app.include_router(catalog_router)
 app.include_router(releases_router)
-app.include_router(mini_app_router)
+
+app.include_router(comment_router)
+app.include_router(rating_router)
 
 app.include_router(video_router)
 
