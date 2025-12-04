@@ -5,15 +5,15 @@ from fastapi import FastAPI
 from fastapi_cache.backends.redis import RedisBackend
 from fastapi_pagination import add_pagination
 
-from exception_handler import exception_handler
-from include_router import include_router
-from middleware import add_middleware
 from src.app.anime.models.v1 import sub as anime_sub_table
 from src.app.auth.models.v1 import sub as auth_sub_table
 from src.database.session import async_session_maker
+from src.exception_handler import exception_handler
+from src.include_router import include_router
+from src.middleware import add_middleware
 from src.redis.config import fast_api_cache, redis
+from src.swagger import include_doc
 from src.utils.table import fill_table
-from swagger import include_doc
 
 
 @asynccontextmanager
