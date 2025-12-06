@@ -1,36 +1,34 @@
 import { useEffect, useRef, useState } from "react"
 import Masonry from "react-masonry-css"
-import { CSSTransition, SwitchTransition } from "react-transition-group"
 
-import { api } from "../api"
-import { useFetch } from "../hook/useFetch"
+import { api } from "../../../../../api"
+import { useFetch } from "../../../../../hook/useFetch"
 
-import { HeaderSection } from "../components/header/HeaderSection"
-import { ComingSoonItem } from "../components/cards/ComingSoonItem"
+import { WrapperSection } from "../../../wrapper/WrapperSection"
+import { ComingSoonItem } from "./item/ComingSoonItem"
 
-import { SwitchDay } from "../ui/switch/SwitchDay"
-import { Loader } from "../components/loader/Loader"
+import { SwitchDay } from "./ui/SwitchDay"
+import { Loader } from "../../../../../components/loader/Loader"
 
-import "./style/coming_soon.sass"
+import "./style.sass"
 
 
-export function ComingSoon(){
+export const ComingSoon = () => {
     const transitionRef = useRef()
     const [schedule, setSchedule] = useState("today")
     const [response, setResponse] = useState([{
-        "schedule_data": {
-            "episode_number": null,
-            "title": null
-        },
+        "episode_number": null,
+        "title": null,
         "poster": null,
         "age_restrict": null,
         "genres": [""],
         "season": null,
         "year": null,
-        "alias": null
+        "alias": null,
+        "type": null
     }])
 
-    const [request, isLoading, error] = useFetch(
+    const [request, isLoading, _] = useFetch(
           async () => {
             await api.get("/schedules", {params: {"schedule":schedule}}).then((r) => setResponse(r.data))
           }
@@ -52,28 +50,18 @@ export function ComingSoon(){
     return(
         <section className="coming-soon">
             <div className="container">
-                <HeaderSection
-                    title={"Расписание релизов"} link={"/anime/schedule"} 
-                    description={"Сейчас мы трудимся над следующими тайтлами"}
-                >
-                    <SwitchDay value={schedule} setValue={setSchedule}/>                    
-                </HeaderSection>
-                <SwitchTransition mode="out-in">
-                    <CSSTransition 
-                        classNames="transition" 
-                        key={isLoading}
-                        nodeRef={transitionRef} 
-                        timeout={300}
-                    >
+                <WrapperSection title={"Расписание релизов"} link={"/anime/schedules"} ref={transitionRef} value={isLoading}>
+                    <>
+                        <div className="switch-day__wrapper">
+                            <SwitchDay value={schedule} setValue={setSchedule}/> 
+                        </div>
                         <div className="container-coming-soon transition" ref={transitionRef}>
                             { isLoading
                                 ? <Loader/>
                                 : response[0]?.alias
                                     ? <Masonry breakpointCols={breakpoints} className="masonry" columnClassName="masonry__column">
                                         {response?.map((item, index) => {
-                                            return(
-                                                <ComingSoonItem item={item} key={index}/>
-                                            )
+                                            return <ComingSoonItem item={item} key={index}/>
                                         })}
                                     </Masonry>
                                     :<p className="coming-soon__empty">
@@ -81,8 +69,8 @@ export function ComingSoon(){
                                     </p>
                             }
                         </div>
-                    </CSSTransition>
-                </SwitchTransition>
+                    </>                
+                </WrapperSection>        
             </div>
         </section>
     )
