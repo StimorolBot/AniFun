@@ -1,6 +1,7 @@
 from typing import List
+from uuid import UUID
 
-from pydantic import AliasChoices, BaseModel, Field
+from pydantic import BaseModel, Field
 
 from src.app.anime.enums.v1 import sub as sub_enum
 from src.app.anime.schemas.api_v1 import schemas
@@ -21,23 +22,21 @@ class ResponseGenresDTO(schemas.PosterDTO):
     alias: str
 
 
-class TitleDTO(BaseModel):
-    episode_number: int = Field(ge=1, le=500)
-    anime_data: schemas.ResponseAnimeDTO = Field(validation_alias=AliasChoices("anime_data", "anime_rs"))
-
-
 class ResponseTitleDTO(schemas.PosterDTO):
-    episode_data: TitleDTO = Field(validation_alias=AliasChoices("episode_data", "EpisodeTable"))
+    uuid_episode: UUID
+    episode_number: int = Field(ge=1, le=500)
+    alias: str
+    title: ValidTitle
+    year: ValidYear
+    type: sub_enum.Type
+    age_restrict: sub_enum.Restrict
+    season: sub_enum.Season
     genres: List[sub_enum.Genres]
 
 
-class SchedulesDTO(BaseModel):
+class ResponseSchedulesDTO(schemas.PosterDTO):
     title: ValidTitle
     episode_number: ValidEpisodes
-
-
-class ResponseSchedulesDTO(schemas.PosterDTO):
-    schedule_data: SchedulesDTO = Field(validation_alias=AliasChoices("schedule_data", "ScheduleTable"))
     year: ValidYear
     alias: str
     season: sub_enum.Season
