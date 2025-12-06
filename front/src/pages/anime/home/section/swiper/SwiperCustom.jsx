@@ -3,28 +3,36 @@ import { Swiper, SwiperSlide } from "swiper/react"
 import { Pagination, Navigation, Autoplay } from "swiper/modules"
 import { CSSTransition, SwitchTransition } from "react-transition-group"
 
-import { api } from "../../api"
-import { useFetch } from "../../hook/useFetch"
+import { api } from "../../../../../api"
+import { useFetch } from "../../../../../hook/useFetch"
 
 import { SlideMain } from "./slide/SlideMain"
-import { Loader } from "../../components/loader/Loader"
+import { Loader } from "../../../../../components/loader/Loader"
 
 import "swiper/css"
 import "swiper/css/pagination"
 import "swiper/css/navigation"
-import "./style/swiper_custom.sass"
+import "./style.sass"
 
 
 export function SwiperCustom() {
   const transitionRef = useRef()
   const [response, setResponse] = useState([{
-    "age_restrict": null, "description": null, "episodes": null, "img_rs": {"banner": null},
-    "season": null, "title": null, "type": null, "year": null
+    "age_restrict": null, 
+    "description": null, 
+    "total_episode": null, 
+    "img_rs": {
+      "banner": null
+    },
+    "season": null,
+    "title": null, 
+    "type": null, 
+    "year": null
   }])
 
-  const [request, isLoading, error] = useFetch(
+  const [request, isLoading, _] = useFetch(
     async () => {
-      await api.get("/slides").then((r) => setResponse(r.data))
+      await api.get("/slides").then((r) => setResponse([...r.data]))
     }
   )
 
