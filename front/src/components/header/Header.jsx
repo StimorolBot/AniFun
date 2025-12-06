@@ -1,11 +1,10 @@
 import { useEffect, useRef, useState } from "react"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import { CSSTransition } from "react-transition-group"
 
-import { BtnSearch } from "../../ui/btn/BtnSearch"
-import { BtnRandomAnime } from "../../ui/btn/BtnRandomAnime"
 import { Search } from "../popup/Search"
 import { Loader } from "../loader/Loader"
+import { BtnDefault } from "../../ui/btn/BtnDefault"
 
 import { api } from "../../api"
 import { useFetch } from "../../hook/useFetch"
@@ -15,6 +14,8 @@ import "./style/header.sass"
 
 export function Header() {
     const popupRef = useRef()
+    const navigate = useNavigate()
+
     const [isShowPopup, setIsShowPopup] = useState(false)
     const [response, setResponse] = useState({
         "avatar": "",
@@ -45,6 +46,15 @@ export function Header() {
         }
     )
 
+    const [requestRandomTitle, _] = useFetch(
+        async () => {
+            await api.get("/random-title")
+            .then((r) => {
+                navigate(`/anime/${r.data.alias}`)
+            })
+        }
+    )
+
     useEffect(() => {(
         async () => {
             await request()
@@ -67,12 +77,12 @@ export function Header() {
                     <nav className="header__navigation">
                         <ul className="header__list">
                             <li className="header__list-item">
-                                <Link className="header__link" to={"/anime/catalog"}>
-                                    Релизы
+                                <Link className="header__link" to={"/anime"}>
+                                    Аниме
                                 </Link>
                             </li>
                             <li className="header__list-item">
-                                <Link className="header__link" to={"/anime/schedule"}>
+                                <Link className="header__link" to={"/anime/schedules"}>
                                     Расписание
                                 </Link>
                             </li>
@@ -80,16 +90,31 @@ export function Header() {
                     </nav>
                     <ul className="header__list">
                         <li className="header__list-item">
-                            <BtnRandomAnime/>
+                            <BtnDefault callback={async () => await requestRandomTitle()} isStroke={false} title="Случайное аниме">
+                                <svg>
+                                    <use xlinkHref="/main.svg#random-svg"/>
+                                </svg>
+                            </BtnDefault>
                         </li>
                         <li className="header__list-item">
-                            <BtnSearch setVal={setIsShowPopup} />
+                            <BtnDefault
+                                callback={e => {
+                                    document.body.classList.add("scroll_block")
+                                    setIsShowPopup(true)
+                                    e.stopPropagation()
+                                }} 
+                                title="Поиск аниме"
+                            >
+                                <svg>
+                                    <use xlinkHref="/main.svg#search-svg"/>
+                                </svg>
+                            </BtnDefault>
                         </li>
                         <li className="header__list-item">
                             {isLoading
                             ? <Loader size={"small"}/>
                             : response?.uuid
-                                ?<Link className="header__avatar-link" to={`/users/settings/${response.uuid}`}>
+                                ?<Link className="header__avatar-link" to={`/users/${response.uuid}`}>
                                     <img className="header__avatar" src={`data:image/webp;base64,${response.avatar}`} alt="user_avatar" />
                                 </Link>
                                 :<Link className="header__link header__link_auth" to={"/auth/login"} title="Войти">
