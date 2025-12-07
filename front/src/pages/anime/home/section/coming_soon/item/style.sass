@@ -1,6 +1,20 @@
 @use "/src/style/color.sass" as * 
 
 
+.coming-soon__desc-item
+    position: relative
+
+    & ~ .coming-soon__desc-item:before
+        content: ""
+        position: absolute
+        top: 50%
+        left: -5px
+        transform: translate(-50%, -50%)
+        width: 3px
+        height: 3px
+        background: $gray
+        border-radius: 50%
+
 .coming-soon__bg
     position: absolute
     top: 50%
@@ -47,6 +61,6 @@
 
 .coming-soon__desc-list
     display: flex
-    column-gap: 10px
+    column-gap: 15px
     font-size: 12px
     color: $gray
