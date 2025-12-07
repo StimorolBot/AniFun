@@ -8,16 +8,16 @@ from sqlalchemy.exc import ArgumentError
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
-from src.app.anime.catalog.api_v1 import schemas
 from src.app.anime.models.v1 import main as main_table
+from src.app.anime.page.release.api_v1 import schemas
 from src.database.session import get_async_session
 from src.utils.logger import anime_log
 
-catalog_router = APIRouter(prefix="/anime/catalog", tags=["catalog"])
+release_router = APIRouter(prefix="/anime/release", tags=["release"])
 
 
-@catalog_router.get("/", status_code=status.HTTP_200_OK, summary="Получить список тайтлов")
-async def get_catalog(session: AsyncSession = Depends(get_async_session)) -> Page[schemas.ResponseCatalogDTO]:
+@release_router.get("/", status_code=status.HTTP_200_OK, summary="Получить список релизов")
+async def get_catalog(session: AsyncSession = Depends(get_async_session)) -> Page[schemas.ResponseReleaseDTO]:
     query = (
         select(main_table.AnimeTable)
         .join(main_table.AnimeTable.img_rs)
@@ -31,15 +31,16 @@ async def get_catalog(session: AsyncSession = Depends(get_async_session)) -> Pag
     return await paginate(session, query)
 
 
-@catalog_router.get(
+
+@release_router.get(
     "/filter-title",
     status_code=status.HTTP_200_OK,
-    summary="Получить отфильтрованный список тайтлов"
+    summary="Получить отфильтрованный список релизов"
 )
 async def get_filter_title(
         data: str,
         session: AsyncSession = Depends(get_async_session)
-) -> Page[schemas.ResponseCatalogDTO]:
+) -> Page[schemas.ResponseReleaseDTO]:
     valid_data = schemas.FilterData.model_validate(json.loads(data))
     try:
         query = (
@@ -74,8 +75,8 @@ async def get_filter_title(
         )
         return await paginate(session, query)
     except ArgumentError as e:
-        anime_log.warning("При попытке получить отфильтрованный список тайтлов произошла ошибка: %s", e)
+        anime_log.warning("При попытке получить отфильтрованный список релизов произошла ошибка: %s", e)
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Не удалось получить список тайтлов, пожалуйста, повторите попытку позже"
+            detail="Не удалось получить список релизов, пожалуйста, повторите попытку позже."
         ) from e
