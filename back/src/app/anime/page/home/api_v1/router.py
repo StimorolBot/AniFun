@@ -54,10 +54,21 @@ async def get_slide(session: AsyncSession = Depends(get_async_session)):
 async def get_new_episode(limit: LimitEpisode, session: AsyncSession = Depends(get_async_session)):
     genres_sq = subquery_genres()
     query = (
-        select(main_table.EpisodeTable, main_table.ImgTable.poster, genres_sq)
-        .join(main_table.EpisodeTable.anime_rs)
-        .options(selectinload(main_table.EpisodeTable.anime_rs))
-        .join(main_table.ImgTable, main_table.ImgTable.title == main_table.EpisodeTable.title)
+        select(
+            main_table.EpisodeTable.uuid.label("uuid_episode"),
+            main_table.EpisodeTable.episode_number,
+            main_table.AnimeTable.alias,
+            main_table.AnimeTable.title,
+            main_table.AnimeTable.year,
+            main_table.AnimeTable.type,
+            main_table.AnimeTable.age_restrict,
+            main_table.AnimeTable.season,
+            main_table.ImgTable.poster,
+            genres_sq
+        )
+        .select_from(main_table.AnimeTable)
+        .join(main_table.EpisodeTable, main_table.AnimeTable.title == main_table.EpisodeTable.title)
+        .join(main_table.ImgTable, main_table.AnimeTable.title == main_table.ImgTable.title)
         .join(genres_sq, main_table.AnimeTable.title == genres_sq.c.title)
         .order_by(asc(main_table.EpisodeTable.date_add))
         .limit(limit.value)
@@ -76,9 +87,15 @@ async def get_release_schedule(
     subquery = subquery_genres()
     query = (
         select(
-            main_table.ScheduleTable, main_table.ImgTable.poster, main_table.AnimeTable.year,
-            main_table.AnimeTable.type, main_table.AnimeTable.season, main_table.AnimeTable.age_restrict,
-            main_table.AnimeTable.alias, subquery
+            main_table.ScheduleTable.title,
+            main_table.ScheduleTable.episode_number,
+            main_table.ImgTable.poster,
+            main_table.AnimeTable.year,
+            main_table.AnimeTable.type,
+            main_table.AnimeTable.season,
+            main_table.AnimeTable.age_restrict,
+            main_table.AnimeTable.alias,
+            subquery
         )
         .select_from(main_table.ScheduleTable)
         .join(main_table.ImgTable, main_table.ImgTable.title == main_table.ScheduleTable.title)
