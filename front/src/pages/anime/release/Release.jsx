@@ -88,8 +88,9 @@ export const Release = memo(() => {
                                 value={titleSearch} 
                                 setValue={setTitleSearch}
                                 autoComplete={"off"}
+                                minLength={3}
                                 maxLength={90}
-                                placeholder={"Введите название или номер серии"}
+                                placeholder={"Введите название аниме"}
                             />
                             <div className="release__btn-filter">
                                 <BtnSwitch value={isShowFilter} callback={() => setIsShowFilter(s => !s)}>
@@ -115,7 +116,7 @@ export const Release = memo(() => {
                                                     <use xlinkHref="/main.svg#not-find-svg"/>
                                                 </svg>
                                                 <div>
-                                                    <p>Не удалось найти релиз с именем: '{titleSearch}'</p>
+                                                    <p>Не удалось найти релиз</p>
                                                 </div>
                                             </li>  
                                         }
