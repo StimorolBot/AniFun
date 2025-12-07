@@ -27,16 +27,18 @@ export const ReleaseFilter = memo(({
     const filterAgeList = ["0+", "6+", "12+", "16+", "18+"]
 
     const resetFormData = async (event) => {
-        setFilterData({
-            "year": [],
-            "type": [],
-            "season": [],
-            "status": [],
-            "age_restrict": []
-        })
-        setGenres([])
-        formRef.current.reset()
-        await request("anime/release", event)
+        if (Object.values(filterData).some(arr => arr.length > 0)){
+            setFilterData({
+                "year": [],
+                "type": [],
+                "season": [],
+                "status": [],
+                "age_restrict": []
+            })
+            setGenres([])
+            formRef.current.reset()
+            await request("anime/release", event)
+        }
     }
 
     return(
