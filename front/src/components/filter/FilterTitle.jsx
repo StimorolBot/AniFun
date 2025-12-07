@@ -22,7 +22,7 @@ export const FilterTitle = memo(({filterList, filterParams, setFilterParams, key
                             type="checkbox" 
                             value={item} 
                             name="filter-title"
-                            onChange={e => addFilterParams(e.target.value)}
+                            onClick={e => addFilterParams(e.target.value)}
                         />
                         <label htmlFor={`filter-type-${item}`}>
                             {item} 
