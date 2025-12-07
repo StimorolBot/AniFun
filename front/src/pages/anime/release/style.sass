@@ -1,22 +1,19 @@
 @use "/src/style/color.sass" as *
     
 
-.catalog__container
+.release__container
     margin-top: 91px
 
-.catalog__title
-    margin: 10px 0
-
-.catalog__search
+.release__search
     display: flex
     column-gap: 20px
     align-items: center
+    margin: 10px 0
 
-.catalog__inner
+.release__inner
     display: flex
-    column-gap: 20px
 
-.catalog__list
+.release__list
     margin-top: 10px
     border-radius: 10px
     background-color: $sub-gray
@@ -24,7 +21,7 @@
     height: fit-content
     flex-basis: 100%
 
-.catalog__separation
+.release__separation
     margin: 5px 0
     width: 100%
     height: 1px
@@ -42,11 +39,8 @@
     gap: 20px
     white-space: nowrap
 
-    h4
-        font-size: 18px
     p
-        font-size: 16px
-        color: $gray
+        font-size: 18px
         max-width: 600px
         overflow: hidden
         text-overflow: ellipsis
@@ -55,6 +49,6 @@
     width: 55px
     height: 55px
 
-.catalog__btn-filter
+.release__btn-filter
     border-radius: 8px
     background-color: $sub-gray
