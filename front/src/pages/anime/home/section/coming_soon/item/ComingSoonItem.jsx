@@ -10,10 +10,10 @@ export const ComingSoonItem = ({item, ...props}) => {
             <Link className="coming-soon__link" to={`/anime/${item?.alias}`}>  
                 <img className="coming-soon__bg" src={`data:image/webp;base64,${item.poster}`} loading="lazy" alt="preview" />
                 <p className="coming-soon__title">
-                    {item?.schedule_data?.title}
+                    {item.title}
                 </p>
                 <p className="coming-soon__episode">
-                    {`${item?.schedule_data?.episode_number} ${"Эпизод"}`}
+                    {`${item.episode_number} ${"Эпизод"}`}
                 </p>
                 <ul className="coming-soon__desc-list">
                     <li className="coming-soon__desc-item">
@@ -33,9 +33,7 @@ export const ComingSoonItem = ({item, ...props}) => {
                     {item?.genres?.slice(-2)?.map((genre, index) => {
                         return(
                             <li className="coming-soon__desc-item" key={index}>
-                                <Link to={`anime/genres/${genre}`}>
-                                    {genre}
-                                </Link>
+                                {genre}
                             </li>
                         )
                     })}
