@@ -62,7 +62,7 @@ export const Release = memo(() => {
     useEffect(() => {(
         async () => {
             if (titleSearch.length === 0)
-                await request("anime/release")
+                await request("/anime/release/")
         })()
     }, [response?.page, titleSearch.length])
 
