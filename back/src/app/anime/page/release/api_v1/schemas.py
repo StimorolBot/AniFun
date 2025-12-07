@@ -7,7 +7,7 @@ from src.app.anime.schemas.api_v1 import schemas
 from src.utils.valid import ValidDescription
 
 
-class ResponseCatalogDTO(schemas.ResponseAnimeDTO):
+class ResponseReleaseDTO(schemas.ResponseAnimeDTO):
     genres_rs: List[schemas.GenresDTO]
     img_rs: schemas.PosterDTO
     description: ValidDescription
