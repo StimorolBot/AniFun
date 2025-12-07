@@ -1,0 +1,72 @@
+@use "/src/style/color.sass" as *
+
+
+.release__item
+    transition: background-color 0.3s
+    border-radius: 8px
+    display: flex
+    padding: 10px
+    column-gap: 20px
+    max-height: 320px
+    align-items: center
+    overflow: hidden
+
+    &:hover
+        background-color: $sub-black-2
+
+        .btn__add-favorite
+            background-color: $sub-gray
+
+
+.release__img-container
+    border-radius: 10px
+    overflow: hidden
+    flex-basis: 200px
+
+    img
+        max-width: 100%
+        object-fit: cover
+        display: block
+
+.release__item-info
+    flex-basis: 80%
+
+    h3
+        overflow: hidden
+        display: -webkit-box
+        -webkit-line-clamp: 2
+        -webkit-box-orient: vertical
+        text-overflow: ellipsis
+        font-size: 24px
+
+.release__item-container
+    margin: 10px 0
+    font-size: 14px
+    color: $gray
+
+.release__desc-list
+    display: flex
+    gap: 10px
+    margin-bottom: 5px
+
+.release_genre-link
+    transition: color 0.3s
+    
+    &:hover
+        color: $white
+
+.release__item-description
+    font-size: 16px
+    overflow: hidden
+    display: -webkit-box
+    -webkit-line-clamp: 6
+    -webkit-box-orient: vertical
+    text-overflow: ellipsis
+    color: $sub-white-2
+
+.release__link-container
+    margin-top: 15px
+    background-color: $sub-white
+    width: fit-content
+    border-radius: 4px
+    padding: 6px
