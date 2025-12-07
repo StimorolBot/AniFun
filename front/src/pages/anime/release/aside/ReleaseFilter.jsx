@@ -26,8 +26,8 @@ export const ReleaseFilter = memo(({
     const filterSeasonList = ["Зима", "Весна", "Лето", "Осень"]
     const filterAgeList = ["0+", "6+", "12+", "16+", "18+"]
 
-    const resetFormData = async (event) => {
-        if (Object.values(filterData).some(arr => arr.length > 0)){
+    const resetFormData = async () => {
+        if ((Object.values(filterData).some(arr => arr.length > 0) || (genres.length !== 0))){
             setFilterData({
                 "year": [],
                 "type": [],
@@ -37,7 +37,7 @@ export const ReleaseFilter = memo(({
             })
             setGenres([])
             formRef.current.reset()
-            await request("anime/release", event)
+            await request("/anime/release/")
         }
     }
 
@@ -50,10 +50,10 @@ export const ReleaseFilter = memo(({
                 onSubmit={ 
                     async (e) => {
                         e.preventDefault()
-                        if (Object.values(filterData).some(arr => arr.length > 0)){
+                        if ((Object.values(filterData).some(arr => arr.length > 0)) || (genres.length !== 0)){
                             setResponse({"items": [], "page": 1,"pages": 1})
                                 await request("/anime/release/filter-title",
-                            {"data": JSON.stringify({"genres": genres, ...filterData})}
+                                    {"data": JSON.stringify({"genres": genres, ...filterData})}
                         )
                     }  
                 }}
@@ -113,7 +113,7 @@ export const ReleaseFilter = memo(({
                 </BtnDefault>
                 <BtnDefault
                     data-reset-form={true}
-                    callback={async (e) => await resetFormData(e)}
+                    callback={async () => await resetFormData()}
                 >
                     ⛌ Сбросить
                 </BtnDefault>
