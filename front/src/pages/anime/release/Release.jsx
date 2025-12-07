@@ -3,24 +3,24 @@ import { Fragment, memo, useContext, useEffect, useRef, useState } from "react"
 import { Helmet } from "react-helmet"
 import { CSSTransition, SwitchTransition } from "react-transition-group"
 
-import { SubNav } from "../../ui/nav/SubNav"
-import { Header } from "../../components/header/Header"
-import { Footer } from "../../components/footer/Footer"
+import { SubNav } from ".././../../ui/nav/SubNav"
+import { Header } from "../../../components/header/Header"
+import { Footer } from "../../../components/footer/Footer"
 
-import { InputSearchTitle } from "../../ui/input/InputSearchTitle"
-import { BtnSwitch } from "../../ui/btn/BtnSwitch"
-import { Loader } from "../../components/loader/Loader"
+import { InputSearchTitle } from "../../../ui/input/InputSearchTitle"
+import { BtnSwitch } from "../../../ui/btn/BtnSwitch"
+import { Loader } from "../../../components/loader/Loader"
 
-import { CatalogItem } from "../../components/cards/CatalogItem"
-import { AsideFilterCatalog } from "../../components/aside/AsideFilterCatalog"
-import { usePagination } from "../../hook/usePagination"
-import { useDebounce } from "../../hook/useDebounce"
-import { GenresContext } from "../../context/GenresContext"
+import { ReleaseItem } from "./item/ReleaseItem"
+import { ReleaseFilter } from "./aside/ReleaseFilter"
+import { usePagination } from "../../../hook/usePagination"
+import { useDebounce } from "../../../hook/useDebounce"
+import { GenresContext } from "../../../context/GenresContext"
 
-import "./style/catalog.sass"
+import "./style.sass"
 
 
-export const Catalog = memo(() => {
+export const Release = memo(() => {
     const [isShowFilter, setIsShowFilter] = useState(true)
     const [titleSearch, setTitleSearch] = useState("")
     const {genresContext, setGenresContext} = useContext(GenresContext)
@@ -51,18 +51,18 @@ export const Catalog = memo(() => {
             "path": "/"
         },
         {
-            "name": "Каталог релизов",
+            "name": "Аниме",
             "path": "#"
         }
     ]
 
     const debounceSearchVal = useDebounce(titleSearch)
-    const [request, isLoading, error] = usePagination(lastElementRef, response, setResponse)
+    const [request, isLoading, _] = usePagination(lastElementRef, response, setResponse)
 
     useEffect(() => {(
         async () => {
             if (titleSearch.length === 0)
-                await request("anime/catalog")
+                await request("anime/release")
         })()
     }, [response?.page, titleSearch.length])
 
@@ -75,18 +75,15 @@ export const Catalog = memo(() => {
     
     return(<>
         <Helmet>
-            <title>Каталог</title>
+            <title>Список аниме</title>
         </Helmet>
         <div className="wrapper">
             <Header/>
             <main className="main">
                 <div className="container">
-                    <div className="catalog__container">
+                    <div className="release__container">
                         <SubNav subNav={subNav}/>
-                        <h1 className="catalog__title">
-                            Каталог аниме
-                        </h1>
-                        <div className="catalog__search">
+                        <div className="release__search">
                             <InputSearchTitle
                                 value={titleSearch} 
                                 setValue={setTitleSearch}
@@ -94,16 +91,16 @@ export const Catalog = memo(() => {
                                 maxLength={90}
                                 placeholder={"Введите название или номер серии"}
                             />
-                            <div className="catalog__btn-filter">
+                            <div className="release__btn-filter">
                                 <BtnSwitch value={isShowFilter} callback={() => setIsShowFilter(s => !s)}>
                                     {isShowFilter
-                                        ?<use xlinkHref="/catalog.svg#filter-svg" />
-                                        :<use xlinkHref="/catalog.svg#filter-none-svg"/>
+                                        ?<use xlinkHref="/svg/release.svg#filter-svg" />
+                                        :<use xlinkHref="/svg/release.svg#filter-none-svg"/>
                                     }
                                 </BtnSwitch>
                             </div>
                         </div>
-                        <div className="catalog__inner">
+                        <div className="release__inner">
                             <SwitchTransition mode="out-in">
                                 <CSSTransition 
                                     classNames="transition" 
@@ -111,24 +108,22 @@ export const Catalog = memo(() => {
                                     nodeRef={transitionRef} 
                                     timeout={300}
                                 >
-                                    <ul className="catalog__list transition" ref={transitionRef}>
+                                    <ul className="release__list transition" ref={transitionRef}>
                                         {response.items.length === 0 && isLoading == false && 
                                             <li className="empty-response">
                                                 <svg className="empty-response__svg">
                                                     <use xlinkHref="/main.svg#not-find-svg"/>
                                                 </svg>
                                                 <div>
-                                                    <h4>Нет подходящих тайтлов :(</h4>
-                                                    <p>Не удалось найти тайтл с именем: {titleSearch}</p>
+                                                    <p>Не удалось найти релиз с именем: '{titleSearch}'</p>
                                                 </div>
-                                            </li>
-                                            
+                                            </li>  
                                         }
                                         {response.items?.map((item, index) => {
                                             return(
                                                 <Fragment key={index}>
-                                                    <CatalogItem item={item}/>
-                                                    <span className="catalog__separation"/>   
+                                                    <ReleaseItem item={item}/>
+                                                    <span className="release__separation"/>   
                                                 </Fragment>
                                             )}) 
                                         }
@@ -137,7 +132,7 @@ export const Catalog = memo(() => {
                                     </ul>
                                 </CSSTransition>
                             </SwitchTransition>
-                            <AsideFilterCatalog
+                            <ReleaseFilter
                                 isShowFilter={isShowFilter} 
                                 isLoading={isLoading}
                                 setResponse={setResponse}
