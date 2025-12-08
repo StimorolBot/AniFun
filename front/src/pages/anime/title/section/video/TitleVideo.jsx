@@ -1,14 +1,15 @@
 import { useEffect, useState } from "react"
 
-import { api } from "../../api"
-import { useFetch } from "../../hook/useFetch"
+import { api } from "../../../../../api"
+import { useFetch } from "../../../../../hook/useFetch"
 
-import { TitleVideoItem } from "../cards/TitleVideoItem"
-import { ProgressEpisode } from "../../ui/progressbar/ProgressEpisode"
-import { InputSearchTitle } from "../../ui/input/InputSearchTitle"
-import { Loader } from "../loader/Loader"
+import { TitleVideoItem } from "./item/TitleVideoItem"
+import { ProgressDefault } from "../../../../../ui/progressbar/ProgressDefault"
 
-import "./style/title_video.sass"
+import { InputSearchTitle } from "../../../../../ui/input/InputSearchTitle"
+import { Loader } from "../../../../../components/loader/Loader"
+
+import "./style.sass"
 
 
 export const TitleVideo = ({title, lastEpisode, currentSlide}) => {
@@ -48,7 +49,7 @@ export const TitleVideo = ({title, lastEpisode, currentSlide}) => {
                                 placeholder={"Введите название или номер серии"}
                             />
                         </div>
-                        <ProgressEpisode lastEpisode={lastEpisode}/>
+                        <ProgressDefault lastEpisode={lastEpisode}/>
                         <ul className="title-video__list">
                             {titleSearch === ""
                                 ? response.map((item, index) => {
