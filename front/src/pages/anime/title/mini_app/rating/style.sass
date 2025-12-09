@@ -1,0 +1,35 @@
+@use "/src/style/color.sass" as * 
+
+    
+.rating
+    font-weight: 600
+    margin: 10px 0
+    max-width: 320px
+    position: relative
+
+.rating__container
+    border: 2px solid $sub-white
+    position: relative
+    border-radius: 8px
+    width: 100% 
+
+.rating__user,
+.rating__count
+    position: absolute
+    top: -20px
+    transform: translate(50%, -50%)
+
+.rating__user
+    right: 20px
+    font-size: 18px
+
+.rating__count
+    left: 0
+    transform: translate(50%, -50%)
+    font-size: 14px
+
+.rating-star__list
+    display: flex
+    align-items: center
+    flex-direction: row-reverse
+    justify-content: center
