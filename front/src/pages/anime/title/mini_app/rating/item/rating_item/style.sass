@@ -1,0 +1,26 @@
+@use "/src/style/color.sass" as * 
+
+
+.rating-input
+    display: none
+
+.rating-lbl
+    cursor: pointer
+    width: 40px
+    transition: fill 0.3s
+
+.rating-lbl
+    fill: $gray
+    
+    svg
+        width: 30px
+        height: 30px
+
+.rating-input_check ~ .rating-lbl
+    fill: $yellow
+
+.rating-input:not(:checked) ~ .rating-lbl:hover,
+.rating-input:not(:checked) ~ .rating-lbl:hover ~ .rating-lbl,
+.rating-input:not(:checked) ~ .rating-lbl:hover ~ .rating-input:checked ~ .rating-lbl
+    fill: $sub-yellow
+
