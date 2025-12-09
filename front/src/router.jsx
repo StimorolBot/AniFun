@@ -3,10 +3,22 @@ import { createBrowserRouter } from "react-router-dom"
 import { Root } from "./pages/root/Root"
 import {Anime } from "./pages/root/Anime"
 
-import { Home } from "./pages/Home"
-import { Video } from "./pages/anime/Video"
-import { TitleEpisodes } from "./pages/anime/TitleEpisodes"
-import { Catalog } from "./pages/anime/Catalog"
+import { Home } from "./pages/anime/home/Home"
+import { Release } from "./pages/anime/release/Release"
+import { Title } from "./pages/anime/title/Title"
+import { Video } from "./pages/anime/video/Video"
+import { NewEpisode } from "./pages/new_episode/NewEpisode"
+import { Schedule } from "./pages/schedule/Schedules"
+
+import { Genres } from "./pages/genre/genres/Genres"
+import { Genre } from "./pages/genre/genre/Genre"
+
+import { Franchises } from "./pages/franchise/franchises/Franchises"
+import { Franchise } from "./pages/franchise/franchise/Franchise"
+
+import { HomeUser } from "./pages/user/home/HomeUser"
+import { Settings } from "./pages/user/settings/Settings"
+import { Libs } from "./pages/user/libs/Libs"
 
 import { Login } from "./pages/auth/Login"
 import { Register } from "./pages/auth/Register"
@@ -15,7 +27,7 @@ import { ResetPasswordToken } from "./pages/auth/ResetPasswordToken"
 import { ResetPassword } from "./pages/auth/ResetPassword"
 import { OAuthPage } from "./pages/auth/OAuthPage"
 
-import { Error } from "./pages/Error"
+import { Error } from "./pages/error/Error"
 
 
 export const router = createBrowserRouter([
@@ -24,67 +36,58 @@ export const router = createBrowserRouter([
         element: <Home/>
     },
     {
-        path: "/root",
-        children: [
-            {
-                path: "",
-                element: <Root/>
-            },
-            {
-                path: "anime",
-                element: <Anime/>
-            }
-        ]
-        
-    },
-    {
         path: "/anime",
         children: [
             {
-                path: "releases",
+                path: "",
+                element: <Release/>
+            },
+            {
+                path: ":alias",
                 children: [
                     {
-                        path: "latest",
-                        element: <h2>Недавно добавленные</h2>
+                        path: "",
+                        element: <Title/>
                     },
                     {
-                        path: "release/:alias/episodes",
-                        element: <TitleEpisodes/>
+                        path:"episode/:uuid",
+                        element: <Video/>
                     }
                 ]
             },
             {
-                path: "catalog",
-                element: <Catalog/>
+                path: "new-episode",
+                element: <NewEpisode/>
             },
             {
                 path: "genres",
                 children:[
                     {
                         path: "",
-                        element: <h2>Жанры</h2>,
+                        element: <Genres/>
                     },
                     {
                         path: ":genre",
-                        element: <h2>Жанр</h2>
+                        element: <Genre/>
                     }
                 ]
             },
             {
-                path: "announce",
-                element: <h2>Анонсы</h2>
+                path: "schedules",
+                element: <Schedule/>
             },
             {
-                path: "schedule",
-                element: <h2>Расписание</h2>
-            },
-            {
-                path: "franchises/:alias",
-                element: <h2>Франшизы</h2>
-            },
-            {
-                path:"video/episode/:uuid",
-                element: <Video/>
+                path: "franchises",
+                children: [
+                    {
+                        path: "",
+                        element: <Franchises/>
+                    },
+                    {
+                        path: ":alias",
+                        element: <Franchise/>
+                    }
+                ]
             },
         ]
     },
@@ -92,8 +95,35 @@ export const router = createBrowserRouter([
         path: "/users",
         children:[
             {
-                path: "settings/:uuid",
-                element: <h2>Настройки аккаунта</h2>
+                path: ":uuid",
+                children: [
+                    {
+                        path: "",
+                        element: <HomeUser/>
+                    },
+                    {
+                        path: "root",
+                        children: [
+                            {
+                                path: "",
+                                element: <Root/>
+                            },
+                            {
+                                path: "anime",
+                                element: <Anime/>
+                            }
+                        ]
+                    },
+                    {
+                        path: "settings",
+                        element: <Settings/> 
+                    },
+                    {
+                        path: "libs",
+                        element: <Libs/>
+                    }
+
+                ]
             }
         ]
     },
