@@ -5,17 +5,17 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from starlette import status
 
 from src.app.anime.models.v1 import main as main_table
-from src.app.anime.page.releases.api_v1 import schemas
+from src.app.anime.page.title.mini_app.rating.api_v1 import schemas
 from src.app.anime.subquery.v_1 import subquery
 from src.app.user.utils.utils import get_current_user
 from src.database.session import get_async_session
 from src.utils.crud import crud
 from src.utils.logger import anime_log
 
-rating_router = APIRouter(tags=["anime/releases/rating"], prefix="/anime/releases")
+rating_router = APIRouter(tags=["rating"], prefix="/anime/rating")
 
 
-@rating_router.get("/release/rating", status_code=status.HTTP_200_OK, summary="Получить рейтинг")
+@rating_router.get("/", status_code=status.HTTP_200_OK, summary="Получить рейтинг")
 async def get_rating(
         title: str,
         session: AsyncSession = Depends(get_async_session),
@@ -39,7 +39,7 @@ async def get_rating(
 
 
 @rating_router.post(
-    "/release/set-rating",
+    "/set-rating",
     status_code=status.HTTP_201_CREATED,
     summary="Установить рейтинг"
 )
@@ -73,7 +73,7 @@ async def set_rating(
 
 
 @rating_router.delete(
-    "/release/delete-rating",
+    "/delete-rating",
     status_code=status.HTTP_204_NO_CONTENT,
     summary="Удалить рейтинг"
 )
@@ -107,7 +107,7 @@ async def delete_rating(
         return {"my_rating": data.star, "avg": 0, "total_count": 0}
 
 
-@rating_router.patch("/release/update-rating", status_code=status.HTTP_200_OK, summary="Обновить рейтинг")
+@rating_router.patch("/update-rating", status_code=status.HTTP_200_OK, summary="Обновить рейтинг")
 async def update_rating(
         data: schemas.Rating,
         current_user: dict = Depends(get_current_user),
