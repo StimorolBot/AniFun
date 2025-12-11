@@ -13,7 +13,10 @@ class ImgTable(Base):
     __tablename__ = "img_table"
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    title: Mapped[str] = mapped_column(ForeignKey("anime_table.title"), index=True)
+    title: Mapped[str] = mapped_column(
+        ForeignKey("anime_table.title", onupdate="CASCADE", ondelete="CASCADE"),
+        index=True
+    )
     poster: Mapped[str] = mapped_column()
     banner: Mapped[str | None] = mapped_column()
 
