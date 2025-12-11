@@ -16,3 +16,6 @@ class JwtTokenABC(ABC):
 
     def refresh(self, *args, **kwargs):
         ...
+
+    def create_tokens(self, *args, **kwargs):
+        ...
