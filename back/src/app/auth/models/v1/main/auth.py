@@ -1,5 +1,6 @@
 from datetime import datetime
 from typing import TYPE_CHECKING
+from uuid import UUID
 
 from sqlalchemy import ForeignKey, UniqueConstraint, false, func, true
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -16,7 +17,7 @@ if TYPE_CHECKING:
 class AuthTable(Base):
     __tablename__ = "auth_table"
 
-    uuid: Mapped[str] = mapped_column(primary_key=True, default=generate_uuid, index=True)
+    uuid: Mapped[UUID] = mapped_column(primary_key=True, default=generate_uuid, index=True)
     user_name: Mapped[str] = mapped_column()
     identifier: Mapped[str] = mapped_column()
     date_register: Mapped[datetime] = mapped_column(default=get_unc_now, server_default=func.now())
