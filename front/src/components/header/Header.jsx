@@ -39,7 +39,7 @@ export function Header() {
     const [request, isLoading, error] = useFetch(
         async () => {
             await api.get(
-                "/users/user/avatar",
+                "/users/info",
                 {params: {"is_raise_exception": false}}
             )
             .then((r) => setResponse(r.data))
