@@ -1,3 +1,4 @@
+from authlib.integrations.base_client.errors import OAuthError
 from fastapi import FastAPI, Request, status
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
@@ -45,4 +46,12 @@ def exception_handler(app: FastAPI):
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
             content="Сервис временно недоступен.\n"
                     "Пожалуйста, повторите попытку позже."
+        )
+
+    @app.exception_handler(OAuthError)
+    def handler_oauth_error(request: Request, exp):
+        server_log.warning("oauth error: %s", exp)
+        return JSONResponse(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            content="Невалидный токен."
         )
