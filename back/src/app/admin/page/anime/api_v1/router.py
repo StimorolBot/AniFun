@@ -1,22 +1,24 @@
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, status
 from fastapi.responses import FileResponse, JSONResponse
+from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
-from src.app.admin.anime.api_v1 import schemas
-from src.app.admin.anime.api_v1.valid import (valid_episode_data, valid_img,
-                                              valid_video)
+
 from src.app.admin.file_server import file_server
+from src.app.admin.page.anime.api_v1 import schemas
+from src.app.admin.page.anime.api_v1.valid import (valid_episode_data,
+                                                   valid_img, valid_video)
+from src.app.admin.utils import (check_access, generate_alias,
+                                 is_equals_day_week, is_exist_title)
 from src.app.anime.models.v1 import main as main_table
-from src.app.user.utils.utils import check_access
 from src.database.session import get_async_session
 from src.utils.crud import crud
-from src.utils.logger import anime_log
-from src.utils.utils import get_alias
+from src.utils.logger import admin_log
 
-admin_router = APIRouter(prefix="/admin/anime", tags=["admin"])
+admin_anime_router = APIRouter(prefix="/admin/anime", tags=["admin-anime"], dependencies=[Depends(check_access)])
 
 
-@admin_router.post("/create-title", summary="Создать тайтл")
+@admin_anime_router.post("/create-title", summary="Создать тайтл")
 async def create_title(
         data: schemas.AddTitle,
         session: AsyncSession = Depends(get_async_session),
@@ -24,9 +26,9 @@ async def create_title(
     try:
         data_dict = data.model_dump()
         genres = data_dict.pop("genres")
-        data_dict["alias"] = get_alias(data_dict.get("alias")) \
+        data_dict["alias"] = generate_alias(data_dict.get("alias")) \
             if data_dict.get("alias") \
-            else get_alias(data_dict.get("title"))
+            else generate_alias(data_dict.get("title"))
 
         await crud.create(
             session=session,
@@ -37,22 +39,22 @@ async def create_title(
 
         for genre in genres:
             await crud.create(
-                session=session, table=main_table.GenresAnimeTable,
+                session=session, table=main_table.GenresTable,
                 data={"title": data.title, "genres": genre}
             )
         await session.commit()
 
-        anime_log.info("Тайтл '%s' создан", data.title)
+        admin_log.info("Тайтл '%s' создан", data.title)
         return JSONResponse(status_code=status.HTTP_201_CREATED, content=f"Тайтл '{data.title}' создан.")
     except IntegrityError as e:
-        anime_log.warning("При попытке создать тайтл произошла ошибка: %s", e)
+        admin_log.warning("При попытке создать тайтл произошла ошибка: %s", e)
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Не удалось создать тайтл. Возможно, тайтл с таким именем уже существует."
         ) from e
 
 
-@admin_router.post("/add-poster", summary="Добавить постер")
+@admin_anime_router.post("/add-poster", summary="Добавить постер")
 async def add_poster(
         title: str, img_base64: str = Depends(valid_img),
         session: AsyncSession = Depends(get_async_session)
@@ -60,17 +62,17 @@ async def add_poster(
     try:
         await crud.create(session=session, table=main_table.ImgTable, data={"title": title, "poster": img_base64})
         await session.commit()
-        anime_log.info("Добавлен постер для '%s'", title)
+        admin_log.info("Добавлен постер для '%s'", title)
         return JSONResponse(status_code=status.HTTP_201_CREATED, content="Постер добавлен.")
     except IntegrityError as e:
-        anime_log.warning("Попытка добавить постер к несуществующему тайталу, %s", e)
+        admin_log.warning("Попытка добавить постер к несуществующему тайталу, %s", e)
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=f"Не удалось добавить постер. Пожалуйста, проверьте название тайтла."
         ) from e
 
 
-@admin_router.post("/add-relation-title", description="Связать продолжение с тайтлом")
+@admin_anime_router.post("/add-relation-title", description="Связать продолжение с тайтлом")
 async def add_relation_title(data: schemas.RelationTitle, session: AsyncSession = Depends(get_async_session)):
     title = await crud.read(session=session, table=main_table.AnimeTable, title=data.title)
     relation_title = await crud.read(session=session, table=main_table.AnimeTable, title=data.relation_title)
@@ -85,25 +87,25 @@ async def add_relation_title(data: schemas.RelationTitle, session: AsyncSession 
         await crud.create(session=session, table=main_table.RelationAnime, data=data.model_dump())
         await session.commit()
 
-        anime_log.info("Добавлено продолжение '%s' для '%s'", data.relation_title, data.title)
+        admin_log.info("Добавлено продолжение '%s' для '%s'", data.relation_title, data.title)
         return JSONResponse(
             status_code=status.HTTP_201_CREATED,
             content=f"Добавлено продолжение '{data.relation_title}' для '{data.title}'"
         )
     except IntegrityError as e:
-        anime_log.warning("Попытка добавить существующую запись: %s", e)
+        admin_log.warning("Попытка добавить существующую запись: %s", e)
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=f"'{data.relation_title}' и '{data.title}' уже связаны"
         ) from e
     except AttributeError as e:
-        anime_log.warning("При попытке добавить продолжение возникла ошибка %s", e)
+        admin_log.warning("При попытке добавить продолжение возникла ошибка %s", e)
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=f"Не удалось добавить продолжение '{data.title}' для '{data.relation_title}'"
         ) from e
     except UnicodeDecodeError as e:
-        anime_log.warning("Ошибка чтения data: %s", e)
+        admin_log.warning("Ошибка чтения data: %s", e)
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=f"Не удалось добавить продолжение {relation_title} для {title}."
@@ -111,7 +113,7 @@ async def add_relation_title(data: schemas.RelationTitle, session: AsyncSession 
         ) from e
 
 
-@admin_router.post("/add-episode", summary="Добавить новый эпизод")
+@admin_anime_router.post("/add-episode", summary="Добавить новый эпизод")
 async def add_episode(
         video: UploadFile = Depends(valid_video),
         preview_base64: str = Depends(valid_img),
@@ -140,13 +142,13 @@ async def add_episode(
 
         await file_server.save(file=video, path="./public/.videos", title=stmt.uuid)
 
-        anime_log.info("Эпизод №%s добавлен для '%s'", episode_data["episode_number"], episode_data["title"])
+        admin_log.info("Эпизод №%s добавлен для '%s'", episode_data["episode_number"], episode_data["title"])
         return JSONResponse(
             status_code=status.HTTP_201_CREATED,
             content=f"Эпизод {episode_data["episode_number"]} добавлен для '{episode_data["title"]}'"
         )
     except IntegrityError as e:
-        anime_log.warning("При попытке добавить новый эпизод произошла ошибка: %s", e)
+        admin_log.warning("При попытке добавить новый эпизод произошла ошибка: %s", e)
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="При попытке добавить новый эпизод произошла ошибка.\n"
@@ -154,15 +156,11 @@ async def add_episode(
         ) from e
 
 
-@admin_router.post("/set-schedules", summary="Установить расписание выхода эпизодов")
+@admin_anime_router.post("/set-schedules", summary="Установить расписание выхода эпизодов")
 async def set_schedules(data: schemas.SetSchedules, session: AsyncSession = Depends(get_async_session)):
     day_week = data.day_week.name.title()
     for item in data.item:
-        if day_week != item.date.strftime("%A"):
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail=f"Для эпизода '{item.episode_name}' не совпадает день недели."
-            )
+        is_equals_day_week(day_week, item.date.strftime("%A"))
         try:
             await crud.create(
                 session=session, table=main_table.ScheduleTable,
@@ -176,7 +174,7 @@ async def set_schedules(data: schemas.SetSchedules, session: AsyncSession = Depe
             )
             await session.commit()
         except IntegrityError as e:
-            anime_log.error(
+            admin_log.error(
                 "При при попытке установить расписание для '%s' возникла ошибка: %s",
                 data.title, e
             )
@@ -191,38 +189,46 @@ async def set_schedules(data: schemas.SetSchedules, session: AsyncSession = Depe
     )
 
 
-@admin_router.patch("/add-slide", summary="Добавить тайтл в слайдер")
+@admin_anime_router.patch("/add-slide", summary="Добавить тайтл в слайдер")
 async def add_slide(
         title: str, img: str = Depends(valid_img),
         session: AsyncSession = Depends(get_async_session)
 ):
     await crud.update(session=session, table=main_table.ImgTable, data={"banner": img}, title=title)
     await session.commit()
-    anime_log.info("Тайтл '%s' добавлено в слайдер", title)
+    admin_log.info("Тайтл '%s' добавлено в слайдер", title)
     return JSONResponse(status_code=status.HTTP_200_OK, content=f"Тайтл '{title}' добавлено в слайдер")
 
 
-@admin_router.patch("/delete-slide", summary="Удалить тайтл из слайдера")
+@admin_anime_router.patch("/delete-slide", summary="Удалить тайтл из слайдера")
 async def delete_slide(title: schemas.Title, session: AsyncSession = Depends(get_async_session)):
     await crud.update(session, main_table.ImgTable, title=title.title, data={"banner": None})
     await session.commit()
-    anime_log.info("Тайтл '%s' удалено из слайдера", title.title)
+    admin_log.info("Тайтл '%s' удалено из слайдера", title.title)
     return JSONResponse(status_code=status.HTTP_200_OK, content=f"Тайтл '{title.title}' удален из слайдера.")
 
 
-@admin_router.patch("/update-title", summary="Обновить информацию о тайтле")
+@admin_anime_router.patch("/update-title", summary="Обновить информацию о тайтле")
 async def update_title(
         data: schemas.UpdateTitle,
         session: AsyncSession = Depends(get_async_session)
 ):
+    await is_exist_title(table=main_table.AnimeTable, session=session, title=data.title_prev)
     data_dict = data.model_dump(exclude_none=True)
-    genres = data_dict.pop("genres")
+
+    if len(data_dict) <= 1:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Недостаточно данных для обновления."
+        )
+
+    genres = data_dict.pop("genres", None)
 
     if genres:
         for genre in genres:
             await crud.update(
                 session=session,
-                table=main_table.GenresAnimeTable,
+                table=main_table.GenresTable,
                 title=data_dict["title"],
                 data={"title": data.title_prev, "genres": genre}
             )
@@ -236,23 +242,39 @@ async def update_title(
     )
 
     await session.commit()
-    anime_log.info("Для '%s' были обновлены следующие поля: %s", data.title, data_dict)
+    admin_log.info("Для '%s' были обновлены следующие поля: %s", data.title_prev, data_dict)
     return JSONResponse(status_code=status.HTTP_200_OK, content="Данные обновлены.")
 
 
-@admin_router.patch("/update-schedules", summary="Обновить расписание выхода эпизодов")
+@admin_anime_router.patch("/update-schedules", summary="Обновить расписание выхода эпизодов")
 async def update_schedules(
         data: schemas.UpdateSchedules,
         session: AsyncSession = Depends(get_async_session)
 ):
+    await is_exist_title(table=main_table.ScheduleTable, session=session, title=data.title)
     data_dict = data.model_dump(exclude_none=True)
     title = data_dict.pop("title")
+    day_week = data_dict.get("day_week")
 
-    if data_dict.get("day_week"):
-        print("Проверка на день недели")
+    query = select(main_table.ScheduleTable.day_week).filter_by(title=data.title)
+    query_result = await session.execute(query)
+    query_data = query_result.first()
+
+    if day_week:
+        is_equals_day_week(day_week, query_data.day_week)
+        await crud.update(
+            session=session,
+            table=main_table.ScheduleTable,
+            title=title,
+            data={"day_week": day_week}
+        )
+        admin_log.info("Для '%s' был обновлен день недели", title)
 
     for item in data_dict["item"]:
         update_fild = item.pop("update_fild")
+        if item.get("date"):
+            is_equals_day_week(day_week if day_week else query_data.day_week, item.get("date").strftime("%A"))
+
         await crud.update(
             session=session,
             table=main_table.ScheduleTable,
@@ -261,23 +283,32 @@ async def update_schedules(
             **{update_fild: item[update_fild]}
         )
 
-    anime_log.info("Для '%s' обновлено расписание выхода серий.", data.title)
+    await session.commit()
+
+    admin_log.info("Для '%s' обновлено расписание выхода серий.", data.title)
     return JSONResponse(status_code=status.HTTP_200_OK, content="Расписание обновлено.")
 
 
-@admin_router.delete("/delete-title", summary="Удалить тайтл")
-async def delete_title(title: schemas.Title, session: AsyncSession = Depends(get_async_session)):
-    await crud.delite(session=session, table=main_table.ImgTable, title=title.title)
+@admin_anime_router.delete("/delete-title", summary="Удалить тайтл")
+async def delete_title(data: schemas.Title, session: AsyncSession = Depends(get_async_session)):
+    await is_exist_title(table=main_table.AnimeTable, session=session, title=data.title)
+    await crud.delite(session=session, table=main_table.AnimeTable, title=data.title)
     await session.commit()
-    anime_log.info("Тайтл '%s' удален", title.title)
-    return JSONResponse(status_code=status.HTTP_200_OK, content=f"Тайтл '{title.title}' удален.")
+    admin_log.info("Тайтл '%s' удален", data.title)
+    return JSONResponse(status_code=status.HTTP_200_OK, content=f"Тайтл '{data.title}' удален.")
 
 
-@admin_router.delete("/delete-relation-title", summary="Удалить связать продолжения с тайтлом")
+@admin_anime_router.delete("/delete-relation-title", summary="Удалить связать продолжения с тайтлом")
 async def delete_relation_title(
         data: schemas.RelationTitle,
         session: AsyncSession = Depends(get_async_session)
 ):
+    await is_exist_title(
+        table=main_table.RelationAnime,
+        session=session,
+        title=data.title,
+        relation_title=data.relation_title
+    )
     await crud.delite(
         session=session,
         table=main_table.RelationAnime,
@@ -285,19 +316,20 @@ async def delete_relation_title(
         relation_title=data.relation_title
     )
     await session.commit()
-    anime_log.info("Удаление связи между %s и %s", data.title, data.relation_title)
+    admin_log.info("Удаление связи между %s и %s", data.title, data.relation_title)
     return JSONResponse(
         status_code=status.HTTP_200_OK,
         content=f"Связь между '{data.title}' и '{data.relation_title}' разрушена."
     )
 
 
-@admin_router.delete("/delete-episode", summary="Удалить эпизод")
+@admin_anime_router.delete("/delete-episode", summary="Удалить эпизод")
 async def delete_episode(
         data: schemas.DeleteEpisode,
         session: AsyncSession = Depends(get_async_session)
 ):
-    for episode in data.episode_list:
+    await is_exist_title(table=main_table.EpisodeTable, session=session, title=data.title)
+    for episode in data.item:
         await crud.delite(
             session=session,
             table=main_table.EpisodeTable,
@@ -305,20 +337,28 @@ async def delete_episode(
             episode_number=episode.episode_number
         )
     await session.commit()
-    anime_log.info("Удаление эпизода(ов): %s для %s", data.episode_list, data.title)
+    admin_log.info("Удаление эпизода(ов): %s для %s", [i.episode_number for i in data.item], data.title)
     return JSONResponse(
         status_code=status.HTTP_200_OK,
-        content=f"Удаление эпизода(ов): {data.episode_list} для {data.title}"
+        content=f"Удаление эпизода(ов): {[i.episode_number for i in data.item]} для {data.title}"
     )
 
 
-@admin_router.delete("/delete-schedules", summary="Удалить расписание")
+@admin_anime_router.delete("/delete-schedules", summary="Удалить расписание")
 async def delete_schedules(data: schemas.DeleteSchedules, session: AsyncSession = Depends(get_async_session)):
+    await is_exist_title(table=main_table.ScheduleTable, session=session, title=data.title)
     await crud.delite(session=session, table=main_table.ScheduleTable, title=data.title)
-    anime_log.info("Удаление расписания для %s", data.title)
+    admin_log.info("Удаление расписания для %s", data.title)
     return JSONResponse(status_code=status.HTTP_200_OK, content="Расписание удалено")
 
 
-@admin_router.get("/api-list", summary="Получить список api")
+@admin_anime_router.get("/api-list", summary="Получить список api")
 async def get_api_list():
-    return FileResponse("./src/app/admin/admin_api.json")
+    try:
+        return FileResponse("./src/app/admin/page/anime/api_v1/admin_api.json")
+    except FileNotFoundError as e:
+        admin_log.error("Не удалось найти файл admin_api.json. %s", e)
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Не удалось найти список api route."
+        ) from e
