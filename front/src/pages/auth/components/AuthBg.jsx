@@ -1,9 +1,9 @@
 import { memo, useEffect, useRef, useState } from "react"
 import { CSSTransition, SwitchTransition } from "react-transition-group"
 
-import { api } from "../../api"
-import { useFetch } from "../../hook/useFetch"
-import { Loader } from "../../components/loader/Loader"
+import { api } from "../../../api"
+import { useFetch } from "../../../hook/useFetch"
+import { Loader } from "../../../components/loader/Loader"
 
 import "./style/auth_bg.sass"
 
