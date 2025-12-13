@@ -4,17 +4,17 @@ import { useForm } from "react-hook-form"
 import { useLocation, useNavigate } from "react-router-dom"
 import { CSSTransition, SwitchTransition } from "react-transition-group"
 
-import { api } from "../../api"
-import { cookies } from "../../cookie"
-import { useFetch } from "../../hook/useFetch"
+import { api } from "../../../api"
+import { cookies } from "../../../cookie"
+import { useFetch } from "../../../hook/useFetch"
 
-import { BtnAuth } from "../../ui/btn/BtnAuth"
-import { InputToken } from "../../ui/input/InputToken"
+import { BtnAuth } from "../ui/btn/BtnAuth"
+import { InputToken } from "../ui/input/InputToken"
 
-import { AuthBg } from "../../components/auth/AuthBg"
-import { AuthTitle } from "../../components/auth/AuthTitle"
-import { AuthWarning } from "../../components/auth/AuthWarning"
-import { AlertResponse } from "../../ui/alert/AlertResponse"
+import { AuthBg } from "../components/AuthBg"
+import { AuthTitle } from "../components/AuthTitle"
+import { AuthWarning } from "../components/AuthWarning"
+import { AlertResponse } from "../../../ui/alert/AlertResponse"
 
 
 export function VerifyEmail(){
