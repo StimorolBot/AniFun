@@ -4,20 +4,20 @@ import { useForm } from "react-hook-form"
 import { Link, useNavigate } from "react-router-dom"
 import { CSSTransition, SwitchTransition } from "react-transition-group"
 
-import { api } from "../../api"
-import { useFetch } from "../../hook/useFetch"
+import { api } from "../../../api"
+import { useFetch } from "../../../hook/useFetch"
 
-import { AuthBg } from "../../components/auth/AuthBg"
-import { AuthTitle } from "../../components/auth/AuthTitle"
-import { OAuth } from "../../components/auth/OAuth"
-import { AuthWarning } from "../../components/auth/AuthWarning"
-import { BtnAuth } from "../../ui/btn/BtnAuth"
+import { AuthBg } from "../components/AuthBg"
+import { AuthTitle } from "../components/AuthTitle"
+import { OAuth } from "../components/OAuth"
+import { AuthWarning } from "../components/AuthWarning"
+import { BtnAuth } from "../ui/btn/BtnAuth"
 
-import { InputEmail } from "../../ui/input/InputEmail"
-import { InputPassword } from "../../ui/input/InputPassword"
-import { InputName } from "../../ui/input/InputName"
-import { AlertResponse } from "../../ui/alert/AlertResponse"
-import { Loader } from "../../components/loader/Loader"
+import { InputEmail } from "../ui/input/InputEmail"
+import { InputPassword } from "../ui/input/InputPassword"
+import { InputName } from "../ui/input/InputName"
+import { AlertResponse } from "../../../ui/alert/AlertResponse"
+import { Loader } from "../../../components/loader/Loader"
 
 
 export function Register(){
