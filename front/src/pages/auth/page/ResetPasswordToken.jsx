@@ -5,18 +5,18 @@ import { useForm } from "react-hook-form"
 import { Link, useNavigate } from "react-router-dom"
 import { CSSTransition, SwitchTransition } from "react-transition-group"
 
-import { api } from "../../api"
-import { useFetch } from "../../hook/useFetch"
+import { api } from "../../../api"
+import { useFetch } from "../../../hook/useFetch"
 
-import { BtnAuth } from "../../ui/btn/BtnAuth"
-import { AuthBg } from "../../components/auth/AuthBg"
-import { AuthTitle } from "../../components/auth/AuthTitle"
-import { AuthWarning } from "../../components/auth/AuthWarning"
+import { BtnAuth } from "../ui/btn/BtnAuth"
+import { AuthBg } from "../components/AuthBg"
+import { AuthTitle } from "../components/AuthTitle"
+import { AuthWarning } from "../components/AuthWarning"
 
-import { InputEmail } from "../../ui/input/InputEmail"
-import { AlertResponse } from "../../ui/alert/AlertResponse"
-import { OAuth } from "../../components/auth/OAuth"
-import { Loader } from "../../components/loader/Loader"
+import { InputEmail } from "../ui/input/InputEmail"
+import { AlertResponse } from "../../../ui/alert/AlertResponse"
+import { OAuth } from "../components/OAuth"
+import { Loader } from "../../../components/loader/Loader"
 
 
 export function ResetPasswordToken(){
