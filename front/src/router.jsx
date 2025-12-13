@@ -1,7 +1,7 @@
 import { createBrowserRouter } from "react-router-dom"
 
-import { Root } from "./pages/root/Root"
-import {Anime } from "./pages/root/Anime"
+import { Root } from "./pages/root/page/Root"
+import {Anime } from "./pages/root/page/Anime"
 
 import { Home } from "./pages/anime/home/Home"
 import { Release } from "./pages/anime/release/Release"
@@ -20,12 +20,12 @@ import { HomeUser } from "./pages/user/home/HomeUser"
 import { Settings } from "./pages/user/settings/Settings"
 import { Libs } from "./pages/user/libs/Libs"
 
-import { Login } from "./pages/auth/Login"
-import { Register } from "./pages/auth/Register"
-import { VerifyEmail } from "./pages/auth/VerifyEmail"
-import { ResetPasswordToken } from "./pages/auth/ResetPasswordToken"
-import { ResetPassword } from "./pages/auth/ResetPassword"
-import { OAuthPage } from "./pages/auth/OAuthPage"
+import { Login } from "./pages/auth/page/Login"
+import { Register } from "./pages/auth/page/Register"
+import { VerifyEmail } from "./pages/auth/page/VerifyEmail"
+import { ResetPasswordToken } from "./pages/auth/page/ResetPasswordToken"
+import { ResetPassword } from "./pages/auth/page/ResetPassword"
+import { OAuthPage } from "./pages/auth/page/OAuthPage"
 
 import { Error } from "./pages/error/Error"
 
