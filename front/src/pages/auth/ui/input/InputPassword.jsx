@@ -1,11 +1,16 @@
-import { InputMain } from "./InputMain"
+import { InputMainAuth } from "./InputMainAuth"
 
 
-export function InputPassword({register, errors, clickRef, watch, id="password", labelTitle="Пароль"}){
-    
+export function InputPassword({register, errors, clickRef, watch, id="password", labelTitle="Пароль"}){    
     return(
-        <InputMain labelTitle={labelTitle} id={id} type={"password"} ref={clickRef} 
-            minLength={8} maxLength={32} watch={watch} 
+        <InputMainAuth 
+            labelTitle={labelTitle} 
+            id={id} 
+            type={"password"} 
+            ref={clickRef}
+            minLength={8} 
+            maxLength={32} 
+            watch={watch} 
             register={ register(id, {
                 required: true,
                 minLength: {value: 8, message: "Длинна поля должна быть от 8 символов"},
@@ -20,6 +25,6 @@ export function InputPassword({register, errors, clickRef, watch, id="password",
                     : <use xlinkHref="/public/main.svg#key-svg"/>
                 }
             </svg>
-        </InputMain>
+        </InputMainAuth>
     )
 }
