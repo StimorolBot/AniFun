@@ -4,20 +4,20 @@ import { useForm } from "react-hook-form"
 import { Link, useNavigate } from "react-router-dom"
 import { CSSTransition, SwitchTransition } from "react-transition-group"
 
-import { api } from "../../api"
-import { cookies } from "../../cookie"
-import { useFetch } from "../../hook/useFetch"
+import { api } from "../../../api"
+import { cookies } from "../../../cookie"
+import { useFetch } from "../../../hook/useFetch"
 
-import { InputEmail } from "../../ui/input/InputEmail"
-import { InputPassword } from "../../ui/input/InputPassword"
-import { BtnAuth } from "../../ui/btn/BtnAuth"
+import { InputEmail } from "../ui/input/InputEmail"
+import { InputPassword } from "../ui/input/InputPassword"
+import { BtnAuth } from "../ui/btn/BtnAuth"
 
-import { AuthBg } from "../../components/auth/AuthBg"
-import { AuthTitle } from "../../components/auth/AuthTitle"
-import { AuthWarning } from "../../components/auth/AuthWarning"
-import { Loader } from "../../components/loader/Loader"
-import { AlertResponse } from "../../ui/alert/AlertResponse"
-import { OAuth } from "../../components/auth/OAuth"
+import { AuthBg } from "../components/AuthBg"
+import { AuthTitle } from "../components/AuthTitle"
+import { AuthWarning } from "../components/AuthWarning"
+import { Loader } from "../../../components/loader/Loader"
+import { AlertResponse } from "../../../ui/alert/AlertResponse"
+import { OAuth } from "../components/OAuth"
 
 
 export function Login(){    
