@@ -5,17 +5,17 @@ import { useForm } from "react-hook-form"
 import { Link, useNavigate } from "react-router-dom"
 import { CSSTransition, SwitchTransition } from "react-transition-group"
 
-import { api } from "../../api"
-import { useFetch } from "../../hook/useFetch"
+import { api } from "../.././../api"
+import { useFetch } from "../../../hook/useFetch"
 
-import { AuthBg } from "../../components/auth/AuthBg"
-import { AuthTitle } from "../../components/auth/AuthTitle"
-import { BtnAuth } from "../../ui/btn/BtnAuth"
+import { AuthBg } from "../components/AuthBg"
+import { AuthTitle } from "../components/AuthTitle"
+import { BtnAuth } from "../ui/btn/BtnAuth"
 
-import { InputToken } from "../../ui/input/InputToken"
-import { InputPassword } from "../../ui/input/InputPassword"
-import { AlertResponse } from "../../ui/alert/AlertResponse"
-import { Loader } from "../../components/loader/Loader"
+import { InputToken } from "../ui/input/InputToken"
+import { InputPassword } from "../ui/input/InputPassword"
+import { AlertResponse } from "../../../ui/alert/AlertResponse"
+import { Loader } from "../../../components/loader/Loader"
 
 
 export function ResetPassword(){
