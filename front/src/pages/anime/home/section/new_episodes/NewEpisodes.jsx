@@ -40,7 +40,7 @@ export const NewEpisodes= memo(() => {
   return(
     <section className="new-episodes">
       <div className="container">
-        <WrapperSection title={"Новые эпизоды"} link={"anime/latests"} ref={transitionRef} value={isLoading}>
+        <WrapperSection title={"Новые эпизоды"} link={"anime/new-episode"} ref={transitionRef} value={isLoading}>
           <div className="container-new-episodes transition" ref={transitionRef}>
             { isLoading
               ? <Loader/>
