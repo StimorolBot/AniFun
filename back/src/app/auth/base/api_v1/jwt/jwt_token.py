@@ -1,12 +1,16 @@
-import jwt
-from jwt.exceptions import InvalidSignatureError, ExpiredSignatureError
-
-from fastapi import status, HTTPException
 from datetime import datetime, timedelta, timezone
+from uuid import UUID
 
-from src.app.auth.base.api_v1.jwt.token_type import TokenType
-from src.app.auth.base.api_v1.jwt.config import jwt_setting
+import jwt
+from fastapi import HTTPException, status
+from jwt.exceptions import (DecodeError, ExpiredSignatureError,
+                            InvalidSignatureError)
+
 from src.app.auth.base.api_v1.jwt.abs_model.jwt_token import JwtTokenABC
+from src.app.auth.base.api_v1.jwt.config import jwt_setting
+from src.app.auth.base.api_v1.jwt.token_type import TokenType
+from src.app.auth.enums.v1.auth_type import AuthType
+from src.utils.logger import auth_log
 
 
 class JWTToken(JwtTokenABC):
@@ -35,8 +39,12 @@ class JWTToken(JwtTokenABC):
     ):
         try:
             return jwt.decode(token, public_key, algorithms=algorithms)
-        except ExpiredSignatureError:
+        except ExpiredSignatureError as e:
+            auth_log.warning("При попытке декодировать токен возникла ошибка: %s", e)
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Время жизни токена истекло")
+        except DecodeError as e:
+            auth_log.warning("При попытке декодировать токен возникла ошибка: %s", e)
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Невалидный токен")
 
     def create(self, token_type: TokenType, token_data: dict, expire_timedelta: timedelta | None = None):
         jwt_payload = {"type": token_type}
@@ -61,6 +69,21 @@ class JWTToken(JwtTokenABC):
             token_data={"sub": payload["sub"]}
         )
         return access_token
+
+    def create_tokens(self, sub: UUID | str, auth_type: AuthType):
+        sub = sub if isinstance(sub, str) else sub.hex
+
+        access_token = self.create(
+            token_type=TokenType.ACCESS.value,
+            token_data={"sub": sub, "auth_type": auth_type}
+        )
+
+        refresh_token = self.create(
+            token_type=TokenType.REFRESH.value,
+            token_data={"sub": sub, "auth_type": auth_type},
+            expire_timedelta=timedelta(days=jwt_setting.refresh_token_expire_days)
+        )
+        return {"access_token": access_token, "refresh_token": refresh_token}
 
 
 jwt_token = JWTToken()
