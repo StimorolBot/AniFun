@@ -9,11 +9,12 @@ import { ApiItem } from "../item/ApiItem"
 import { InputSearch } from "../../../ui/input/InputSearch"
 import { AlertResponse } from "../../../ui/alert/AlertResponse"
 import { Loader } from "../../../components/loader/Loader"
+import { SubNav } from "../../../ui/nav/SubNav"
 
 
 export const Anime = memo(() => {
     const fileData = new FormData()
-    
+
     const [searchRoute, setSearchRoute] = useState("")
     const [isShow, setIsShow] = useState()
     const [payload, setPayload] = useState({})
@@ -35,6 +36,11 @@ export const Anime = memo(() => {
             }]
         }]
     })
+
+    const subNav = [
+        {name: "Root", path: window.location.href.split("/anime").join("") },
+        {name: "Anime", path: "#"}
+    ]
 
     const [searchRouteList, setSearchRouteList] = useState(responseApi)
 
@@ -71,7 +77,7 @@ export const Anime = memo(() => {
             await getApiRequest()
         })()
     }, [])
-    console.log(responseApi)
+
     useEffect(() => {
         if (searchRoute.paths !== 0)
             setSearchRouteList(({
@@ -89,9 +95,9 @@ export const Anime = memo(() => {
             { isLoadingApi
                 ? <Loader center={true}/>
                 : <div className="container">
-                    <h2 className="subtitle-page">
-                        Вставить subNav
-                    </h2>
+                    <div className="root-sub-nav__container">
+                        <SubNav subNav={subNav}/>
+                    </div>
                     <search className="search-api">
                         <InputSearch placeholder={"Введите название действия"} val={searchRoute} setVal={setSearchRoute}/>
                     </search>
