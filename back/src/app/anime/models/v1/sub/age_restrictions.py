@@ -16,10 +16,15 @@ class AgeRestrictSubTable(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     restrict: Mapped[str] = mapped_column(unique=True)
+    alias: Mapped[str] = mapped_column()
 
     anime_rs: Mapped["AnimeTable"] = relationship(back_populates="age_restrict_rs")
 
     @classmethod
     async def fill(cls, session: AsyncSession):
         for data in Restrict:
-            await crud.create(session=session, table=cls, data={"restrict": data.value})
+            await crud.create(
+                session=session,
+                table=cls,
+                data={"restrict": data.value["label"], "alias": data.value["value"]}
+            )
