@@ -4,7 +4,7 @@ from alembic import context
 from sqlalchemy import engine_from_config, pool
 
 from src.app.anime.models.v1.main.anime import AnimeTable
-from src.app.anime.models.v1.sub.status import StatusTable
+from src.app.anime.models.v1.sub.status import StatusSubTable
 from src.app.auth.models.v1.main.auth import AuthTable
 from src.app.auth.models.v1.sub.auth_type import AuthTypeTable
 from src.app.user.models.v1.avatar import AvatarTable
