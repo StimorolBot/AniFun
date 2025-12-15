@@ -1,13 +1,16 @@
 import { memo } from "react"
 
-import { InputMain } from "../../ui/input/InputMain"
-import { CustomSelect } from "../../ui/input/CustomSelect"
+import { InputMain } from "../../input/InputMain"
+import { InputNumber } from "../../input/InputNumber"
+import { InputRadio } from "../../../../../ui/input/InputRadio"
+import { InputDragAndDrop } from "../../input/InputDragAndDrop"
+import { CustomSelect } from "../../../../../ui/input/CustomSelect"
 
 import "./style/input_tr.sass"
 
 
-export const InputTr = memo(({i, payload, setPayload, onChange, setPayloadFile}) => {
-
+export const InputTr = memo(({i, payload, setPayload, payloadFile, onChange, setPayloadFile}) => {
+    
     return(
         <tr className="input-tr__item-container" data-required={i.valid_params?.is_required}>
             <th>
@@ -30,14 +33,14 @@ export const InputTr = memo(({i, payload, setPayload, onChange, setPayloadFile})
                             />
                         )
                         case "int": return (
-                            <InputMain 
-                                type="number"
-                                value={payload?.[i?.param_name] || ""}
+                            <InputNumber
                                 min={i.valid_params?.min}
                                 max={i.valid_params?.max}
                                 required={i.valid_params?.is_required}
-                                callbackOnChange={e => onChange(e)
-                                }
+                                value={payload?.[i?.param_name] || ""}
+                                callbackOnChange={e => onChange(e)}
+                                name={i.param_name}
+                                setPayload={setPayload}
                             /> 
                         )
                         case "date": return (
@@ -62,12 +65,21 @@ export const InputTr = memo(({i, payload, setPayload, onChange, setPayloadFile})
                             />
                         )
                         case "file": return (
-                            <InputMain 
-                                type="file"
+                            <InputDragAndDrop 
+                                id={`${i.valid_params.id}`}
                                 required={i.valid_params?.is_required}
-                                callbackOnChange={
-                                    e => setPayloadFile(s => ({...s, [i.param_name]: e.target.files[0]})) 
-                                }
+                                accept={i.valid_params.accept}
+                                setPayloadFile={setPayloadFile}
+                                paramName={i.param_name}
+                                file={payloadFile}
+                            />
+                        )
+                        case "radio": return(
+                            <InputRadio
+                                itemList={i.valid_value}
+                                name={"is_origin"}
+                                required={i.valid_params?.is_required}
+                                callbackOnChange={e => onChange(e)}
                             />
                         )
                     }
