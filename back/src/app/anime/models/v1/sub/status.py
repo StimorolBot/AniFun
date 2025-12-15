@@ -23,4 +23,8 @@ class StatusSubTable(Base):
     @classmethod
     async def fill(cls, session: AsyncSession):
         for data in Status:
-            await crud.create(session=session, table=cls, data={"status": data.value, "alias": data.name.lower()})
+            await crud.create(
+                session=session,
+                table=cls,
+                data={"status": data.value["label"], "alias": data.value["value"]}
+            )
