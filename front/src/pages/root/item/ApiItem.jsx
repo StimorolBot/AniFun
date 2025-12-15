@@ -1,16 +1,17 @@
 import { Fragment, memo } from "react"
 
-import { InputTr } from "../table/InputTr"
-import { Loader } from "../loader/Loader"
-import { BtnRoot } from "../../ui/btn/BtnRoot"
-import { BtnSwitch } from "../../ui/btn/BtnSwitch"
+import { InputTr } from "../ui/table/tr/InputTr"
+import { Loader } from "../../../components/loader/Loader"
+import { BtnRoot } from "../ui/btn/BtnRoot"
+import { BtnSwitch } from "../../../ui/btn/BtnSwitch"
 
 import "./style/api_item.sass"
 
 
 export const ApiItem = memo(({
     item, payload, request, index, isShow, 
-    setIsShow, setItem, setPayload, setPayloadFile, setUpdateAlert, 
+    setIsShow, setItem, setPayload, payloadFile, 
+    setPayloadFile, setUpdateAlert, 
     ...props
 }) => {
 
@@ -71,6 +72,7 @@ export const ApiItem = memo(({
                                                 i={value} 
                                                 payload={payload?.item?.[indexCurrentValue]} 
                                                 setPayload={setPayload}
+                                                payloadFile={payloadFile}
                                                 onChange={e => setPayload(s => {
                                                     if (!s["item"]) 
                                                         s["item"] = []
@@ -136,7 +138,10 @@ export const ApiItem = memo(({
                                     setPayload={setPayload} 
                                     onChange={e => setPayload(s => ({...s, [i.param_name]: e.target.value}))}
                                     setPayloadFile={setPayloadFile}
-                                    key={index}/>}
+                                    payloadFile={payloadFile}
+                                    key={index}
+                                />
+                                }
                             </Fragment>)
                         })}
                     </tbody>
