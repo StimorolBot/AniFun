@@ -23,4 +23,8 @@ class SeasonSubTable(Base):
     @classmethod
     async def fill(cls, session: AsyncSession):
         for data in Season:
-            await crud.create(session=session, table=cls, data={"season": data.value, "alias": data.name.lower()})
+            await crud.create(
+                session=session,
+                table=cls,
+                data={"season": data.value["label"], "alias": data.value["value"]}
+            )
