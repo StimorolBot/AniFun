@@ -1,9 +1,8 @@
-from fastapi import UploadFile, status, HTTPException
-
-from src.app.admin.utils import get_base64
-from src.app.admin.anime.api_v1 import schemas
-
+from fastapi import HTTPException, UploadFile, status
 from pydantic_core._pydantic_core import ValidationError
+
+from src.app.admin.page.anime.api_v1 import schemas
+from src.app.admin.utils import get_base64
 
 
 async def valid_img(img: UploadFile) -> str:
@@ -19,8 +18,8 @@ async def valid_img(img: UploadFile) -> str:
         )
 
 
-def valid_episode_data(title: str, episode: int) -> dict:
-    return schemas.AddEpisode(title=title, episode=episode).model_dump()
+def valid_episode_data(title: str, episode_number: int) -> dict:
+    return schemas.AddEpisode(title=title, episode_number=episode_number).model_dump()
 
 
 def valid_video(video: UploadFile):
