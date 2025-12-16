@@ -12,7 +12,7 @@ class RatingTable(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     uuid: Mapped[UUID] = mapped_column(ForeignKey("auth_table.uuid"))
-    title: Mapped[str] = mapped_column(ForeignKey("anime_table.title"))
+    title: Mapped[str] = mapped_column(ForeignKey("anime_table.title", onupdate="CASCADE", ondelete="CASCADE"))
     star: Mapped[int] = mapped_column()
 
-    __table_args__ = (UniqueConstraint("uuid", "title", "star"),)
+    __table_args__ = (UniqueConstraint("uuid", "title"),)
