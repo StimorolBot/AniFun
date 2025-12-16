@@ -1,4 +1,4 @@
-import { Fragment, memo, useContext, useEffect, useRef, useState } from "react"
+import { Fragment, memo, useEffect, useRef, useState } from "react"
 
 import { Helmet } from "react-helmet"
 import { CSSTransition, SwitchTransition } from "react-transition-group"
@@ -15,7 +15,6 @@ import { ReleaseItem } from "./item/ReleaseItem"
 import { ReleaseFilter } from "./aside/ReleaseFilter"
 import { usePagination } from "../../../hook/usePagination"
 import { useDebounce } from "../../../hook/useDebounce"
-import { GenresContext } from "../../../context/GenresContext"
 
 import "./style.sass"
 
@@ -23,7 +22,7 @@ import "./style.sass"
 export const Release = memo(() => {
     const [isShowFilter, setIsShowFilter] = useState(true)
     const [titleSearch, setTitleSearch] = useState("")
-    const {genresContext, setGenresContext} = useContext(GenresContext)
+    const {genres, setGenres} = useState()
 
     const transitionRef = useRef()
     const lastElementRef = useRef()
@@ -137,8 +136,8 @@ export const Release = memo(() => {
                                 isShowFilter={isShowFilter} 
                                 isLoading={isLoading}
                                 setResponse={setResponse}
-                                genres={genresContext}
-                                setGenres={setGenresContext}
+                                genres={genres}
+                                setGenres={setGenres}
                                 request={request}
                             />
                         </div>
