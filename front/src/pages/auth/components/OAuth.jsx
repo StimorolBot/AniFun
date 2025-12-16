@@ -1,7 +1,7 @@
 import { memo } from "react"
 
-import { api } from "../../api"
-import { useFetch } from "../../hook/useFetch"
+import { api } from "../../../api"
+import { useFetch } from "../../../hook/useFetch"
 import { OAuthTelegram } from "./OAuthTelegram"
 
 import "./style/oauth.sass"
