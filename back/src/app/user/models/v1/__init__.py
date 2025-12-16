@@ -1,3 +1,3 @@
-from .user import UserTable
+from .avatar import AvatarTable
 
-__all__ = ["UserTable"]
+__all__ = ["AvatarTable"]
