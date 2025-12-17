@@ -4,13 +4,13 @@ import { Helmet } from "react-helmet"
 import { Link, useNavigate, useParams } from "react-router-dom"
 import { CSSTransition, SwitchTransition } from "react-transition-group"
 
-import { api } from "../../api"
-import { useFetch } from "../../hook/useFetch"
+import { api } from "../../../api"
+import { useFetch } from "../../../hook/useFetch"
 
-import { VideoPlayer } from "../../components/player/VideoPlayer"
-import { Loader } from "../../components/loader/Loader"
+import { VideoPlayer } from "./player/VideoPlayer"
+import { Loader } from "../../../components/loader/Loader"
 
-import "./style/video.sass"
+import "./style.sass"
 
 
 export const Video = () => {
