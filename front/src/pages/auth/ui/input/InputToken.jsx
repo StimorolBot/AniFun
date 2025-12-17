@@ -1,10 +1,10 @@
-import { InputMain } from "./InputMain"
+import { InputMainAuth } from "./InputMainAuth"
 
 
 export function InputToken({register, errors, clickRef, watch, labelTitle="Токен"}){
     
     return(
-        <InputMain labelTitle={labelTitle} id={"email_token"} type={"text"} ref={clickRef} 
+        <InputMainAuth labelTitle={labelTitle} id={"email_token"} type={"text"} ref={clickRef}
             minLength={8} maxLength={8} watch={watch}
             register={ register("email_token", {
                 required: true,
@@ -16,6 +16,6 @@ export function InputToken({register, errors, clickRef, watch, labelTitle="То�
             <svg className="auth__svg">
                 <use xlinkHref="/public/main.svg#token-svg"/>
             </svg>
-        </InputMain>
+        </InputMainAuth>
     )
 }
