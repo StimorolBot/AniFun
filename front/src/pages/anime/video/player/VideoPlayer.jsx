@@ -8,13 +8,13 @@ import {
     handleToggleMute
 } from "./utils"
 
-import { InputVolume } from "../../ui/input/InputVolume"
-import { InputVideoProgress } from "../../ui/input/InputVideoProgress"
+import { InputVolume } from "../../../../ui/input/InputVolume"
+import { InputVideoProgress } from "../../../../ui/input/InputVideoProgress"
 
-import { BtnSwitch } from "../../ui/btn/BtnSwitch"
-import { BtnDefault } from "../../ui/btn/BtnDefault"
-import { SettingsVideo } from "../popup/SettingsVideo"
-import { formatTime } from "../../utils/utils"
+import { BtnSwitch } from "../../../../ui/btn/BtnSwitch"
+import { BtnDefault } from "../../../../ui/btn/BtnDefault"
+// import { SettingsVideo } from ../popup/SettingsVideo"
+// import { formatTime } from "./utils"
 
 import "./style/video_player.sass"
 
@@ -93,10 +93,10 @@ export const VideoPlayer = ({videoRef, uuid, episodeNumber, episodeName}) => {
                     <h2>Эпизод {episodeNumber}</h2>
                     <h2>{episodeName}</h2>
                 </div>
-                <p>{`
+                {/* <p>{`
                     ${formatTime(player?.currentTime())} /
                     ${formatTime(videoRef?.current?.duration)}     
-                `}</p>
+                `}</p> */}
             </div>
             <div className="controls__container">
                 <SettingsVideo
