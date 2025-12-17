@@ -1,10 +1,10 @@
-import { InputMain } from "./InputMain"
+import { InputMainAuth } from "./InputMainAuth"
 
 
 export function InputName({register, errors, clickRef, watch}){
     
     return(
-        <InputMain labelTitle={"Имя"} id={"user_name"} type={"text"} ref={clickRef}
+        <InputMainAuth labelTitle={"Имя"} id={"user_name"} type={"text"} ref={clickRef}
             minLength={4} maxLength={32} watch={watch}
             register={ register("user_name", {
                 required: true,
@@ -17,6 +17,6 @@ export function InputName({register, errors, clickRef, watch}){
             <svg className="auth__svg">
                 <use xlinkHref="/public/main.svg#login-svg"/>
             </svg>
-        </InputMain>
+        </InputMainAuth>
     )
 }
