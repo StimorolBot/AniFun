@@ -1,9 +1,9 @@
 import { memo } from "react"
 
-import "./style/title_episode_nav.sass"
+import "./style.sass"
 
 
-export const TitleEpisodeNav = memo(({setCurrentSlide, currentSlide}) => {
+export const TitleNav = memo(({setCurrentSlide, currentSlide}) => {
 
     return(
         <nav className="title-nav">
