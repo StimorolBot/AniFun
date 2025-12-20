@@ -5,19 +5,6 @@ from sqlalchemy import Select, Subquery, func, select
 from src.app.anime.models.v1 import main as main_table
 
 
-def subquery_genres(**kwargs) -> Subquery:
-    """Создания список с жанрами и сгруппировать их по title"""
-    return (
-        select(
-            func.array_agg(main_table.GenresAnimeTable.genres).label("genres"),
-            main_table.GenresAnimeTable.alias
-        )
-        .filter_by(**kwargs)
-        .group_by(main_table.GenresAnimeTable.alias)
-        .subquery("subquery_genres")
-    )
-
-
 def subquery_rating(uuid: UUID | None, title: str) -> Subquery:
     """Получить рейтинг аниме, оставленный пользователем"""
     return (
