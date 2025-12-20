@@ -15,8 +15,8 @@ class StatusSubTable(Base):
     __tablename__ = "status_sub_table"
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-    status: Mapped[str] = mapped_column(unique=True)
-    alias: Mapped[str] = mapped_column(unique=True)
+    label: Mapped[str] = mapped_column(unique=True)
+    value: Mapped[str] = mapped_column(unique=True)
 
     anime_rs: Mapped["AnimeTable"] = relationship(back_populates="status_rs")
 
@@ -26,5 +26,5 @@ class StatusSubTable(Base):
             await crud.create(
                 session=session,
                 table=cls,
-                data={"status": data.value["label"], "alias": data.value["value"]}
+                data={"label": data.value["label"], "value": data.value["value"]}
             )
