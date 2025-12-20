@@ -1,27 +1,24 @@
 import { memo, useEffect, useState } from "react"
 
-import { api } from "../../api"
-import { useFetch } from "../../hook/useFetch"
+import { api } from "../../../../api"
+import { useFetch } from "../../../../hook/useFetch"
 
-import { AsideNewEpisodeItem } from "../cards/AsideNewEpisodeItem"
-import { AsideRecTitleItem } from "../cards/AsideRecTitleItem"
+import { AsideNewEpisodeItem } from "./item/AsideNewEpisodeItem"
+import { AsideRecTitleItem } from "./item/AsideRecTitleItem"
+import { Loader } from "../../../../components/loader/Loader"
 
-import "./style/aside_recommend_title.sass"
+import "./style.sass"
 
 
 export const AsideRecommendTitle = memo(() => {
     const [responseNewEpisode, setResponseNewEpisode] = useState([{
-        "episode_data":{
-            "episode_number": null,
-            "anime_data":{
-                "alias": null,
-                "title": null,
-                "year": null,
-                "type": null,
-                "age_restrict": null,
-                "season": null,
-            }
-        },
+        "episode_number": null,    
+        "alias": null,
+        "title": null,
+        "year": null,
+        "type": null,
+        "age_restrict": null,
+        "season": null,
         "genres":[""],
         "poster": null
     }])
@@ -47,6 +44,7 @@ export const AsideRecommendTitle = memo(() => {
             await api.get("/anime/releases/recommend-title").then((r) => setResponseRecTitle(r.data))
         }
     )
+
     useEffect(() => {(
         async () => {
             await requestNewTitle()
@@ -60,20 +58,25 @@ export const AsideRecommendTitle = memo(() => {
             <div className="aside-rec__wrapper">
                 <div className="aside-rec__new-title">
                     <h3>Новые эпизоды</h3>
-                    <ul>{
-                        responseNewEpisode?.map((item, index) => {
+                    {isLoadingNewTitle
+                        ? <Loader/>
+                        : <ul>
+                            {responseNewEpisode?.map((item, index) => {
                             return <AsideNewEpisodeItem item={item} key={index}/>
-                        })
-                    }</ul>
+                        })}
+                        </ul>
+                    }
                 </div>
                 <div className="aside-rec__recommend-title">
                     <h3>Рекомендации</h3>
-                    <ul className="rec-title__list">                     
-                        {responseRecTitle?.map((item, index) => {
-                            return <AsideRecTitleItem item={item} key={index}/>
-                        })
-                        }
-                    </ul>
+                    {isLoadingRecTitle
+                        ? <Loader/>
+                        : <ul className="rec-title__list">                     
+                            {responseRecTitle?.map((item, index) => {
+                                return <AsideRecTitleItem item={item} key={index}/>
+                            })}
+                        </ul>
+                    }
                 </div>
             </div>
         </aside>
