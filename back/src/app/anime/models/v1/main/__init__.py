@@ -6,6 +6,7 @@ from src.app.anime.models.v1.main.genres_anime import GenresTable
 from src.app.anime.models.v1.main.img import ImgTable
 from src.app.anime.models.v1.main.rating import RatingTable
 from src.app.anime.models.v1.main.relation_anime import RelationAnime
+from src.app.anime.models.v1.main.release_day import ReleaseDayTable
 from src.app.anime.models.v1.main.schedule import ScheduleTable
 
 __all__ = (
@@ -13,5 +14,6 @@ __all__ = (
     EpisodeTable, GenresTable,
     ScheduleTable, RelationAnime,
     RatingTable, CommentTable,
-    ResponseCommentTable
+    ResponseCommentTable,
+    ReleaseDayTable
 )
