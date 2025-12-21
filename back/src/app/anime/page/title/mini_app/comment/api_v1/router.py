@@ -6,8 +6,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.responses import JSONResponse
 
 from src.app.anime.models.v1 import main as main_table
-from src.app.anime.page.releases.api_v1 import schemas
-from src.app.anime.page.releases.mini_app.comment.api_v1.subquery import \
+from src.app.anime.page.title.mini_app.comment.api_v1 import schemas
+from src.app.anime.page.title.mini_app.comment.api_v1.subquery import \
     count_response_comment
 from src.app.auth.models.v1.main.auth import AuthTable
 from src.app.user.models.v1.avatar import AvatarTable
@@ -15,14 +15,14 @@ from src.app.user.utils.utils import get_current_user
 from src.database.session import get_async_session
 from src.utils.crud import crud
 
-comment_router = APIRouter(tags=["anime/releases/comment"], prefix="/anime/releases")
+comment_router = APIRouter(tags=["anime/title/comment"], prefix="/anime/title")
 
 
 @comment_router.get("/release/{title}/comment", status_code=status.HTTP_200_OK, summary="Получить комментарии")
 async def get_comment(
         title: str,
         session: AsyncSession = Depends(get_async_session)
-) -> Page[schemas.ResponseCommentDTO]:
+) -> Page[schemas.CommentDTO]:
     count_response = count_response_comment()
     query = (
         select(
@@ -43,6 +43,48 @@ async def get_comment(
     )
 
     return await paginate(session, query)
+
+
+@comment_router.get(
+    "/release/{title}/comment/response",
+    status_code=status.HTTP_200_OK,
+    summary="Загрузить ответы на комментарий"
+)
+async def get_response_comment(
+        comment_uuid: str,
+        session: AsyncSession = Depends(get_async_session)
+):
+    s = (
+        select(AuthTable.user_name.label("response_author_name"), AuthTable.uuid)
+        .where(
+            AuthTable.uuid == main_table.ResponseCommentTable.response_uuid_author
+
+        )
+    ).subquery()
+
+    query = (
+        select(
+            main_table.ResponseCommentTable.uuid,
+            main_table.ResponseCommentTable.content,
+            main_table.ResponseCommentTable.date_add,
+            main_table.ResponseCommentTable.author_uuid,
+            AvatarTable.avatar,
+            AuthTable.user_name,
+            s
+        )
+        .select_from(main_table.ResponseCommentTable)
+        .join(AvatarTable, main_table.ResponseCommentTable.author_uuid == AvatarTable.uuid)
+        .join(AuthTable, main_table.ResponseCommentTable.author_uuid == AuthTable.uuid)
+        .join(s, main_table.ResponseCommentTable.author_uuid == s.c.uuid)
+        .where(
+            main_table.ResponseCommentTable.response_uuid_comment == comment_uuid
+        )
+        .order_by(main_table.CommentTable.date_add.asc())
+    )
+
+    result = await session.execute(query.distinct())
+    items = result.mappings().all()
+    return [schemas.ResponseCommentDTO.model_validate(item, from_attributes=True) for item in items]
 
 
 @comment_router.post("/release/{alias}/comment", summary="Оставить комментарий")
@@ -66,10 +108,3 @@ async def set_comment(
         )
     await session.commit()
     return JSONResponse(status_code=status.HTTP_201_CREATED, content="Комментарий успешно создан")
-
-    # .options(
-    #     selectinload(main_table.CommentTable.response_rs)
-    #     .subqueryload(main_table.ResponseCommentTable.auth_rs),
-    #     selectinload(AuthTable.avatar_rs)
-    # )
-    # .join(AuthTable.avatar_rs)
