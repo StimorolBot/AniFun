@@ -2,6 +2,7 @@ import datetime
 from typing import List, Literal
 
 from pydantic import BaseModel, ConfigDict, Field
+
 from src.app.anime.enums.v1 import sub as sub_enums
 from src.utils.valid import (ValidDescription, ValidEpisodes, ValidTitle,
                              ValidYear)
@@ -15,11 +16,11 @@ class AddTitle(Title):
     description: ValidDescription
     alias: str | None = None
     year: ValidYear
-    type: sub_enums.Type
-    season: sub_enums.Season
-    age_restrict: sub_enums.Restrict
-    status: sub_enums.Status
-    genres: List[sub_enums.Genres]
+    type: sub_enums.Type = Field(..., alias="type")
+    season: sub_enums.Season = Field(..., alias="season")
+    age_restrict: sub_enums.Restrict = Field(..., alias="age_restrict")
+    status: sub_enums.Status = Field(..., alias="status")
+    genres: List[sub_enums.Genres] = Field(..., alias="genres")
     is_origin: bool = True
     total_episode: int = Field(ge=1, le=1_000)
 
@@ -47,8 +48,10 @@ class ScheduleItem(BaseModel):
 
 
 class SetSchedules(Title):
-    day_week: sub_enums.DayWeek
+    day_week: sub_enums.DayWeek = Field(..., alias="day_week")
     item: List[ScheduleItem]
+
+    model_config = ConfigDict(str_to_lower=True, use_enum_values=True)
 
 
 class RelationTitle(Title):
@@ -60,14 +63,15 @@ class EpisodeNumber(BaseModel):
 
 
 class DeleteEpisode(Title):
-    episode_list: List[EpisodeNumber]
+    item: List[EpisodeNumber]
 
 
 class DeleteSchedules(Title):
     ...
 
 
-class UpdateTitle(Title):
+class UpdateTitle(BaseModel):
+    title: ValidTitle | None = None
     title_prev: ValidTitle
     alias: str | None = None
     description: ValidDescription | None = None

@@ -24,14 +24,14 @@ class ResponseGenresDTO(schemas.PosterDTO):
 
 class ResponseTitleDTO(schemas.PosterDTO):
     uuid_episode: UUID
-    episode_number: int = Field(ge=1, le=500)
     alias: str
     title: ValidTitle
     year: ValidYear
-    type: sub_enum.Type
-    age_restrict: sub_enum.Restrict
-    season: sub_enum.Season
-    genres: List[sub_enum.Genres]
+    type: sub_enum.TypeLabel
+    season: sub_enum.SeasonLabel
+    age_restrict: sub_enum.RestrictLabel
+    episode_number: int = Field(ge=1, le=500)
+    genres: List[schemas.GenresDTO]
 
 
 class ResponseSchedulesDTO(schemas.PosterDTO):
