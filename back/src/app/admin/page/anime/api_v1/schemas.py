@@ -1,101 +1,144 @@
 import datetime
-from typing import List, Literal
+from typing import List, Literal, TypeVar
 
-from pydantic import BaseModel, ConfigDict, Field
+from fastapi import HTTPException, status
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
-from src.app.anime.enums.v1 import sub as sub_enums
-from src.utils.valid import (ValidDescription, ValidEpisodes, ValidTitle,
-                             ValidYear)
+from src.app.anime.enums.v1 import sub as sub_enum
+from src.utils.valid import ValidNumber, ValidText
+
+T = TypeVar("T")
 
 
 class Title(BaseModel):
-    title: ValidTitle
+    title: ValidText[3, 150]
+
+    model_config = ConfigDict(arbitrary_types_allowed=True)
 
 
 class AddTitle(Title):
-    description: ValidDescription
-    alias: str | None = None
-    year: ValidYear
-    type: sub_enums.Type = Field(..., alias="type")
-    season: sub_enums.Season = Field(..., alias="season")
-    age_restrict: sub_enums.Restrict = Field(..., alias="age_restrict")
-    status: sub_enums.Status = Field(..., alias="status")
-    genres: List[sub_enums.Genres] = Field(..., alias="genres")
+    description: ValidText[10, 1000]
+    alias: ValidText[3, 150] | None = None
+    year: ValidNumber[1970, 2050] = 2026
+    type: sub_enum.TypeLabel
+    season: sub_enum.SeasonLabel
+    age_restrict: sub_enum.RestrictLabel
+    status: sub_enum.StatusLabel
+    genres: List[sub_enum.Genres] = Field(alias="genres")
     is_origin: bool = True
-    total_episode: int = Field(ge=1, le=1_000)
+    total_episode: ValidNumber[1, 1000] = 12
 
-    model_config = ConfigDict(use_enum_values=True)
+    model_config = ConfigDict(use_enum_values=True, arbitrary_types_allowed=True)
 
 
-class Img(BaseModel):
-    ext: Literal["webp", "jpeg"]
-    size: int = Field(ge=1_000, le=300_000)
+class UpdateTitle(BaseModel):
+    old_title_name: ValidText
+    new_title_name: ValidText | None = None
+    alias: ValidText | None = None
+    description: ValidText[10, 1000] | None = None
+    year: ValidNumber[1970, 2050] | None = None
+    type: sub_enum.TypeLabel | None = None
+    season: sub_enum.SeasonLabel | None = None
+    age_restrict: sub_enum.RestrictLabel | None = None
+    status: sub_enum.StatusLabel | None = None
+    genres: List[sub_enum.GenresLabel] | None = None
+    is_origin: bool | None = None
+    total_episode: ValidNumber | None = None
+
+    model_config = ConfigDict(
+        use_enum_values=True,
+        arbitrary_types_allowed=True
+    )
+
+
+class ValidImg(BaseModel):
+    content_type: str
+    data: bytes
+
+    @field_validator("content_type")
+    @classmethod
+    def validate_content_type(cls, v: str) -> str:
+        allowed = {"image/webp", "image/png", "image/jpeg"}
+        if v not in allowed:
+            raise HTTPException(
+                status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+                detail=f"Недопустимый тип файла: {v}"
+            )
+        return v
+
+    @field_validator("data")
+    @classmethod
+    def validate_size(cls, v: bytes) -> bytes:
+        max_size = 5 * 1024 * 1024
+        if len(v) > max_size:
+            raise HTTPException(
+                status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+                detail="Превышен лимит размера файла в 5MB."
+            )
+        return v
 
 
 class AddEpisode(Title):
-    episode_number: ValidEpisodes
+    episode_name: ValidText[5, 50]
+    episode_number: ValidNumber[1, 1000]
+    is_schedule_exist: bool = False
 
 
-class Video(BaseModel):
-    ext: Literal["mp4", "mov", "avi"]
-    size: int = Field(ge=1_000, le=500_000_000)
+class DeleteEpisode(Title):
+    episode_number: ValidNumber[1, 1000]
+
+
+class AddSequel(Title):
+    sequel_title: ValidText[3, 150]
 
 
 class ScheduleItem(BaseModel):
     date: datetime.date
-    episode_number: ValidEpisodes
-    episode_name: ValidTitle
+    episode_number: ValidNumber[1, 1000]
+    episode_name: ValidText[5, 50]
 
 
 class SetSchedules(Title):
-    day_week: sub_enums.DayWeek = Field(..., alias="day_week")
+    day_week: sub_enum.DayWeek = Field(..., alias="day_week")
     item: List[ScheduleItem]
+    is_extend: bool = False
 
-    model_config = ConfigDict(str_to_lower=True, use_enum_values=True)
-
-
-class RelationTitle(Title):
-    relation_title: ValidTitle
-
-
-class EpisodeNumber(BaseModel):
-    episode_number: ValidEpisodes
+    model_config = ConfigDict(
+        str_to_lower=True,
+        use_enum_values=True,
+        arbitrary_types_allowed=True
+    )
 
 
-class DeleteEpisode(Title):
-    item: List[EpisodeNumber]
+class UpdateSchedules(Title):
+    update_field: Literal["day_week", "date_release", "episode_number", "episode_name"]
+    old_value: T
+    day_week: sub_enum.DayWeek | None = Field(alias="day_week", default=None)
+    date_release: datetime.date | None = None
+    episode_number: ValidNumber[1, 1000] | None = None
+    episode_name: ValidText[5, 50] | None = None
+
+    model_config = ConfigDict(
+        str_to_lower=True,
+        use_enum_values=True,
+    )
+
+    @field_validator("old_value")
+    @classmethod
+    def validate_old_value(cls, v: T) -> T:
+        if isinstance(v, int):
+            v: ValidNumber[1, 1000]
+            return v
+        elif isinstance(v, str):
+            v: ValidText[5, 50]
+            return v
+        elif isinstance(v, datetime.date):
+            return v
 
 
 class DeleteSchedules(Title):
     ...
 
 
-class UpdateTitle(BaseModel):
-    title: ValidTitle | None = None
-    title_prev: ValidTitle
-    alias: str | None = None
-    description: ValidDescription | None = None
-    year: ValidYear | None = None
-    type: sub_enums.Type | None = None
-    season: sub_enums.Season | None = None
-    age_restrict: sub_enums.Restrict | None = None
-    status: sub_enums.Status | None = None
-    genres: List[sub_enums.Genres] | None = None
-    is_origin: bool | None = None
-    total_episode: int | None = Field(ge=1, le=1_000, default=None)
-
-    model_config = ConfigDict(use_enum_values=True)
-
-
-class UpdateScheduleItem(BaseModel):
-    update_fild: Literal["day_week", "date", "episode_number", "episode_name"]
-    date: datetime.date | None
-    episode_number: ValidEpisodes | None
-    episode_name: ValidTitle | None
-
-
-class UpdateSchedules(Title):
-    day_week: sub_enums.DayWeek | None
-    item: List[UpdateScheduleItem]
-
-    model_config = ConfigDict(use_enum_values=True)
+class DeleteSchedulesItem(Title):
+    episode_number: ValidNumber[1, 1000]
