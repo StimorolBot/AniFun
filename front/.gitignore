@@ -4,3 +4,5 @@ node_modules
 .genres
 package-lock.json
 favicon
+.public
+.test

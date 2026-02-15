@@ -6,6 +6,6 @@ __pycache__
 .env
 .pytest_cache
 poetry.lock
-.videos
-.test
 versions
+TODO.md
+data
