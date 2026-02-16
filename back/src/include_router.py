@@ -13,11 +13,13 @@ from src.app.anime.page.video.api_v1.router import video_router
 from src.app.auth.base.api_v1.router import auth_router
 from src.app.auth.oauth.api_v1.router import oauth_router
 from src.app.user.api_v1.router import user_router
+from src.minio.api_v1.router import admin_s3_router
 
 
 def include_router(app: FastAPI):
     app.include_router(admin_anime_router)
     app.include_router(admin_user_router)
+    app.include_router(admin_s3_router)
 
     app.include_router(auth_router)
     app.include_router(oauth_router)
