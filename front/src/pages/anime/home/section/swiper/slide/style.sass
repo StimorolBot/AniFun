@@ -8,6 +8,26 @@
     color: $white
     font-size: 16px
 
+.slide__inner-rating
+    width: fit-content
+    margin-right: 15px
+    margin-left: auto
+    position: relative
+
+    p
+        font-size: 18px
+        font-weight: 900
+        position: absolute
+        top: 0
+        right: 50%
+        transform: translate(50%, 50%)
+
+    div
+        border-width: 40px 25px 20px
+        border-style: solid
+        border-color: $red $red transparent
+        opacity: 0.6
+
 .slide__bg
     display: block
     width: 100%
@@ -17,12 +37,15 @@
     opacity: 0.1
     transition: opacity 0.3s
 
+    &:not([src])
+        background-color: $sub-black-2
+
 .slide__inner
     position: absolute
     top: 50%
     left: 30px
+    right: 30px
     transform: translate(0, -50%)
-    max-width: 800px
 
 .slide__title
     font-size: 30px
@@ -32,19 +55,39 @@
 
 .slide-desc__list
     display: flex
+    margin-top: 10px
 
 .slide-desc__item
-    margin-right: 10px
-    margin-bottom: 5px
+    margin: 0 10px
+    position: relative
+    text-transform: capitalize
+
+    &::before
+        content: ""
+        position: absolute
+        top: 7px
+        left: -11px
+        width: 6px
+        height: 6px
+        background-color: $gray
+        border-radius: 50%
 
 .slide-desc__item_gray
-    color: $gray
-    
+    color: $sub-white-2
+    transition: color 0.3s
+
     + .slide-desc__item_gray
-        &::marker
-            content: "•"
-            font-weight: 900
-            color: $gray
+        position: relative
+        
+        &::before 
+            content: ""
+            width: 6px
+            height: 6px
+            top: 8px
+            left: -10px
+            position: absolute
+            border-radius: 50% 
+            background-color: $gray
     
 .slide__description
     margin: 15px 0
@@ -74,3 +117,9 @@
     
         stroke: $white
         stroke-width: 2px
+
+.slide__link
+    transition: color 0.3s
+
+    &:hover
+        color: $gray
