@@ -4,44 +4,58 @@ import { getPostfix } from "../../../../../../utils/utils"
 import "./style.sass"
 
 
-export function SlideMain({slide}) {
-    
+export function SlideMain({item, urlIMg}) {
+
     return(
         <div className="slide transition">
-            <img className="slide__bg" src={`data:image/webp;base64,${slide.img_rs.banner}`} alt="slide"/>
+            <img className="slide__bg" src={urlIMg} />
+            {item?.avg &&
+                <div className="slide__inner-rating">
+                <div/>
+                <p>{item.avg}</p>
+            </div>
+            }
             <div className="slide__inner">
                 <h3 className="slide__title">
-                    {slide.title}
+                    {item.anime.title}
                 </h3>
                 <ul className="slide-desc__list">
                     <li className="slide-desc__item">
-                        {slide.season}
+                        <Link className="slide__link" to={`/anime`} state={item.anime.season.value}>
+                            {item.anime.season.label}
+                        </Link>
                     </li>
                     <li className="slide-desc__item">
-                        {slide.year}
+                        <Link className="slide__link" to={`/anime`} state={item.anime.year}>
+                            {item.anime.year}
+                        </Link>
                     </li>
                     <li className="slide-desc__item">
-                        {slide.total_episode &&
-                            `${slide.total_episode} ${getPostfix("эпизод", slide.episode_count)}`
+                        {item.anime.total_episode &&
+                            `${item.anime.total_episode} ${getPostfix("эпизод", item.anime.episode_count)}`
                         }
                     </li>
                     <li className="slide-desc__item">
-                        {slide.age_restrict}
+                        <Link className="slide__link" to={`/anime`} state={item.anime.age_restrict.value}>
+                            {item.anime.age_restrict.label}
+                        </Link>
                     </li>
                 </ul>
                 <ul className="slide-desc__list">
-                    {slide?.genres_rs?.map((genre, index) => {
+                    {item?.anime.genres?.map((genre, index) => {
                         return(
                             <li className="slide-desc__item slide-desc__item_gray" key={index}>
-                                {genre.genres}
+                                <Link className="slide__link" to={`anime/genres/${genre.value}`}>
+                                    {genre.label}                            
+                                </Link>
                             </li>
                         )
                     })}
                 </ul>
                 <p className="slide__description">
-                    {slide.description}
+                    {item.anime.description}
                 </p>
-                <Link className="slide-main__link" to={`/anime/${slide.alias}`}>
+                <Link className="slide-main__link" to={`/anime/${item.alias}`}>
                     <svg>
                         <use xlinkHref="/main.svg#rectangle-svg"/>
                     </svg> 
