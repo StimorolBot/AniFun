@@ -17,22 +17,18 @@ import "./style.sass"
 
 export function SwiperCustom() {
   const transitionRef = useRef()
-  const [response, setResponse] = useState([{
-    "age_restrict": null, 
-    "description": null, 
-    "total_episode": null, 
-    "img_rs": {
-      "banner": null
-    },
-    "season": null,
-    "title": null, 
-    "type": null, 
-    "year": null
-  }])
+  const [urlIMg, setUrlIMg] = useState()
+  const [response, setResponse] =  useState([])
 
   const [request, isLoading, _] = useFetch(
     async () => {
       await api.get("/slides").then((r) => setResponse([...r.data]))
+    }
+  )
+
+  const [getUrlImg, isLoadingImg, errorImg] = useFetch(
+    async (url) => {
+      await api.get(url).then(r => setUrlIMg(r.data))  
     }
   )
 
@@ -41,7 +37,7 @@ export function SwiperCustom() {
       await request()
     })()
   }, [])
-  
+
   return (
     <div className="container">
       <SwitchTransition mode="out-in">
@@ -54,15 +50,26 @@ export function SwiperCustom() {
           <div className="container-slider transition"  ref={transitionRef}>
             {isLoading
               ? <Loader/>
-              : <Swiper className="mySwiper" id="swiper-custom" slidesPerView={1} spaceBetween={30} loop={true}
-                pagination={{clickable: true}} navigation={true} modules={[Pagination, Navigation, Autoplay]}
-                autoplay={{delay: 3500, disableOnInteraction: false}} 
+              : <Swiper 
+                  className="mySwiper" 
+                  id="swiper-custom" 
+                  slidesPerView={1} 
+                  spaceBetween={30} 
+                  loop={true}
+                  pagination={{clickable: true}} 
+                  navigation={true} 
+                  modules={[Pagination, Navigation, Autoplay]}
+                  autoplay={{delay: 3500, disableOnInteraction: false}}
+                  onSlideChange={async (swiper) =>  {
+                    const item = response[swiper.realIndex]
+                    await getUrlImg(`/s3/anime-${item.anime.uuid}/${item.anime.banner.uuid_banner}`)
+                  }}
               >
-                {response[0]?.alias &&
-                  response.map((slide, index) => {
+                {response.length >= 1 &&
+                  response.map((item, index) => {
                     return(
                       <SwiperSlide key={index}>
-                        <SlideMain slide={slide}/>
+                        <SlideMain item={item} urlIMg={urlIMg}/>
                       </SwiperSlide>
                     )
                   })
