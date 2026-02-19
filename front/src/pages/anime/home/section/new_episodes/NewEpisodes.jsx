@@ -12,22 +12,18 @@ import "./style.sass"
 
 export const NewEpisodes= memo(() => {
   const transitionRef = useRef()
-  const [response, setResponse] = useState([{
-    "uuid_episode": null,
-    "episode_number": null,
-    "alias": null,
-    "title": null,
-    "year": null,
-    "type": null,
-    "age_restrict": null,
-    "season": null,
-    "genres":[""],
-    "poster": null
-  }])
+  const [urlIMg, setUrlIMg] = useState()
+  const [response, setResponse] = useState([])
 
   const [request, isLoading, _] = useFetch(
     async () => {
       await api.get("/new-episode", {params: {"limit": 6}}).then((r) => setResponse(r.data))
+    }
+  )
+
+  const [getUrlImg, isLoadingImg, errorImg] = useFetch(
+    async (url) => {
+      await api.get(url).then(r => setUrlIMg(r.data))  
     }
   )
 
@@ -46,7 +42,7 @@ export const NewEpisodes= memo(() => {
               ? <Loader/>
               : <ul className="episode__list">
                 {response?.map((item, index) => {
-                  return <EpisodeItem item={item} key={index}/>
+                  return <EpisodeItem item={item} getUrlImg={getUrlImg} urlIMg={urlIMg} index={index} key={index} />
                 })}
               </ul>
             }
