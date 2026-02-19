@@ -15,24 +15,21 @@ import "./style.sass"
 
 export const ComingSoon = () => {
     const transitionRef = useRef()
+    const [urlIMg, setUrlIMg] = useState()
     const [schedule, setSchedule] = useState("today")
-    const [response, setResponse] = useState([{
-        "episode_number": null,
-        "title": null,
-        "poster": null,
-        "age_restrict": null,
-        "genres": [""],
-        "season": null,
-        "year": null,
-        "alias": null,
-        "type": null
-    }])
+    const [response, setResponse] = useState([])
 
     const [request, isLoading, _] = useFetch(
-          async () => {
+        async () => {
             await api.get("/schedules", {params: {"schedule":schedule}}).then((r) => setResponse(r.data))
-          }
-        )
+        }
+    )
+
+    const [getUrlImg, isLoadingImg, errorImg] = useFetch(
+        async (url) => {
+        await api.get(url).then(r => setUrlIMg(r.data))  
+        }
+    )
 
     useEffect(() => {(
         async () => {
@@ -58,10 +55,10 @@ export const ComingSoon = () => {
                         <div className="container-coming-soon transition" ref={transitionRef}>
                             { isLoading
                                 ? <Loader/>
-                                : response[0]?.alias
+                                : response.length >= 1 
                                     ? <Masonry breakpointCols={breakpoints} className="masonry" columnClassName="masonry__column">
                                         {response?.map((item, index) => {
-                                            return <ComingSoonItem item={item} key={index}/>
+                                            return <ComingSoonItem item={item} getUrlImg={getUrlImg} urlIMg={urlIMg} schedule={schedule} key={index}/>
                                         })}
                                     </Masonry>
                                     :<p className="coming-soon__empty">
