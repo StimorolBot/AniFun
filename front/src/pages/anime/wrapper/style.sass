@@ -1,0 +1,45 @@
+@use "/src/style/color.sass" as * 
+
+
+.section__wrapper
+    margin-top: 20px
+    display: flex
+    justify-content: space-between
+    column-gap: 20px
+    align-items: center
+    flex-direction: column
+
+.section__link
+    display: flex
+    align-items: center
+    column-gap: 5px
+    width: fit-content
+
+.section__title
+    font-size: 30px
+    color: $gray
+    position: relative
+    padding: 0px 10px
+    transition: color 0.3s
+
+    &::after,
+    &::before
+        content: ""
+        position: absolute
+        bottom: 40%
+        height: 1px
+        max-width: 250px
+        width: 100%
+        background-color: $gray
+        pointer-events: none
+        
+    &::before
+        left: 0
+        transform: translate(-100%, -50%)
+
+    &::after
+        right: 0
+        transform: translate(100%, -50%)
+
+    &:hover
+        color: $white
