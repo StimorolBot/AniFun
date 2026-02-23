@@ -1,22 +1,14 @@
-import { useEffect } from "react"
-
 import { Link } from "react-router-dom"
 
 import "./style.sass"
 
 
-export const ComingSoonItem = ({item, getUrlImg, urlIMg, schedule, ...props}) => {
-    
-    useEffect(() => {(
-        async () => {
-            await getUrlImg(`/s3/anime-${item.anime.uuid}/${item.anime.poster.poster_uuid}`)
-        })()
-    }, [item.anime.alias, schedule])
+export const ComingSoonItem = ({item,  imgData, ...props}) => {
 
     return(
         <li className="coming-soon__item" {...props}>
             <Link className="coming-soon__link" to={`/anime/${item.anime.alias}`}>  
-                <img className="coming-soon__bg" src={urlIMg} loading="lazy" alt="preview" />
+                <img className="coming-soon__bg" src={imgData} loading="lazy" alt="preview" />
                 <p className="coming-soon__title">
                     {item.anime.title}
                 </p>
