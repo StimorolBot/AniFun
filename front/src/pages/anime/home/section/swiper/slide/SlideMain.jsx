@@ -55,7 +55,7 @@ export function SlideMain({item, imgData}) {
                 <p className="slide__description">
                     {item.anime.description}
                 </p>
-                <Link className="slide-main__link" to={`/anime/${item.alias}`}>
+                <Link className="slide-main__link" to={`/anime/${item.anime.alias}`}>
                     <svg>
                         <use xlinkHref="/main.svg#rectangle-svg"/>
                     </svg> 
