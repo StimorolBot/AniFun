@@ -1,7 +1,7 @@
-import { memo, useEffect, useRef, useState } from "react"
+import { memo, useRef } from "react"
+import { useQueries, useQuery } from "@tanstack/react-query"
 
 import { api } from "../../../../../api"
-import { useFetch } from "../../../../../hook/useFetch"
 
 import { EpisodeItem } from "./item/EpisodeItem"
 import { WrapperSection } from "../../../wrapper/WrapperSection"
@@ -12,26 +12,26 @@ import "./style.sass"
 
 export const NewEpisodes= memo(() => {
   const transitionRef = useRef()
-  const [urlIMg, setUrlIMg] = useState()
-  const [response, setResponse] = useState([])
 
-  const [request, isLoading, _] = useFetch(
-    async () => {
-      await api.get("/new-episode", {params: {"limit": 6}}).then((r) => setResponse(r.data))
-    }
-  )
-
-  const [getUrlImg, isLoadingImg, errorImg] = useFetch(
-    async (url) => {
-      await api.get(url).then(r => setUrlIMg(r.data))  
-    }
-  )
-
-  useEffect(() => {(
-    async () => {
-      await request()
-    })()
-  }, [])
+  const {data: episodeData, isLoading, error} = useQuery({
+    queryKey: ["new-episode"],
+    staleTime: 1000 * 60 * 3,
+    retry: false,
+    queryFn: async () => {
+      return await api.get("/new-episode", {params: {"limit": 6}}).then(r => r.data)
+    },
+    placeholderData: []
+  })
+ 
+  const imgData = useQueries({
+    queries: episodeData?.map(item => ({
+      queryKey: ["new-episode-poster", item.anime.poster.poster_uuid],
+      staleTime: 1000 * 60 * 3,
+      queryFn: async () => {
+        return await api.get(`/s3/anime-${item.anime.uuid}/${item.anime.poster.poster_uuid}`).then(r => r.data)
+      }
+    }))
+  })
   
   return(
     <section className="new-episodes">
@@ -41,8 +41,8 @@ export const NewEpisodes= memo(() => {
             { isLoading
               ? <Loader/>
               : <ul className="episode__list">
-                {response?.map((item, index) => {
-                  return <EpisodeItem item={item} getUrlImg={getUrlImg} urlIMg={urlIMg} index={index} key={index} />
+                {episodeData?.map((item, index) => {
+                  return <EpisodeItem item={item} imgData={imgData[index].data} key={index} />
                 })}
               </ul>
             }
