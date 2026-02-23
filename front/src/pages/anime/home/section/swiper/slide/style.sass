@@ -8,6 +8,15 @@
     color: $white
     font-size: 16px
 
+    &:not([src])::before
+        content: ""
+        position: absolute
+        width: 100%
+        height: 100%    
+        opacity: 0.2
+        background-color: $sub-black-2
+        border-radius: 10px
+
 .slide__inner-rating
     width: fit-content
     margin-right: 15px
@@ -38,7 +47,8 @@
     transition: opacity 0.3s
 
     &:not([src])
-        background-color: $sub-black-2
+        opacity: 0
+        visibility: hidden
 
 .slide__inner
     position: absolute
