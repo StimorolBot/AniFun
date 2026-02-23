@@ -1,24 +1,20 @@
 from pydantic import AliasChoices, BaseModel, ConfigDict, Field
 
 from src.app.anime.enums.v1 import sub as sub_enum
-from src.utils.valid import ValidEpisodes, ValidTitle, ValidYear
+from src.utils.valid import UUIDValid, ValidNumber, ValidText
 
 
 class BannerDTO(BaseModel):
-    banner: str
+    uuid_banner: UUIDValid
 
 
 class PosterDTO(BaseModel):
-    poster: str
+    poster_uuid: UUIDValid
 
 
 class GenresDTO(BaseModel):
     label: sub_enum.GenresLabel
     value: sub_enum.GenresValue
-
-
-class Schedule(BaseModel):
-    episode_number: ValidEpisodes
 
 
 class TypeDTO(BaseModel):
@@ -47,12 +43,17 @@ class DayWeekDTO(BaseModel):
 
 
 class ResponseAnimeDTO(BaseModel):
-    title: ValidTitle
-    year: ValidYear
-    alias: str
+    uuid: UUIDValid
+    title: ValidText[5, 150]
+    year: ValidNumber[1970, 2050]
+    alias: ValidText[5, 150]
     type: TypeDTO = Field(validation_alias=AliasChoices("type_rs", "type"))
     season: SeasonDTO = Field(validation_alias=AliasChoices("season_rs", "season"))
-    age_restrict: AgeRestrictDTO = Field(validation_alias=AliasChoices("age_restrict_rs", "age_restrict"))
-    status: StatusDTO = Field(validation_alias=AliasChoices("status_rs", "status"))
+    age_restrict: AgeRestrictDTO = Field(
+        validation_alias=AliasChoices("age_restrict_rs", "age_restrict")
+    )
 
-    model_config = ConfigDict(from_attributes=True)
+    model_config = ConfigDict(
+        from_attributes=True,
+        arbitrary_types_allowed=True
+    )
