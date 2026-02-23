@@ -4,11 +4,11 @@ import { getPostfix } from "../../../../../../utils/utils"
 import "./style.sass"
 
 
-export function SlideMain({item, urlIMg}) {
+export function SlideMain({item, imgData}) {
 
     return(
         <div className="slide transition">
-            <img className="slide__bg" src={urlIMg} />
+            <img className="slide__bg" src={imgData} alt="Баннер"/>
             {item?.avg &&
                 <div className="slide__inner-rating">
                 <div/>
