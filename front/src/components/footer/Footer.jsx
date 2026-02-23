@@ -10,9 +10,11 @@ export const Footer = memo(() => {
             <div className="container">
                 <div className="footer__top">
                     <div className="footer__top-inner">
-                        <svg className="footer__logo-svg">
-                            <use xlinkHref="/public/main.svg#logo-svg"/>
-                        </svg>
+                        <div className="footer__top-svg-container">
+                            <svg className="footer__top-svg">
+                                <use href="/public/logo/logo.svg"/>
+                            </svg>
+                        </div>
                         <div className="footer__title-container">
                             <p className="footer__title">
                                 AniFun
@@ -32,22 +34,22 @@ export const Footer = memo(() => {
                             </Link>
                         </li>
                         <li className="footer__item">
-                            <Link className="footer__link" to={"/anime/catalog/"}>
-                                Релизы
+                            <Link className="footer__link" to={"/anime"}>
+                                Аниме
                             </Link>
                         </li>
                         <li className="footer__item">
-                            <Link className="footer__link" to={"/anime/schedule"}>
+                            <Link className="footer__link" to={"/anime/schedules"}>
                                 Расписание
                             </Link>
                         </li>
                         <li className="footer__item">
-                            <Link className="footer__link" to={"/anime/franchises/"}>
+                            <Link className="footer__link" to={"/anime/franchises"}>
                                 Франшизы
                             </Link>
                         </li>
                         <li className="footer__item">
-                            <Link className="footer__link" to={"/anime/genres/"}>
+                            <Link className="footer__link" to={"/anime/genres"}>
                                 Жанры
                             </Link>
                         </li>
@@ -67,18 +69,8 @@ export const Footer = memo(() => {
                             </Link>
                         </li>
                         <li className="footer__item">
-                            <Link className="footer__link" to={"/settings/site"}>
-                                Настройки
-                            </Link>
-                        </li>
-                        <li className="footer__item">
-                            <Link className="footer__link" to={"/auth/token-password#"}> 
+                            <Link className="footer__link" to={"/auth/token-password"}> 
                                 Восстановить пароль
-                            </Link>
-                        </li>
-                        <li className="footer__item">
-                            <Link className="footer__link" to={"/rules"}>
-                                Правила
                             </Link>
                         </li>
                     </ul>
@@ -92,14 +84,14 @@ export const Footer = memo(() => {
                         <li className="footer__social-item">
                             <Link className="footer__social-link" to={"#"}>
                                 <svg>
-                                    <use xlinkHref="/public/main.svg#discord-svg"/>
+                                    <use xlinkHref="/public/svg/social.svg#discord-svg"/>
                                 </svg>
                             </Link>
                         </li>
                         <li className="footer__social-item">
                             <Link className="footer__social-link" to={"#"}>
                                 <svg>
-                                    <use xlinkHref="/public/main.svg#tg-svg"/>
+                                    <use xlinkHref="/public/svg/social.svg#tg-svg"/>
                                 </svg>
                             </Link>
                         </li>
