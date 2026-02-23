@@ -1,7 +1,7 @@
-import { useEffect, useRef, useState } from "react"
+import { useRef } from "react"
+import { useQueries, useQuery } from "@tanstack/react-query"
 
 import { api } from "../../../../../api"
-import { useFetch } from "../../../../../hook/useFetch"
 
 import { GenresItem } from "./item/GenresItem"
 import { WrapperSection } from "../../../wrapper/WrapperSection"
@@ -12,25 +12,26 @@ import "./style.sass"
 
 export function Genres(){
     const transitionRef = useRef()
-    const [response, setResponse] = useState([{
-        "poster": null,
-        "genres_count": null,
-        "genres": null,
-        "alias": null
-    }])
-    
-    const [request, isLoading, _] = useFetch(
-        async () => {
-            await api.get("/genres").then((r) => setResponse(r.data))
-        }
-    )
-    
-    useEffect(() => {(
-        async () => {
-            await request()
-        })()
-    }, [])
 
+    const {data: GenresData = [], isLoading, error} = useQuery({
+        queryKey: ["genres"],
+        staleTime: 1000 * 60 * 3,
+        retry: false,
+        queryFn: async () => {
+            return await api.get("/genres").then(r => r.data)
+        }
+    })
+
+    const imgData = useQueries({
+        queries: GenresData?.map(item => ({
+            queryKey: ["genres-poster", item.poster_uuid],
+            staleTime: 1000 * 60 * 3,
+            queryFn: async () => {
+                return await api.get(`/s3/img-genres-poster/${item.poster_uuid}`).then(r => r.data)
+            }
+        }))
+    })
+  
     return(
         <section className="genres">
             <div className="container">
@@ -39,8 +40,8 @@ export function Genres(){
                         { isLoading
                             ? <Loader/>
                             : <ul className="genres__list">
-                                {response?.map((item, index) => {
-                                    return <GenresItem item={item} key={index}/>
+                                {GenresData?.map((item, index) => {
+                                    return <GenresItem item={item} imgData={imgData[index].data} key={index}/>
                                 })}
                             </ul>
                         }
