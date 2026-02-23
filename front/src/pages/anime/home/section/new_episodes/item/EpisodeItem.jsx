@@ -1,21 +1,14 @@
-import { memo, useEffect } from "react"
+import { memo } from "react"
 import { Link } from "react-router-dom"
 
 import "./style.sass"
 
 
-export const EpisodeItem = memo(({item, getUrlImg, urlIMg, index, ...props}) => {
-
-    useEffect(() => {(
-        async () => {
-            if (item.anime.poster?.poster_uuid)
-                await getUrlImg(`/s3/anime-${item.anime.uuid}/${item.anime.poster.poster_uuid}`)
-        })()
-    }, [index])
+export const EpisodeItem = memo(({item, imgData, ...props}) => {
 
     return(
         <li className="episode__item" {...props}>
-            <img className="episode__img" src={urlIMg} loading="lazy" alt=" " />
+            <img className="episode__img" src={imgData} loading="lazy" alt="poster" />
             <div className="episode__description">
                 <p className="episode__number">
                     {item.number} эпизод
