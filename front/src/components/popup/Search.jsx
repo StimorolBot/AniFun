@@ -7,7 +7,7 @@ import { useDebounce } from "../../hook/useDebounce"
 import { useClickOutside } from "../../hook/useClickOutside"
 
 import { InputSearch } from "../../ui/input/InputSearch"
-import { SearchItem } from "../cards/SearchItem"
+import { SearchItem } from "./item/SearchItem"
 import { Loader } from "../loader/Loader"
 
 import "./style/search.sass"
@@ -18,16 +18,14 @@ export const Search = memo(({ref, setIsShow}) => {
     const transitionRef = useRef()
 
     const [searchVal, setSearchVal] = useState("")
+    const [response, setResponse] = useState({"isFirstRequest": true})
+
     const debounceSearchVal = useDebounce(searchVal)
 
-    const [response, setResponse] = useState({"isFirstRequest": true})
-    
     const [request, isLoading, error] = useFetch(
         async () => {
             await api.get("/search-title", {params: {"size": 20, "page": 1, "title": searchVal}})
-            .then((r) => {
-                setResponse(r.data?.items)
-            })
+            .then(r => setResponse(r.data?.items))
         }
     )
 
@@ -55,7 +53,7 @@ export const Search = memo(({ref, setIsShow}) => {
                 </button>
                 <search>
                     <form action="/search-title" method="get">
-                        <InputSearch setVal={setSearchVal} val={searchVal} autocomplete={"off"}/>
+                        <InputSearch setVal={setSearchVal} val={searchVal} autoComplete={"off"}/>
                     </form>
                 </search>
 
@@ -87,7 +85,7 @@ export const Search = memo(({ref, setIsShow}) => {
                                                 {response?.isFirstRequest
                                                     ?<>
                                                         <svg>
-                                                            <use xlinkHref="/main.svg#search-doc-svg"/>
+                                                            <use xlinkHref="/public/svg/header.svg#search-doc-svg"/>
                                                         </svg>
                                                         <p>
                                                             Введите название релиза
@@ -98,7 +96,7 @@ export const Search = memo(({ref, setIsShow}) => {
                                                     </>
                                                     :<>
                                                         <svg>
-                                                            <use xlinkHref="/main.svg#not-find-svg"/>
+                                                            <use xlinkHref="/public/svg/header.svg#not-find-svg"/>
                                                         </svg>
                                                         <p>
                                                             Нет подходящих тайтлов :(
