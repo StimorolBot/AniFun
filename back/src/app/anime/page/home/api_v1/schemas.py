@@ -1,61 +1,99 @@
-from typing import List
-from uuid import UUID
+from typing import List, Optional
 
-from pydantic import BaseModel, Field
+from pydantic import AliasChoices, BaseModel, Field
 
 from src.app.anime.enums.v1 import sub as sub_enum
 from src.app.anime.schemas.api_v1 import schemas
-from src.utils.valid import (ValidDescription, ValidEpisodes, ValidTitle,
-                             ValidYear)
+from src.utils.valid import UUIDValid
 
 
-class ResponseBannerDTO(schemas.ResponseAnimeDTO):
-    img_rs: schemas.BannerDTO
-    description: ValidDescription
-    genres_rs: List[schemas.GenresDTO]
-    total_episode: int = Field(ge=0, le=500)
+class ExtRespBannerDTO(schemas.ResponseAnimeDTO):
+    banner: schemas.BannerDTO = Field(
+        validation_alias=AliasChoices("banner_rs", "banner")
+    )
+    description: schemas.ValidText[10, 1000]
+    genres: List[schemas.GenresDTO] = Field(
+        validation_alias=AliasChoices("genres_rs", "genres")
+    )
+    status: schemas.StatusDTO = Field(
+        validation_alias=AliasChoices("status_rs", "status")
+    )
+    total_episode: schemas.ValidNumber[1, 1000]
 
 
-class ResponseGenresDTO(schemas.PosterDTO):
-    genres_count: int = Field(ge=1, le=20)
-    genres: sub_enum.Genres
-    alias: str
+class ResponseBannerDTO(BaseModel):
+    anime: ExtRespBannerDTO = Field(
+        validation_alias=AliasChoices("AnimeTable", "anime")
+    )
+    avg: float | None = None
+    total_count: schemas.ValidNumber[1, 9999] | None = None
 
 
-class ResponseTitleDTO(schemas.PosterDTO):
-    uuid_episode: UUID
-    alias: str
-    title: ValidTitle
-    year: ValidYear
-    type: sub_enum.TypeLabel
-    season: sub_enum.SeasonLabel
-    age_restrict: sub_enum.RestrictLabel
-    episode_number: int = Field(ge=1, le=500)
-    genres: List[schemas.GenresDTO]
+class ExtRespNewEpisodeDTO(schemas.ResponseAnimeDTO):
+    poster: schemas.PosterDTO | None = Field(
+        validation_alias=AliasChoices("poster_rs", "poster"),
+        default=None
+    )
+    genres: List[schemas.GenresDTO] = Field(
+        validation_alias=AliasChoices("genres_rs", "genres")
+    )
+    status: schemas.StatusDTO = Field(
+        validation_alias=AliasChoices("status_rs", "status")
+    )
 
 
-class ResponseSchedulesDTO(schemas.PosterDTO):
-    title: ValidTitle
-    episode_number: ValidEpisodes
-    year: ValidYear
-    alias: str
-    season: sub_enum.Season
-    age_restrict: sub_enum.Restrict
-    genres: List[sub_enum.Genres]
-    type: sub_enum.Type
+class ResponseNewEpisodeDTO(BaseModel):
+    anime: ExtRespNewEpisodeDTO = Field(
+        validation_alias=AliasChoices("AnimeTable", "anime")
+    )
+    number: schemas.ValidNumber[1, 1000]
+    uuid_episode: UUIDValid
+
+
+class ExtRespScheduleDTO(schemas.ResponseAnimeDTO):
+    genres: List[schemas.GenresDTO] = Field(
+        validation_alias=AliasChoices("genres_rs", "genres")
+    )
+    poster: Optional[schemas.PosterDTO] = Field(
+        validation_alias=AliasChoices("poster_rs", "poster"),
+    )
+
+
+class ResponseSchedulesDTO(BaseModel):
+    anime: ExtRespScheduleDTO = Field(
+        validation_alias=AliasChoices("AnimeTable", "anime")
+    )
+    episode_number: schemas.ValidNumber[1, 1000]
 
 
 class FranchisesDTO(BaseModel):
-    title: ValidTitle
-    poster: str
-    alias: str
+    title_uuid: UUIDValid
+    sequel_uuid: UUIDValid
+    poster_uuid: UUIDValid | None = None
+    title: schemas.ValidText[5, 150]
+    start_year: schemas.ValidNumber[1970, 2050]
+    end_year: schemas.ValidNumber[1970, 2050]
+    seasons_count: schemas.ValidNumber[1, 999]
+    total_episodes: schemas.ValidNumber[1, 9999]
 
 
-class SearchTitleDTO(schemas.ResponseAnimeDTO):
-    genres_rs: List[schemas.GenresDTO]
-    img_rs: schemas.PosterDTO
-    description: ValidDescription
+class ResponseGenresDTO(BaseModel):
+    genres_count: schemas.ValidNumber[1, 999]
+    label: sub_enum.GenresLabel
+    value: sub_enum.GenresValue
+    poster_uuid: schemas.UUIDValid
 
 
 class RandomTitleDTO(BaseModel):
-    alias: str
+    alias: schemas.ValidText[5, 150]
+
+
+class SearchTitleDTO(BaseModel):
+    uuid: UUIDValid
+    alias: schemas.ValidText[5, 150]
+    title: schemas.ValidText[5, 150]
+    year: schemas.ValidNumber[1970, 2050]
+    type: schemas.TypeDTO = Field(validation_alias=AliasChoices("type_rs", "type"))
+    poster: schemas.PosterDTO = Field(
+        validation_alias=AliasChoices("poster_rs", "poster")
+    )
