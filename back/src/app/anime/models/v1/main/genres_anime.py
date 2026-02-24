@@ -11,7 +11,7 @@ if TYPE_CHECKING:
 
 
 class GenresTable(Base):
-    """Основная таблица с жанрами"""
+    """Таблица с жанрами конкретного аниме"""
 
     __tablename__ = "genres_table"
 
@@ -23,11 +23,11 @@ class GenresTable(Base):
     alias: Mapped[str] = mapped_column(
         ForeignKey("anime_table.alias", onupdate="CASCADE", ondelete="CASCADE"),
     )
-    genre: Mapped[str] = mapped_column(ForeignKey("genres_sub_table.genre"), unique=False)
-    genre_alias: Mapped[str] = mapped_column(ForeignKey("genres_sub_table.alias"))
+    label: Mapped[str] = mapped_column(ForeignKey("genres_sub_table.label"))
+    value: Mapped[str] = mapped_column(ForeignKey("genres_sub_table.value"))
 
     anime_rs: Mapped["AnimeTable"] = relationship(back_populates="genres_rs", foreign_keys=[title])
-    genres_rs: Mapped["GenresSubTable"] = relationship(back_populates="genres_anime_rs", foreign_keys=[genre_alias])
+    genres_rs: Mapped["GenresSubTable"] = relationship(back_populates="genres_anime_rs", foreign_keys=[value])
 
     # сделать уникальным по нескольким столбцам
-    __table_args__ = (UniqueConstraint("title", "genre", "alias"),)
+    __table_args__ = (UniqueConstraint("title", "label", "value", "alias"),)
