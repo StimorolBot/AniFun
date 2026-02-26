@@ -9,7 +9,7 @@ export const AuthTitle = memo(({title, desc}) => {
         <div className="auth__logo-container">
             <Link to={"/"}> 
                 <svg className="auth__logo">
-                    <use xlinkHref="/public/main.svg#logo-svg"/>
+                    <use xlinkHref="/public/logo/logo.svg"/>
                 </svg>
             </Link> 
             <h1 className="auth__title">
