@@ -1,57 +1,52 @@
-import { memo, useEffect, useRef, useState } from "react"
+import { memo, useRef } from "react"
+
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { CSSTransition, SwitchTransition } from "react-transition-group"
 
 import { api } from "../../../../../api"
-import { useFetch } from "../../../../../hook/useFetch"
 
 import { RatingItem } from "./item/rating_item/RatingItem"
 import { Loader } from "../../../../../components/loader/Loader"
 
 import "./style.sass"
 
-
 export const Rating = memo(({title}) => {
     const transitionRef = useRef(null)
-    const [response, setResponse] = useState({
-        "total_count": 0,
-        "avg": 0,
-        "my_rating": 0
+    const queryClient = useQueryClient()
+    
+    const {data: ratingData, isLoading} = useQuery({
+        queryKey: ["rating-data"],
+        staleTime: 1000 * 60 * 3,
+        retry: false,
+        queryFn: async () => {
+            return await api.get("/anime/rating/", {params: {"title": title, "is_raise_exception": false}}).then(r => r.data) 
+        }
     })
 
-    const [request, isLoading, error] = useFetch(
-        async () => {
-            await api.get(`/anime/rating/`, {params: {"title": title, "is_raise_exception": false}})
-            .then((r) => {
-                setResponse(r.data)
-            })
+    const callback = async (currentRating) => {
+        if (ratingData?.my_rating == currentRating)
+            return await api.delete(
+                "/anime/rating/delete-rating", 
+                {data: {"star": currentRating, "title": title}}
+            ).then(r => r.data)
+        else if ((ratingData?.my_rating === 0) || (ratingData?.my_rating === undefined))
+            return await api.post(
+                "/anime/rating/set-rating", 
+                {"star": currentRating, "title": title}
+            ).then(r => r.data)
+        else if (ratingData?.my_rating != currentRating)
+            return await api.patch(
+                "/anime/rating/update-rating",
+                {"star": currentRating, "title": title}
+            ).then(r => r.data)
+    }
+
+    const mutation = useMutation({
+        mutationFn: callback,
+        onSuccess: () => {
+            queryClient.invalidateQueries({queryKey: ["rating-data"]})
         }
-    )
-
-    const [requestRating, isLoadingRating, errorRating] = useFetch(
-        async (currentRating) => {
-            if (response?.my_rating == currentRating)
-                await api.delete(
-                    "/anime/rating/delete-rating", 
-                    {data: {"star": currentRating, "title": title}}
-                ).then((r) => setResponse(r.data))
-            else if ((response?.my_rating === 0) || (response?.my_rating === undefined))
-                await api.post(
-                    "/anime/rating/set-rating", 
-                    {"star": currentRating, "title": title}
-                ).then((r) => setResponse(r.data))
-            else if (response?.my_rating != currentRating)
-                await api.patch(
-                    "/anime/rating/update-rating",
-                    {"star": currentRating, "title": title}
-                ).then((r) => setResponse(r.data))
-            }
-        )
-
-    useEffect(() => {(
-        async () => {
-            await request()
-        })()
-    }, [title])
+    }) 
 
     return(
         <div className="rating">
@@ -62,16 +57,16 @@ export const Rating = memo(({title}) => {
                     nodeRef={transitionRef} 
                     timeout={300}
                 >
-                    { isLoading || isLoadingRating
+                    { isLoading
                         ? <Loader size={"small"} />
                         : <div className="rating__container" ref={transitionRef}>  
-                            <span className="rating__user">{response?.avg ? response.avg : 0}/10</span>
-                            <span className="rating__count">{response?.total_count}</span>
+                            <span className="rating__user">{ratingData?.avg || 0}/10</span>
+                            <span className="rating__count">{ratingData?.total_count}</span>
                             <div className="rating-star__list">
                                 <RatingItem 
-                                    myRating={response?.my_rating} 
+                                    myRating={ratingData?.my_rating} 
                                     starsList={[10,9,8,7,6,5,4,3,2,1]}
-                                    requestRating={requestRating}
+                                    mutation={mutation}
                                 />
                             </div>
                         </div>
