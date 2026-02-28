@@ -13,9 +13,9 @@ if TYPE_CHECKING:
 
 
 class CommentTable(Base):
-    __tablename__ = "comment_table"
-
     """Таблица для хранения комментариев"""
+
+    __tablename__ = "comment_table"
 
     uuid: Mapped[UUID] = mapped_column(primary_key=True, default=generate_uuid, unique=True)
     title: Mapped[str] = mapped_column(
@@ -30,8 +30,9 @@ class CommentTable(Base):
 
 
 class ResponseCommentTable(Base):
-    __tablename__ = "response_commet_table"
     """Таблица для хранения ответов на комментарии"""
+
+    __tablename__ = "response_commet_table"
 
     uuid: Mapped[UUID] = mapped_column(primary_key=True, default=generate_uuid, unique=True)
     title: Mapped[str] = mapped_column(

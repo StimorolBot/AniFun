@@ -1,7 +1,7 @@
 from abc import ABC
 
 
-class RedisAbs(ABC):
+class RedisAbc(ABC):
 
     @staticmethod
     async def get_value(*args, **kwargs):
