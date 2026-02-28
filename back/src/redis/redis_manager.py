@@ -1,10 +1,10 @@
 import json
 
-from src.redis.abs_model.redis import RedisAbs
+from src.redis.abs_model.redis import RedisAbc
 from src.redis.config import redis
 
 
-class RedisManager(RedisAbs):
+class RedisManager(RedisAbc):
 
     @staticmethod
     async def get_value(key) -> dict | None:
