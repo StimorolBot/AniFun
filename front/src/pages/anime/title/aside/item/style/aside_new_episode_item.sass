@@ -1,0 +1,72 @@
+@use "/src/style/color.sass" as *
+
+    
+.aside-ep__item
+    margin-top: 20px
+    position: relative
+
+    &:not([src])::before
+        content: ""
+        position: absolute
+        width: 100%
+        height: 100%    
+        opacity: 0.2
+        background-color: $sub-black-2
+        border-radius: 10px
+
+.aside-ep__link
+    overflow: hidden
+    height: 125px
+    display: flex
+    border-radius: 8px
+
+    &:hover
+        .aside-ep__img
+            opacity: 0.15     
+
+.aside-ep__img
+    object-fit: cover
+    width: 100%
+    opacity: 0.05
+    transition: opacity 0.3s
+
+    &:not([src])
+        opacity: 0
+        visibility: hidden
+
+.aside-ep__info
+    padding: 0 10px
+    position: absolute
+    z-index: 9
+    top: 50%
+    left: 0
+    transform: translate(0, -50%)
+    max-height: 100px
+    overflow: hidden
+    font-size: 14px
+    font-weight: 100
+
+    h4
+        font-size: 16px
+        font-weight: 800
+        overflow: hidden
+        display: -webkit-box
+        -webkit-line-clamp: 2
+        -webkit-box-orient: vertical
+        text-overflow: ellipsis
+        text-wrap: balance
+
+    p
+        margin-top: 6px
+        margin-bottom: 4px
+        font-size: 15px
+        color: $sub-white-2
+
+.aside-ep-desc__list
+    display: flex
+    column-gap: 12px
+    opacity: 0.4
+    text-transform: capitalize
+
+    li + li::marker
+        content: "• "
