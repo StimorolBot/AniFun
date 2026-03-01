@@ -1,0 +1,28 @@
+@use "/src/style/color.sass" as * 
+
+    
+.progress-episode__container
+    margin: 15px 0
+    display: flex
+    column-gap: 20px
+    justify-content: space-between
+    align-items: center
+
+.progress-episode
+    width: 85%
+    height: 4px
+    appearance: none
+    
+    &::-webkit-progress-bar
+        border-radius: 4px
+        overflow: hidden
+    
+    &::-webkit-progress-value
+        background-color: $red
+
+.progress-episode__text
+    width: 190px
+    text-align: center
+    font-size: 14px
+    color: $gray
+    font-weight: 600
