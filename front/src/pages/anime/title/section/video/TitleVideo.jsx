@@ -1,64 +1,71 @@
-import { useEffect, useState } from "react"
+import {  useState } from "react"
+import { useQueries, useQuery } from "@tanstack/react-query"
 
 import { api } from "../../../../../api"
-import { useFetch } from "../../../../../hook/useFetch"
 
 import { TitleVideoItem } from "./item/TitleVideoItem"
-import { ProgressDefault } from "../../../../../ui/progressbar/ProgressDefault"
+import { InputSearch } from "../../../../../ui/input/InputSearch"
+import { ProgressEpisode } from "../../../../../ui/progressbar/ProgressEpisode"
 
-import { InputSearchTitle } from "../../../../../ui/input/InputSearchTitle"
 import { Loader } from "../../../../../components/loader/Loader"
 
 import "./style.sass"
 
 
-export const TitleVideo = ({title, lastEpisode, currentSlide}) => {
+export const TitleVideo = ({title, totalEpisodes, currentSlide}) => {
     const [titleSearch, setTitleSearch] = useState("")
-    const [response, setResponse] = useState([{
-        "uuid": "",
-        "date_add": "",
-        "episode_number": "",
-        "episode_name": "",
-        "preview": ""
-    }])
-
-    const [request, isLoading, error] = useFetch(
-        async () => {
-            await api.get(`anime/releases/release/${title}/episodes/released`, {params:{"title": title}})
-            .then((r) => {setResponse(r.data)})
-        }
-    )
-
-    useEffect(() => {(
-        async () => {
-            if (currentSlide.request === "episode")
-                await request(title)
-        })()
-    }, [currentSlide.request, title])
     
+    const {data: episodeData, isLoading} = useQuery({
+        queryKey: ["episode-data"],
+        staleTime: 1000 * 60 * 3,
+        retry: false,
+        queryFn: async () => {
+            return await api.get(`anime/episodes/${title}`, {params: {"title": title}}).then(r => r.data)
+        },
+        placeholderData: []
+    })
+
+    const imgData = useQueries({
+        queries: episodeData?.map(item => ({
+        queryKey: ["episode-preview", item.preview_uuid],
+        staleTime: 1000 * 60 * 3,
+        queryFn: async () => {
+            return await api.get(`/s3/anime-${item.title_uuid}/${item.preview_uuid}`).then(r => r.data)
+        }}))
+    })
+
+    const searchTitleCallback = () => {
+        const searchTitle = episodeData.filter(f => (f.name?.includes(titleSearch.toLowerCase())) || (f.number == titleSearch))
+        if (searchTitle.length !== 0)
+            return searchTitle.map((item, index) => {
+                return <TitleVideoItem item={item} key={index}/>
+            })
+        else
+            return <p className="title-search__not-found">
+                Не удалось найти эпизод :(
+            </p>
+    }
+
     return(
-        <section className="title-release__slide" style={{"marginLeft": currentSlide.marginLeft}}>
+        <section className="title-release__section" style={{"marginLeft": currentSlide.marginLeft}}>
             {isLoading
                 ? <Loader/>
-                : response.length > 1
+                : episodeData
                     ?<>
                         <div className="title-release__container">
-                            <InputSearchTitle
-                                value={titleSearch} 
-                                setValue={setTitleSearch} 
+                            <InputSearch
+                                val={titleSearch} 
+                                setVal={setTitleSearch} 
                                 placeholder={"Введите название или номер серии"}
                             />
                         </div>
-                        <ProgressDefault lastEpisode={lastEpisode}/>
+                        <ProgressEpisode maxValue={totalEpisodes}/>
                         <ul className="title-video__list">
                             {titleSearch === ""
-                                ? response.map((item, index) => {
-                                    return <TitleVideoItem item={item} key={index}/> 
+                                ? episodeData.map((item, index) => {
+                                    return <TitleVideoItem item={item} imgData={imgData[index].data} key={index}/> 
                                 })
-                                : response.filter(f => (f.episode_name?.includes(titleSearch)) || (f.episode_number == titleSearch))
-                                    .map((item, index) => {
-                                        return <TitleVideoItem item={item} key={index}/> 
-                                })
+                                : searchTitleCallback()
                             }   
                         </ul>
                     </>
