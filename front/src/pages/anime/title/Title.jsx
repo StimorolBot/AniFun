@@ -1,22 +1,22 @@
-import { useEffect, useRef, useState } from "react"
+import { useRef, useState } from "react"
 
 import { Helmet } from "react-helmet"
 import { useParams } from "react-router-dom"
+import { useQuery } from "@tanstack/react-query"
 import { CSSTransition, SwitchTransition } from "react-transition-group"
 
 import { api } from "../../../api"
-import { useFetch } from "../../../hook/useFetch"
 
 import { Header } from "../../../components/header/Header"
 import { Footer } from "../../../components/footer/Footer"
 
-import { TitleNav } from "./nav/TitleNav/TitleNav"
+import { TitleNav } from "./nav/TitleNav"
 import { AsideRecommendTitle } from "./aside/AsideRecommendTitle"
 import { Loader } from "../../../components/loader/Loader"
 
 import { AboutTitle } from "./section/about/AboutTitle"
 import { TitleVideo } from "./section/video/TitleVideo"
-import { TitleContinuation } from "./section/continuation/TitleContinuation"
+import { TitleSequel } from "./section/sequel/TitleSequel"
 import { TitleComment } from "./section/comment/TitleComment"
 import { TitleSchedule } from "./section/schedule/TitleSchedule"
 
@@ -26,58 +26,34 @@ import "./style.sass"
 export const Title = () => {    
     const {alias} = useParams() 
     const transitionRef = useRef(null)
-    const [subNav, setSubNav] = useState([])
-    const [currentSlide, setCurrentSlide] = useState({"position": 0, "width": 94, "request": "episode"})
-    const [response, setResponse] = useState({
-        "title": null,
-        "year": null,
-        "type": null,
-        "season": null,
-        "age_restrict": null,
-        "description": null,
-        "status": null,
-        "total_episode": null,
-        "is_origin": null,
-        "day_week": null,
-        "poster": null,
-        "genres": []
+    const [currentSlide, setCurrentSlide] = useState({"position": 0, "width": 94, "section": "episode"})
+    
+    const {data: titleData, isLoading, error} = useQuery({
+        queryKey: ["title-data", alias],
+        staleTime: 1000 * 60 * 3,
+        retry: false,
+        queryFn: async () => {
+            return await api.get(`anime/about/${alias}`, {params: {"alias": alias}}).then(r => r.data)
+        },
+        placeholderData: []
     })
 
-    const [request, isLoading, error] = useFetch(
-        async () => {
-            await api.get(`anime/${alias}`, {params: {"alias": alias}})
-            .then((r) => {
-                setResponse(r.data)
-                setSubNav([
-                    {
-                        "name": "Главная страница",
-                        "path": "/"
-                    },
-                    {
-                        "name": "Аниме",
-                        "path": "/anime/"
-                    },
-                    {
-                        "name": r.data.title,
-                        "path": "#"
-                    }
-                ])
-                })
-            }
-        )
-
-    useEffect(() => {(
-        async () => {
-            await request()
-        })()
-    }, [alias])
+    const {data: imgData} = useQuery({
+        queryKey: ["title-poster"],
+        enabled: !! titleData?.anime?.poster.poster_uuid,
+        staleTime: 1000 * 60 * 3,
+        retry: false,
+        queryFn: async () => {
+            return api.get(`/s3/anime-${titleData.anime.uuid}/${titleData.anime.poster.poster_uuid}`).then(r => r.data) 
+        }
+    })
 
     return(<>
         <Helmet>
-            <title>{response.title}</title>
-            <meta property="og:title" content={response.title}/>
-            <meta property="og:description" content={response.description}/>
-            <meta property="og:image" content={`data:image/webp;base64,${response.poster}`}/>
+            <title>{titleData?.anime?.title}</title>
+            <meta property="og:title" content={titleData?.anime?.title}/>
+            <meta property="og:description" content={titleData?.anime?.description}/>
+            <meta property="og:image" content={imgData}/>
         </Helmet>
         <div className="wrapper">
             <Header/>
@@ -90,42 +66,45 @@ export const Title = () => {
                 >   
                     {isLoading
                     ?<Loader/>
-                    :<main className="main">
+                    :<main className="main" ref={transitionRef}>
                         <h1 className="title-page"> 
-                            {`Смотреть аниме ${response.title}`}
+                            {`Смотреть аниме ${titleData?.anime?.title}`}
                         </h1>
                         <div className="container">
+                        {titleData?.anime && 
                             <div className="container__inner">
                                 <div className="section__container">
-                                    <AboutTitle response={response} subNav={subNav}/>
+                                    <AboutTitle titleData={titleData} imgData={imgData}/>
                                     <TitleNav setCurrentSlide={setCurrentSlide} currentSlide={currentSlide}/> 
                                     <div className="title-episode__slider">
                                         <TitleVideo
-                                            title={response.title} 
-                                            lastEpisode={response.last_episode} 
+                                            title={titleData.anime.title} 
+                                            alias={titleData.anime.alias}
+                                            totalEpisodes={titleData?.anime?.total_episode} 
                                             currentSlide={currentSlide}
                                         />
-                                        <TitleContinuation 
+                                        <TitleSequel
                                             currentSlide={currentSlide} 
-                                            alias={alias} 
-                                            title={response?.title}
-                                            isOrigin={response?.is_origin}    
+                                            title={titleData.anime.title}
+                                            alias={titleData.anime.alias}
+                                            isOrigin={titleData.anime.is_origin}    
                                         />
                                         <TitleComment 
                                             currentSlide={currentSlide} 
-                                            alias={alias} 
-                                            title={response?.title}
+                                            alias={titleData.anime.alias} 
+                                            title={titleData.anime.title}
                                         />
                                         <TitleSchedule 
-                                            currentSlide={currentSlide} 
-                                            title={response?.title} 
-                                            alias={alias}
+                                            currentSlide={currentSlide}
+                                            alias={titleData.anime.alias}
+                                            title={titleData.anime.title} 
                                         />
-                                    </div>                    
+                                    </div>                     
                                 </div>
                                 <AsideRecommendTitle/>
                             </div>
-                        </div>
+                        }
+                        </div>                
                     </main>
                     }
                 </CSSTransition>
@@ -135,4 +114,3 @@ export const Title = () => {
     </>
     )
 }
-                            
