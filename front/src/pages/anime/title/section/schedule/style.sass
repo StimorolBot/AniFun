@@ -1,0 +1,52 @@
+@use "/src/style/color.sass" as *
+
+
+.title-schedule__warning
+    color: $white
+    font-size: 16px
+    opacity: 0.5
+    font-style: italic
+
+.schedule-table__inner
+    overflow-y: hidden
+    transition: 0.3s
+
+.schedule-table
+    width: 100%
+    margin-top: 10px
+
+.schedule-table__head
+    background-color: $sub-gray
+
+    th
+        padding: 6px
+
+.schedule-table__body
+    tr
+        border-bottom: 1px solid $sub-white
+        transition: border-bottom 0.3s
+
+        &:hover
+            border-bottom: 1px solid $red
+            
+            th
+                color: $white
+
+    th
+        color: $sub-white-2
+        font-size: 18px
+        padding: 15px 8px
+        text-transform: capitalize
+        transition: color 0.3s
+
+        
+
+.btn-show-mere__container
+    margin-top: 20px  
+    
+    .btn-default
+        color: $white
+        display: block
+        margin: 0 auto
+        font-family: "Jura", sans-serif
+        font-size: 16px
