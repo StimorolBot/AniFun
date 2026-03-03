@@ -12,11 +12,11 @@ import { Loader } from "../../../../../components/loader/Loader"
 import "./style.sass"
 
 
-export const TitleVideo = ({title, totalEpisodes, currentSlide}) => {
+export const TitleVideo = ({title, alias, totalEpisodes, currentSlide}) => {
     const [titleSearch, setTitleSearch] = useState("")
     
     const {data: episodeData, isLoading} = useQuery({
-        queryKey: ["episode-data"],
+        queryKey: ["episode-data", alias],
         staleTime: 1000 * 60 * 3,
         retry: false,
         queryFn: async () => {
@@ -50,7 +50,7 @@ export const TitleVideo = ({title, totalEpisodes, currentSlide}) => {
         <section className="title-release__section" style={{"marginLeft": currentSlide.marginLeft}}>
             {isLoading
                 ? <Loader/>
-                : episodeData
+                : episodeData?.length !== 0
                     ?<>
                         <div className="title-release__container">
                             <InputSearch
