@@ -1,5 +1,5 @@
 import { Helmet } from "react-helmet"
-import { useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { useForm } from "react-hook-form"
 import { useLocation, useNavigate } from "react-router-dom"
 import { CSSTransition, SwitchTransition } from "react-transition-group"
@@ -15,6 +15,7 @@ import { AuthBg } from "../components/AuthBg"
 import { AuthTitle } from "../components/AuthTitle"
 import { AuthWarning } from "../components/AuthWarning"
 import { AlertResponse } from "../../../ui/alert/AlertResponse"
+import { Loader } from "../../../components/loader/Loader"
 
 
 export function VerifyEmail(){
@@ -30,7 +31,7 @@ export function VerifyEmail(){
             "email_token": ""
         }
     })
-
+    
     const [request, isLoading, error] = useFetch(
         async (data, event) => {
             event.preventDefault()
@@ -40,17 +41,24 @@ export function VerifyEmail(){
             })
             .then((r) => {
                 cookies.set(
-                    "access_token", r.data["access_token"],
+                    "access_token", r.data.access_token,
                     {path: "/"}
                 )
                 cookies.set(
-                    "refresh_token", r.data["refresh_token"],
+                    "refresh_token", r.data.refresh_token,
                     {path: "/"}
                 )
                 navigate("/")
             })
         }
     )
+
+    useEffect(() => {
+        document.addEventListener("keydown", e => e.stopImmediatePropagation())            
+        return () => {
+            document.removeEventListener("keydown", e => e.stopImmediatePropagation())
+        }
+    })
 
     return(<>
         <Helmet>
@@ -80,7 +88,8 @@ export function VerifyEmail(){
                                 </>}/>
                                 <form className="auth__form" ref={clickRef} onSubmit={handleSubmit(request)}>
                                     <InputToken 
-                                        labelTitle={"Токен из письма"} 
+                                        labelTitle={"Токен из письма"}
+                                        id={"email_token"}
                                         register={register} errors={errors} 
                                         clickRef={clickRef} watch={watch}
                                     />
@@ -99,7 +108,7 @@ export function VerifyEmail(){
                     msg={error?.response?.data} 
                     statusCode={error?.status} 
                     update={updateAlert}
-                    setResponse={reset}
+                    setResponse={() => reset()}
                     prefix={error?.response && "error"}
                 />
             }
