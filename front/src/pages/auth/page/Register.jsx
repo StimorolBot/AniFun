@@ -1,5 +1,5 @@
 import { Helmet } from "react-helmet"
-import { useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { useForm } from "react-hook-form"
 import { Link, useNavigate } from "react-router-dom"
 import { CSSTransition, SwitchTransition } from "react-transition-group"
@@ -44,7 +44,14 @@ export function Register(){
             })
         }
     )
-    
+
+    useEffect(() => {
+        document.addEventListener("keydown", e => e.stopImmediatePropagation())            
+        return () => {
+            document.removeEventListener("keydown", e => e.stopImmediatePropagation())
+        }
+    })
+
     return(<>
         <Helmet>
             <title>Регистрация</title>
@@ -112,7 +119,7 @@ export function Register(){
                         msg={error?.response?.data} 
                         statusCode={error?.status} 
                         update={updateAlert}
-                        setResponse={reset}
+                        setResponse={() => reset()}
                         prefix={error?.response && "error"}
                     />
                 }
