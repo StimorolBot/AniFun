@@ -4,17 +4,16 @@ import { CSSTransition } from "react-transition-group"
 import "./style/alert_response.sass"
 
 
-export const AlertResponse = memo(({msg, statusCode, prefix, update, setResponse, timeout=6000}) => {
+export const AlertResponse = memo(({msg, statusCode, prefix, update, timeout=6000}) => {
     const alertRef = useRef(null)
     const [isShowAlert, setIsShowAlert] = useState(false)
 
     useEffect(() => {
         if ((msg !== undefined) && (statusCode !== undefined)){
             setIsShowAlert(true)            
-            const timer = setTimeout(() => setIsShowAlert(false), timeout)    
-                return () => {
-                    clearTimeout(timer)
-                    setResponse()
+            const timer = setTimeout(() => setIsShowAlert(false), timeout)  
+            return () => {
+                clearTimeout(timer)
             }
         } 
     }, [update])
