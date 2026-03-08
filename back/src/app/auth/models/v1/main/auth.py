@@ -10,7 +10,7 @@ from src.utils.utils import generate_uuid, get_unc_now
 
 if TYPE_CHECKING:
     from src.app.anime.models.v1.main.comment import ResponseCommentTable
-    from src.app.auth.models.v1.main.token import TokenTable
+    from src.app.auth.models.v1.main.ban import BanTable
     from src.app.user.models.v1.avatar import AvatarTable
 
 
@@ -27,7 +27,7 @@ class AuthTable(Base):
     is_superuser: Mapped[bool] = mapped_column(default=False, server_default=false())
     is_verified: Mapped[bool] = mapped_column(default=False, server_default=false())
 
-    token_rs: Mapped["TokenTable"] = relationship(back_populates="auth_rs")
+    ban_rs: Mapped["BanTable"] = relationship(back_populates="auth_rs")
     avatar_rs: Mapped["AvatarTable"] = relationship(back_populates="auth_rs")
     response_rs: Mapped["ResponseCommentTable"] = relationship(
         back_populates="auth_rs",
