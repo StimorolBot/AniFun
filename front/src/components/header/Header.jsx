@@ -10,6 +10,7 @@ import { BtnDefault } from "../../ui/btn/BtnDefault"
 
 import { api } from "../../api"
 import { useFetch } from "../../hook/useFetch"
+import { cookies } from "../../cookie"
 
 import "./style/header.sass"
 
@@ -20,14 +21,23 @@ export function Header() {
 
     const [isShowPopup, setIsShowPopup] = useState(false)
 
-    const {data: authData, isLoading, error} = useQuery({
-        queryKey: ["auth-data"],
+    const {data: imgData, isLoading, error} = useQuery({
+        queryKey: ["user-avatar"],
         staleTime: 1000 * 60 * 3,
-        retry: false,
-        queryFn: async () => {
-            return await api.get("/users/info", {params: {"is_raise_exception": false}}).then(r => r.data)
+        retry: async (error) => {
+            if (error.status !== 401){
+                const accessToken = await api.post("auth/refresh-token").then(r => r.data.access_token)
+                cookies.set(
+                    "access_token", accessToken,
+                    {path: "/"}
+                )
+            }
         },
-        placeholderData: []
+        queryFn: async () => {
+            return await api.get("/users/avatar", 
+                {params: {"is_raise_exception": cookies.cookies.access_token ? true : false}}
+            ).then(r => r.data)
+        }
     })
 
     const [requestRandomTitle, _] = useFetch(
@@ -107,9 +117,9 @@ export function Header() {
                         <li className="header__list-item">
                             {isLoading
                             ? <Loader size={"small"}/>
-                            : authData?.uuid
-                                ?<Link className="header__avatar-link" to={`/users/${authData.uuid}`}>
-                                    <img className="header__avatar" src={`data:image/webp;base64,${authData.avatar}`} alt="user_avatar" />
+                            : imgData?.uuid
+                                ?<Link className="header__avatar-link" to={`/users/${imgData.uuid}`}>
+                                    <img className="header__avatar" src={imgData.url} alt="user_avatar" />
                                 </Link>
                                 :<Link className="header__link header__link_auth" to={"/auth/login"} title="Войти">
                                     <svg className="header__svg">
