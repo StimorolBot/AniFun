@@ -2,11 +2,11 @@ import { useRef, useState } from "react"
 
 import { Helmet } from "react-helmet"
 import { useForm } from "react-hook-form"
-import { Link, useNavigate } from "react-router-dom"
+import { Link, useLocation, useNavigate } from "react-router-dom"
 import { CSSTransition, SwitchTransition } from "react-transition-group"
+import { useQuery, useQueryClient } from "@tanstack/react-query"
 
 import { api } from "../.././../api"
-import { useFetch } from "../../../hook/useFetch"
 
 import { AuthBg } from "../components/AuthBg"
 import { AuthTitle } from "../components/AuthTitle"
@@ -19,28 +19,43 @@ import { Loader } from "../../../components/loader/Loader"
 
 
 export function ResetPassword(){
+    const location = useLocation()
     const navigate = useNavigate()
-    const [updateAlert, setUpdateAlert] = useState()
+    const queryClient = useQueryClient()
+    
+    const data = useRef()
     const clickRef = useRef(false)
     const transitionRef = useRef(null)
+   
+    const [updateAlert, setUpdateAlert] = useState()
+   
     const {register, handleSubmit, watch, formState: {errors, isValid}, reset} = useForm({
         mode: "onChange",
         defaultValues:{
-            "email_token": "",
+            "identifier_token": "",
             "password": "",
             "password_confirm": ""
         }
     })
 
-    const [request, isLoading, error] = useFetch(
-        async (data, event) => {
-            event.preventDefault()
-            await api.patch("/auth/reset-password", data)
-            .then(() => {
-                navigate("/auth/login")
-            })
+    const {resetPassword, refetch, isLoading, error} = useQuery({
+        queryKey: ["reset-password"],
+        enabled: !!data.current,
+        staleTime: 0,
+        retry: () => {
+            reset()
+            queryClient.invalidateQueries({queryKey: ["reset-password"]})
+        },
+        queryFn: async () => {
+            await api.patch("/auth/reset-password", {...location.state?.recaptcha_token || "", ...data.current} ) 
+            return  navigate("/auth/login")
         }
-    )
+    })
+
+    const onSubmit = (d) => {
+        data.current  = d
+        refetch()
+    }
 
     return(<>
         <Helmet>
@@ -69,8 +84,8 @@ export function ResetPassword(){
                                     Проверьте Вашу почту и найдите письмо с токеном восстановления пароля
                                 </>}
                             />
-                            <form className="auth__form" ref={clickRef} onSubmit={handleSubmit(request)}>
-                                <InputToken register={register} errors={errors} clickRef={clickRef} watch={watch}/>
+                            <form className="auth__form" ref={clickRef} onSubmit={handleSubmit(onSubmit)}>
+                                <InputToken id={"identifier_token"} register={register} errors={errors} clickRef={clickRef} watch={watch}/>
                                 <InputPassword register={register} errors={errors} clickRef={clickRef} watch={watch}/>
                                 <InputPassword 
                                     id={"password_confirm"} labelTitle={"Повторите пароль"} register={register} 
@@ -102,7 +117,6 @@ export function ResetPassword(){
                     msg={error?.response?.data} 
                     statusCode={error?.status} 
                     update={updateAlert}
-                    setResponse={reset}
                     prefix={error?.response && "error"}
                 />
              }

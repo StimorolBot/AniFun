@@ -4,9 +4,9 @@ import { Helmet } from "react-helmet"
 import { useForm } from "react-hook-form"
 import { Link, useNavigate } from "react-router-dom"
 import { CSSTransition, SwitchTransition } from "react-transition-group"
+import { useQuery, useQueryClient } from "@tanstack/react-query"
 
 import { api } from "../../../api"
-import { useFetch } from "../../../hook/useFetch"
 
 import { BtnAuth } from "../ui/btn/BtnAuth"
 import { AuthBg } from "../components/AuthBg"
@@ -20,26 +20,40 @@ import { Loader } from "../../../components/loader/Loader"
 
 
 export function ResetPasswordToken(){
+    const data = useRef()
     const clickRef = useRef(null)
     const transitionRef = useRef(null)
+    
     const navigate = useNavigate()
+    const queryClient = useQueryClient()
+
     const [updateAlert, setUpdateAlert] = useState()
+    
     const {register, handleSubmit, watch, formState: {errors, isValid}, reset} = useForm({
         mode: "onChange",
         defaultValues:{
             "identifier": ""
         }
     })
-    
-    const [request, isLoading, error] = useFetch(
-        async (data, event) => {
-            event.preventDefault()
-            await api.post("/auth/token-password", data)
-            .then((r) => {
-                navigate("/auth/reset-password")
-            })
+
+    const {resetPasswordData, refetch, isLoading, error} = useQuery({
+        queryKey: ["reset-password-token"],
+        enabled: !!data.current,
+        staleTime: 0,
+        retry: () => {
+            reset()
+            queryClient.invalidateQueries({queryKey: ["reset-password-token"]})
+        },
+        queryFn: async () => {
+            const recaptchaToken = await api.post("/auth/token-password", data.current).then(r => r.data) 
+            return navigate("/auth/reset-password", {state: {recaptcha_token: recaptchaToken}})
         }
-    )
+    })
+    
+    const onSubmit = (d) => {
+        data.current  = d
+        refetch()
+    }
     
     return(
         <>
@@ -70,7 +84,7 @@ export function ResetPasswordToken(){
                                     Вам письмо с дальнейшими инструкциями.
                                 </>}
                             />
-                            <form className="auth__form" ref={clickRef} onSubmit={handleSubmit(request)}>
+                            <form className="auth__form" ref={clickRef} onSubmit={handleSubmit(onSubmit)}>
                                 <InputEmail register={register} errors={errors} clickRef={clickRef} watch={watch}/>
                                 <BtnAuth isValid={isValid} callback={() => setUpdateAlert(Date.now())}>
                                     Восстановить пароль
@@ -95,7 +109,6 @@ export function ResetPasswordToken(){
                     msg={error?.response?.data} 
                     statusCode={error?.status} 
                     update={updateAlert}
-                    setResponse={reset}
                     prefix={error?.response && "error"}
                 />
             }
