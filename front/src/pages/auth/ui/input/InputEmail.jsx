@@ -20,7 +20,7 @@ export function InputEmail({register, errors, clickRef, watch}){
             errorMsg={errors?.identifier?.message}
         >
             <svg className="auth__svg">
-                <use xlinkHref="/public/main.svg#login-svg"/>
+                <use xlinkHref="/public/svg/auth.svg#email-svg"/>
             </svg>
         </InputMainAuth>
     )
