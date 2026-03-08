@@ -6,10 +6,9 @@ from .smtp.utils import create_server, get_template
 
 
 @celery.task(name="smtp_task", max_retries=3, default_retry_delay=3, limit=3)
-def send_email(user_email: str, email_type: TypeEmail, token: str):
+def send_email(user_email: str, email_type: TypeEmail, **kwargs):
     email = EmailMessage()
-    template = get_template(email, email_type, token)
+    template = get_template(email=email, email_type=email_type, **kwargs)
     create_server(template)
-
 
 #   celery -A celery_task.config:celery worker --loglevel=INFO --pool=solo
