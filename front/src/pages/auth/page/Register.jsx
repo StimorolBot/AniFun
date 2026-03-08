@@ -1,11 +1,12 @@
-import { Helmet } from "react-helmet"
 import { useEffect, useRef, useState } from "react"
+
+import { Helmet } from "react-helmet"
 import { useForm } from "react-hook-form"
 import { Link, useNavigate } from "react-router-dom"
 import { CSSTransition, SwitchTransition } from "react-transition-group"
+import { useQuery, useQueryClient } from "@tanstack/react-query"
 
 import { api } from "../../../api"
-import { useFetch } from "../../../hook/useFetch"
 
 import { AuthBg } from "../components/AuthBg"
 import { AuthTitle } from "../components/AuthTitle"
@@ -22,9 +23,14 @@ import { Loader } from "../../../components/loader/Loader"
 
 export function Register(){
     const navigate = useNavigate()
+    const queryClient = useQueryClient()
+
+    const data = useRef()
     const clickRef = useRef(false)
     const transitionRef = useRef(null)
+    
     const [updateAlert, setUpdateAlert] = useState()
+    
     const {register, handleSubmit, watch, formState: {errors, isValid}, reset} = useForm({
         mode: "onChange",
         defaultValues:{
@@ -34,17 +40,26 @@ export function Register(){
             "password_confirm": ""
         }
     })
-    
-    const [request, isLoading, error] = useFetch(
-        async (data, event) => {
-            event.preventDefault()
-            await api.post("/auth/register", data)
-            .then((r) => {
-                navigate("/auth/verify-email", {state: {recaptcha_token: r.data.recaptcha_token}})
-            })
-        }
-    )
 
+    const {loginData, refetch, isLoading, error} = useQuery({
+        queryKey: ["register-data"],
+        enabled: !!data.current,
+        staleTime: 0,
+        retry: () => {
+            reset()
+            queryClient.invalidateQueries({queryKey: ["register-data"]})
+        },
+        queryFn: async () => {
+            const recaptchaToken =  await api.post("/auth/register", data.current).then(r => r.data)
+            return navigate("/auth/verify-email", {state: {recaptcha_token: recaptchaToken}})
+        }
+    })
+
+    const onSubmit = (d) => {
+        data.current  = d
+        refetch()
+    }
+    
     useEffect(() => {
         document.addEventListener("keydown", e => e.stopImmediatePropagation())            
         return () => {
@@ -79,7 +94,7 @@ export function Register(){
                                     Также, можно зарегистрироваться через социальные сети
                                 </>}
                             />
-                            <form className="auth__form" ref={clickRef} onSubmit={handleSubmit(request)}>
+                            <form className="auth__form" ref={clickRef} onSubmit={handleSubmit(onSubmit)}>
                                 <InputName register={register} errors={errors} clickRef={clickRef} watch={watch}/>
                                 <InputEmail register={register} errors={errors} clickRef={clickRef} watch={watch}/>
                                 <InputPassword register={register} errors={errors} clickRef={clickRef} watch={watch}/>
@@ -119,7 +134,6 @@ export function Register(){
                         msg={error?.response?.data} 
                         statusCode={error?.status} 
                         update={updateAlert}
-                        setResponse={() => reset()}
                         prefix={error?.response && "error"}
                     />
                 }
