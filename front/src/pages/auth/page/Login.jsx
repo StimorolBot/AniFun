@@ -1,12 +1,13 @@
+import { useEffect, useRef, useState } from "react"
+
 import { Helmet } from "react-helmet"
-import { useRef, useState } from "react"
 import { useForm } from "react-hook-form"
 import { Link, useNavigate } from "react-router-dom"
 import { CSSTransition, SwitchTransition } from "react-transition-group"
+import { useQuery, useQueryClient } from "@tanstack/react-query"
 
 import { api } from "../../../api"
 import { cookies } from "../../../cookie"
-import { useFetch } from "../../../hook/useFetch"
 
 import { InputEmail } from "../ui/input/InputEmail"
 import { InputPassword } from "../ui/input/InputPassword"
@@ -22,9 +23,14 @@ import { OAuth } from "../components/OAuth"
 
 export function Login(){    
     const navigate = useNavigate()
-    const transitionRef = useRef(null)
+    const queryClient = useQueryClient()
+    
+    const data = useRef()
     const clickRef = useRef(false)
+    const transitionRef = useRef(null)
+    
     const [updateAlert, setUpdateAlert] = useState()
+    
     const {register, handleSubmit, watch, formState: {errors, isValid}, reset} = useForm({
         mode: "onChange",
         defaultValues:{
@@ -32,20 +38,41 @@ export function Login(){
             "password": ""
         }
     })
-        
-    const [request, isLoading, error] = useFetch(
-        async (data) => {
-            await api.patch("/auth/login", data)
-            .then((r) => {
-                cookies.set(
-                    "access_token", r.data["access_token"],
-                    {path: "/"}
-                )
-                navigate("/")
-            })
-        }
-    )
 
+    const {loginData, refetch, isLoading, error} = useQuery({
+        queryKey: ["login-data"],
+        enabled: !!data.current,
+        staleTime: 0,
+        retry: () => {
+            reset()
+            queryClient.invalidateQueries({queryKey: ["login-data"]})
+        },
+        queryFn: async () => {
+            const tokens = await api.patch("/auth/login", data.current).then((r) => r.data) 
+            cookies.set(
+                "access_token", tokens.access_token,
+                {path: "/"}
+            )
+            cookies.set(
+                "refresh_token", tokens.refresh_token,
+                {path: "/"}
+            )
+            navigate("/")
+        }
+    })
+
+    const onSubmit = (d) => {
+        data.current  = d
+        refetch()
+    }
+    
+    useEffect(() => {
+        document.addEventListener("keydown", e => e.stopImmediatePropagation())            
+        return () => {
+            document.removeEventListener("keydown", e => e.stopImmediatePropagation())
+        }
+    })
+    
     return(<>
         <Helmet>
             <title>Авторизация</title>
@@ -73,9 +100,9 @@ export function Login(){
                                     Также, можно авторизоваться через социальные сети
                                 </>}
                             />
-                            <form className="auth__form" ref={clickRef} onSubmit={handleSubmit(request)}>
-                                <InputEmail register={register} errors={errors} clickRef={clickRef} watch={watch}/>
-                                <InputPassword register={register} errors={errors} clickRef={clickRef} watch={watch}/>
+                            <form className="auth__form" ref={clickRef} onSubmit={handleSubmit(onSubmit)}>
+                                <InputEmail register={register} errors={errors} clickRef={clickRef} watch={watch} />
+                                <InputPassword register={register} errors={errors} clickRef={clickRef} watch={watch} />
                                 <BtnAuth isValid={isValid} callback={() => setUpdateAlert(Date.now())}>
                                     Авторизация
                                 </BtnAuth>
@@ -104,7 +131,6 @@ export function Login(){
                     msg={error?.response?.data} 
                     statusCode={error?.status} 
                     update={updateAlert}
-                    setResponse={reset}
                     prefix={error?.response && "error"}
                 />
             }
