@@ -1,28 +1,28 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Cookie, Depends, HTTPException, status
-from fastapi.responses import FileResponse, JSONResponse
+from fastapi import APIRouter, Cookie, Depends, HTTPException, status, Request
+from fastapi.responses import JSONResponse
 from fastapi_cache.decorator import cache
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.app.auth.base.api_v1.dependency import get_user_by_token
 from src.app.auth.base.api_v1.jwt.jwt_token import jwt_token
-from src.app.auth.base.api_v1.jwt.token_type import TokenType
 from src.app.auth.base.api_v1.password_auth import password_auth
 from src.app.auth.base.api_v1.schemas import (Email, Login, Register,
                                               ResetPassword, VerifyToken)
-from src.app.auth.base.api_v1.utils import get_reg_dict
+from src.app.auth.base.api_v1.utils import get_reg_dict, get_user_by_token
 from src.app.auth.enums.v1.auth_type import AuthType
 from src.app.auth.models.v1.main.auth import AuthTable
-from src.app.auth.models.v1.main.token import TokenTable
+from src.app.auth.models.v1.main.ban import BanTable
 from src.app.auth.utils.v1.create_user import create_user
 from src.celery_task.config import celery
 from src.celery_task.smtp.type_email import TypeEmail
 from src.celery_task.tasks import send_email
 from src.database.session import get_async_session
+from src.minio.s3_client import s3_client
+from src.minio.s3_wrapper import get_random_file_name
 from src.redis.redis_manager import redis_manager
 from src.utils.crud import crud
-from src.utils.logger import auth_log, os_log
+from src.utils.logger import auth_log
 from src.utils.utils import generate_code
 
 auth_router = APIRouter(prefix="/auth", tags=["auth"])
@@ -43,7 +43,11 @@ async def register(register_data: Register, session: AsyncSession = Depends(get_
     identifier_token = generate_code()
 
     task = send_email.apply_async(
-        args=(register_data.identifier, TypeEmail.CONFIRM.value, identifier_token),
+        kwargs={
+            "user_email": register_data.identifier,
+            "email_type": TypeEmail.CONFIRM.value,
+            "token": identifier_token
+        },
         ignore_result=False
     )
     celery.AsyncResult(task.id)
@@ -77,12 +81,17 @@ async def verify_email(verify_data: VerifyToken, session: AsyncSession = Depends
 
 
 @auth_router.patch("/login", summary="Вход")
-async def login(login_data: Login, session: AsyncSession = Depends(get_async_session)):
+async def login(
+        login_data: Login,
+        request: Request,
+        session: AsyncSession = Depends(get_async_session)
+):
     unauthorized_error = HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Неверный логин/пароль")
     user = await crud.read(
-        session=session, table=AuthTable,
+        session=session,
+        table=AuthTable,
         identifier=login_data.identifier,
-        auth_type=AuthType.BASE.value
+        auth_type=AuthType.BASE.value,
     )
 
     if not user:
@@ -92,14 +101,19 @@ async def login(login_data: Login, session: AsyncSession = Depends(get_async_ses
     if is_verify_password is False:
         raise unauthorized_error
 
-    access_token = jwt_token.create(
-        token_type=TokenType.ACCESS.value,
-        token_data={"sub": user.uuid, "auth_type": AuthType.BASE.value}
-    )
+    tokens = jwt_token.create_tokens(sub=user.uuid, auth_type=AuthType.BASE.value)
+
     await crud.update(session=session, table=AuthTable, uuid=user.uuid, data={"is_active": True})
+
+    task = send_email.apply_async(
+        args=(user.identifier, TypeEmail.LOGIN.value, request.client.host),
+        ignore_result=False
+    )
+    celery.AsyncResult(task.id)
+
     auth_log.info("Вход в учетную запись: %s", user.identifier)
 
-    return JSONResponse(status_code=status.HTTP_200_OK, content={"access_token": access_token})
+    return JSONResponse(status_code=status.HTTP_200_OK, content=tokens)
 
 
 @auth_router.patch("/logout", summary="Выход")
@@ -114,7 +128,14 @@ async def token_for_reset_password(email: Email):
     recaptcha_token = generate_code(code_len=128)
     identifier_token = generate_code()
 
-    task = send_email.apply_async(args=(email.identifier, TypeEmail.RESET.value, identifier_token), ignore_result=False)
+    task = send_email.apply_async(
+        kwargs={
+            "user_email": email.identifier,
+            "email_type": TypeEmail.RESET.value,
+            "token": identifier_token
+        },
+        ignore_result=False
+    )
     celery.AsyncResult(task.id)
 
     await redis_manager.set_value(
@@ -127,33 +148,28 @@ async def token_for_reset_password(email: Email):
 
 
 @auth_router.patch("/reset-password", summary="Сброс пароля")
-async def reset_password(reset_password_data: ResetPassword, session: AsyncSession = Depends(get_async_session)):
-    redis_data = await redis_manager.get_value(reset_password_data.recaptcha_token)
+async def reset_password(data: ResetPassword, session: AsyncSession = Depends(get_async_session)):
+    redis_data = await redis_manager.get_value(data.recaptcha_token)
     if not redis_data:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Время жизни токена истекло")
 
-    await redis_manager.del_value(reset_password_data.recaptcha_token)
+    await redis_manager.del_value(data.recaptcha_token)
 
-    if redis_data["identifier_token"] != reset_password_data.identifier_token:
+    if redis_data["identifier_token"] != data.identifier_token:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Неверный токен")
 
-    user = await crud.read(
-        session=session, table=AuthTable,
+    hash_password = password_auth.get_hash_password(data.password)
+
+    await crud.update(
+        session=session,
+        table=AuthTable,
+        data={"hash_password": hash_password},
         identifier=redis_data["identifier"],
         auth_type=AuthType.BASE.value
     )
 
-    if not user:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Пароли не совпадают")
-
-    hash_password = password_auth.get_hash_password(reset_password_data.password)
-
-    await crud.update(
-        session=session, table=AuthTable,
-        data={"hash_password": hash_password},
-        identifier=redis_data["identifier"]
-    )
-    auth_log.info("Пользователь %s изменил пароль", reset_password_data.password)
+    await session.commit()
+    auth_log.info("Пользователь %s изменил пароль", redis_data["identifier"])
 
     return JSONResponse(status_code=status.HTTP_200_OK, content={"detail": "Пароль успешно изменен"})
 
@@ -163,9 +179,10 @@ async def refresh(
         refresh_token: Annotated[str | None, Cookie()] = None,
         session: AsyncSession = Depends(get_async_session)
 ) -> JSONResponse:
+    data = jwt_token.decode(refresh_token)
     try:
-        if await crud.read(session=session, table=TokenTable, refresh_token=refresh_token, is_black_list=True):
-            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Токен добавлен в черный список")
+        if await crud.read(session=session, table=BanTable, uuid=data["sub"], is_ban=True):
+            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Пользователь заблокирован.")
         return JSONResponse(
             status_code=status.HTTP_200_OK,
             content={"access_token": jwt_token.refresh(refresh_token=refresh_token)}
@@ -173,11 +190,9 @@ async def refresh(
     except TypeError as e:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Пользователь не авторизован") from e
 
+
 @cache(expire=120, namespace="background-img")
 @auth_router.get("/background-img", status_code=status.HTTP_200_OK, summary="Получить фон")
-async def get_background_img() -> FileResponse:
-    try:
-        return FileResponse("./public/auth.json")
-    except FileNotFoundError as e:
-        os_log.warning("Не удалось найти файл: 'auth.json'")
-        raise FileNotFoundError("Не удалось найти файл: 'auth.json'") from e
+async def get_background_img():
+    file_name = await get_random_file_name(bucket_name="auth-bg")
+    return await s3_client.get_url(bucket_name="auth-bg", file_name=file_name)
