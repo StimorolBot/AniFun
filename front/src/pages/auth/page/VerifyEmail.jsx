@@ -1,12 +1,13 @@
-import { Helmet } from "react-helmet"
 import { useEffect, useRef, useState } from "react"
+
+import { Helmet } from "react-helmet"
 import { useForm } from "react-hook-form"
 import { useLocation, useNavigate } from "react-router-dom"
 import { CSSTransition, SwitchTransition } from "react-transition-group"
+import { useQuery, useQueryClient } from "@tanstack/react-query"
 
 import { api } from "../../../api"
 import { cookies } from "../../../cookie"
-import { useFetch } from "../../../hook/useFetch"
 
 import { BtnAuth } from "../ui/btn/BtnAuth"
 import { InputToken } from "../ui/input/InputToken"
@@ -19,39 +20,54 @@ import { Loader } from "../../../components/loader/Loader"
 
 
 export function VerifyEmail(){
+    const data = useRef()
     const clickRef = useRef(false)
     const transitionRef = useRef(null)
-    const location = useLocation()
-    const token = location.state?.recaptcha_token
+
+    const queryClient = useQueryClient()
     const navigate = useNavigate()
+    const location = useLocation()
+    
     const [updateAlert, setUpdateAlert] = useState()
     const {register, handleSubmit, watch, formState: {errors, isValid}, reset} = useForm({
         mode: "onChange",
         defaultValues:{
-            "email_token": ""
+            "identifier_token": ""
         }
     })
     
-    const [request, isLoading, error] = useFetch(
-        async (data, event) => {
-            event.preventDefault()
-            await api.post("/auth/verify-email", {
-                "recaptcha_token": token ? token : "", 
-                "identifier_token": data.email_token
-            })
-            .then((r) => {
-                cookies.set(
-                    "access_token", r.data.access_token,
+    const {verifyEmailData, refetch, isLoading, error} = useQuery({
+        queryKey: ["verify-email-data"],
+        enabled: !!data.current,
+        staleTime: 0,
+        retry: () => {
+            reset()
+            queryClient.invalidateQueries({queryKey: ["verifyEmailData"]})
+        },
+        queryFn: async () => {
+            const tokens = await api.post(
+                "/auth/verify-email", 
+                {
+                    "recaptcha_token": location.state?.recaptcha_token.recaptcha_token || "", 
+                    "identifier_token": data.current.identifier_token
+                }
+            ).then(r => r.data)
+            cookies.set(
+                    "access_token", tokens.access_token,
                     {path: "/"}
-                )
+            )
                 cookies.set(
-                    "refresh_token", r.data.refresh_token,
+                    "refresh_token", tokens.refresh_token,
                     {path: "/"}
-                )
-                navigate("/")
-            })
+            )
+            return navigate("/")
         }
-    )
+    })
+
+    const onSubmit = (d) => {
+        data.current  = d
+        refetch()
+    }
 
     useEffect(() => {
         document.addEventListener("keydown", e => e.stopImmediatePropagation())            
@@ -86,10 +102,10 @@ export function VerifyEmail(){
                                         <br />
                                         Вы сможете авторизоваться в Вашу учетную запись только после подтверждения почты
                                 </>}/>
-                                <form className="auth__form" ref={clickRef} onSubmit={handleSubmit(request)}>
+                                <form className="auth__form" ref={clickRef} onSubmit={handleSubmit(onSubmit)}>
                                     <InputToken 
                                         labelTitle={"Токен из письма"}
-                                        id={"email_token"}
+                                        id={"identifier_token"}
                                         register={register} errors={errors} 
                                         clickRef={clickRef} watch={watch}
                                     />
@@ -108,7 +124,6 @@ export function VerifyEmail(){
                     msg={error?.response?.data} 
                     statusCode={error?.status} 
                     update={updateAlert}
-                    setResponse={() => reset()}
                     prefix={error?.response && "error"}
                 />
             }
