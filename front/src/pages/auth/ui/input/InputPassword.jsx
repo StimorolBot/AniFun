@@ -13,16 +13,16 @@ export function InputPassword({register, errors, clickRef, watch, id="password",
             watch={watch} 
             register={ register(id, {
                 required: true,
-                minLength: {value: 8, message: "Длинна поля должна быть от 8 символов"},
-                maxLength: {value: 32, message: "Длинна поля должна быть до 32 символов"},
+                minLength: {value: 8, message: "Поле должно быть от 8 символов"},
+                maxLength: {value: 32, message: "Поле должна быть до 32 символов"},
             })}
             errorMsg={errors?.[id]?.message}
         >
             <svg className="auth__svg">
                 {
                     id === "password"
-                    ? <use xlinkHref="/public/main.svg#key_v3-svg"/>
-                    : <use xlinkHref="/public/main.svg#key-svg"/>
+                    ? <use xlinkHref="/public/svg/auth.svg#key_v3-svg"/>
+                    : <use xlinkHref="/public/svg/auth.svg#key-svg"/>
                 }
             </svg>
         </InputMainAuth>
