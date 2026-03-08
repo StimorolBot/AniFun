@@ -12,11 +12,11 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 from starlette.responses import JSONResponse
 
-from src.app.anime.enums.v1.sub.limit_episode import LimitEpisode
 from src.app.anime.models.v1 import main as main_table
 from src.app.anime.models.v1.main.genres_anime import GenresTable
 from src.app.anime.models.v1.sub.genres import GenresSubTable
 from src.app.anime.page.home.api_v1 import schemas
+from src.app.anime.page.home.api_v1.query import query_main_info
 from src.app.anime.schemas.api_v1.schemas import ValidText
 from src.app.anime.subquery.v_1 import subquery
 from src.database.session import get_async_session
@@ -31,18 +31,8 @@ home_router = APIRouter(tags=["home"])
 async def get_slide(session: AsyncSession = Depends(get_async_session)):
     sq = subquery.subquery_rating_all_users()
     query = (
-        select(main_table.AnimeTable, sq)
+        query_main_info(sq)
         .join(sq, main_table.AnimeTable.title == sq.c.title, isouter=True)
-        .options(selectinload(main_table.AnimeTable.type_rs))
-        .join(main_table.AnimeTable.type_rs)
-        .options(selectinload(main_table.AnimeTable.age_restrict_rs))
-        .join(main_table.AnimeTable.age_restrict_rs)
-        .options(selectinload(main_table.AnimeTable.status_rs))
-        .join(main_table.AnimeTable.status_rs)
-        .options(selectinload(main_table.AnimeTable.season_rs))
-        .join(main_table.AnimeTable.season_rs)
-        .options(selectinload(main_table.AnimeTable.genres_rs))
-        .join(main_table.AnimeTable.genres_rs)
         .options(selectinload(main_table.AnimeTable.banner_rs))
         .join(main_table.AnimeTable.banner_rs)
     )
@@ -57,24 +47,12 @@ async def get_slide(session: AsyncSession = Depends(get_async_session)):
 
 @cache(expire=180, namespace=RadisNameSpace.HOME_PAGE.value)
 @home_router.get("/new-episode", status_code=status.HTTP_200_OK, summary="Получить новые эпизоды")
-async def get_new_episode(limit: LimitEpisode, session: AsyncSession = Depends(get_async_session)):
+async def get_new_episode(limit: Literal["3", "6"] = "6", session: AsyncSession = Depends(get_async_session)):
     query = (
-        select(
+        query_main_info(
             main_table.EpisodeTable.number,
-            main_table.EpisodeTable.uuid.label("uuid_episode"),
-            main_table.AnimeTable
+            main_table.EpisodeTable.uuid.label("uuid_episode")
         )
-        .select_from(main_table.AnimeTable)
-        .options(selectinload(main_table.AnimeTable.type_rs))
-        .join(main_table.AnimeTable.type_rs)
-        .options(selectinload(main_table.AnimeTable.age_restrict_rs))
-        .join(main_table.AnimeTable.age_restrict_rs)
-        .options(selectinload(main_table.AnimeTable.status_rs))
-        .join(main_table.AnimeTable.status_rs)
-        .options(selectinload(main_table.AnimeTable.season_rs))
-        .join(main_table.AnimeTable.season_rs)
-        .options(selectinload(main_table.AnimeTable.genres_rs))
-        .join(main_table.AnimeTable.genres_rs)
         .options(selectinload(main_table.AnimeTable.poster_rs))
         .join(main_table.AnimeTable.poster_rs, isouter=True)
         .join(
@@ -82,7 +60,7 @@ async def get_new_episode(limit: LimitEpisode, session: AsyncSession = Depends(g
             main_table.EpisodeTable.title == main_table.AnimeTable.title
         )
         .order_by(main_table.EpisodeTable.date_add.desc())
-        .limit(limit.value)
+        .limit(int(limit))
     )
     result = await session.execute(query)
     items = result.mappings().all()
@@ -100,20 +78,10 @@ async def get_release_schedule(
         session: AsyncSession = Depends(get_async_session)
 ):
     query = (
-        select(
-            main_table.AnimeTable,
+        query_main_info(
             main_table.ScheduleTable.episode_number,
             main_table.ScheduleTable.title
         )
-        .select_from(main_table.AnimeTable)
-        .options(selectinload(main_table.AnimeTable.type_rs))
-        .join(main_table.AnimeTable.type_rs)
-        .options(selectinload(main_table.AnimeTable.age_restrict_rs))
-        .join(main_table.AnimeTable.age_restrict_rs)
-        .options(selectinload(main_table.AnimeTable.season_rs))
-        .join(main_table.AnimeTable.season_rs)
-        .options(selectinload(main_table.AnimeTable.genres_rs))
-        .join(main_table.AnimeTable.genres_rs)
         .options(selectinload(main_table.AnimeTable.poster_rs))
         .join(main_table.AnimeTable.poster_rs)
         .join(main_table.ScheduleTable, main_table.AnimeTable.title == main_table.ScheduleTable.title)
