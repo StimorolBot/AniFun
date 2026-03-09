@@ -1,0 +1,27 @@
+.container__inner
+    display: flex
+
+.section__container
+    flex-basis: 75%
+    overflow: hidden
+
+.title-episode__slider
+    display: grid
+    grid-auto-flow: column
+    overflow-x: hidden
+    overscroll-behavior-x: contain
+    scroll-snap-type: x mandatory
+    grid-auto-columns: 100%
+
+.title-release__section
+    width: 100%
+    transition: margin-left 0.3s
+
+.title-release__container
+    display: flex
+    column-gap: 15px
+    align-items: center
+
+.title-release__empty-continuation
+    font-size: 20px
+    justify-self: center
