@@ -4,12 +4,11 @@ import "./style/custom_select.sass"
 
 
 export function CustomSelect({value, setValue, options, className="custom-select",  paramName=undefined, ...props}){    
-    
     const getValue = () => {
         if (value){
             if (paramName && props?.isMulti )
                 return props?.isMulti 
-                    ? options?.filter(v => value[paramName]?.indexOf(v.value) >= 0) 
+                    ? options?.filter(f => value[paramName]?.find(d => d.label === f.label))
                     : options?.find(v => v[paramName].value == value)
             else
                 return props?.isMulti 
@@ -22,7 +21,15 @@ export function CustomSelect({value, setValue, options, className="custom-select
 
     const onChange = (newValue) =>{
         if (paramName)
-            setValue(props?.isMulti ? s => ({...s, [paramName] : newValue.map(v => v.value)}) : s => ({...s, [paramName] : newValue.value}))
+            setValue(
+                props?.isMulti
+                    ? s => ({
+                        ...s, [paramName] : newValue.map(v => ({"label": v.label, "value": v.value}))
+                    }) 
+                    : s => ({
+                        ...s, [paramName] : ({"label": newValue.label, "value":newValue.value})
+                    })
+            )
         else
             setValue(props?.isMulti ?  newValue.map(v => v.value) : newValue)
     }
