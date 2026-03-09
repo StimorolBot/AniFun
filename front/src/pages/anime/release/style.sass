@@ -18,8 +18,8 @@
     border-radius: 10px
     background-color: $sub-gray
     padding: 10px
-    height: fit-content
-    flex-basis: 100%
+    min-height: 200px
+    width: 100%
 
 .release__separation
     margin: 5px 0
@@ -31,24 +31,26 @@
 .last-element
     width: 100%
     display: block
-    height: 20px
+    height: 10px
 
 .empty-response
     display: flex
     align-items: center
-    gap: 20px
     white-space: nowrap
-
+    justify-content: center
+    flex-direction: column
+    height: 100%
+    
     p
-        font-size: 18px
+        font-size: 22px
         max-width: 600px
         overflow: hidden
         text-overflow: ellipsis
 
 .empty-response__svg
-    width: 55px
-    height: 55px
+    width: 115px
+    height: 155px
 
 .release__btn-filter
     border-radius: 8px
-    background-color: $sub-gray
+    background-color: $sub-white
