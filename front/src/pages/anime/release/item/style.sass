@@ -6,31 +6,68 @@
     border-radius: 8px
     display: flex
     padding: 10px
-    column-gap: 20px
-    max-height: 320px
-    align-items: center
+    height: 310px
+    align-items: flex-start
     overflow: hidden
+    position: relative
 
     &:hover
         background-color: $sub-black-2
 
-        .btn__add-favorite
-            background-color: $sub-gray
-
-
 .release__img-container
     border-radius: 10px
     overflow: hidden
-    flex-basis: 200px
+    position: relative
+    height: 290px
+    width: 200px
+    margin-right: 20px
+    flex-shrink: 0
+
+    &:not([src])::before
+        content: ""
+        position: absolute
+        width: 100%
+        height: 100%    
+        opacity: 0.5
+        background-color: $sub-black
+        border-radius: 10px
 
     img
-        max-width: 100%
+        width: 100%
+        height: 100%
         object-fit: cover
-        display: block
+        position: relative
+
+        &:not([src])
+            opacity: 0
+            visibility: hidden
+
+.release__inner-rating
+    width: fit-content
+    margin-right: auto 
+    margin-left: 5px
+    position: relative
+
+    div
+        position: absolute
+        border-width: 30px 20px 15px
+        border-style: solid
+        border-color: $red $red transparent
+        z-index: 2
+
+        p
+            font-size: 18px
+            font-weight: 900
+            position: absolute
+            top: -3px
+            right: 50%
+            transform: translate(50%, -100%)
+            z-index: 2
 
 .release__item-info
-    flex-basis: 80%
-
+    width: 80%
+    height: 100%
+ 
     h3
         overflow: hidden
         display: -webkit-box
@@ -40,14 +77,31 @@
         font-size: 24px
 
 .release__item-container
-    margin: 10px 0
-    font-size: 14px
+    margin: 12px 0
+    font-size: 15px
     color: $gray
-
+    
 .release__desc-list
     display: flex
     gap: 10px
     margin-bottom: 5px
+    text-transform: capitalize
+
+    li
+        position: relative
+        
+        & + li
+            margin-left: 9px
+
+            &::after
+                content: ""
+                position: absolute
+                top: 6px
+                left: -10px
+                width: 6px
+                height: 6px
+                background-color: $gray
+                border-radius: 50%
 
 .release_genre-link
     transition: color 0.3s
@@ -63,9 +117,11 @@
     -webkit-box-orient: vertical
     text-overflow: ellipsis
     color: $sub-white-2
+    line-height: 1.1
 
 .release__link-container
-    margin-top: 15px
+    position: absolute
+    bottom: 15px
     background-color: $sub-white
     width: fit-content
     border-radius: 4px
