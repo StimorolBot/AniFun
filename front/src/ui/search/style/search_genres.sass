@@ -1,0 +1,69 @@
+@use "/src/style/color.sass" as * 
+
+
+.genres-select
+    width: 100% !important
+    font-size: 14px
+    color: $gray !important
+    font-family: sans-serif !important
+
+    &__control
+        border-style: none !important
+        cursor: pointer !important
+        padding: 0 4px !important
+        background: $sub-white !important
+
+        &--is-focused
+            box-shadow: none !important
+
+    &__indicator-separator
+        background: $sub-black-2 !important
+
+    &__input-container
+        height: 30px !important
+
+    &__menu
+        width: 100% !important
+        top: 45px !important
+        background-color: $sub-black-2 !important
+        border-radius: 8px !important
+
+        &-list::-webkit-scrollbar
+            width: 6px !important
+            height: 0px !important
+
+        &-list::-webkit-scrollbar-track 
+            background-color: $sub-gray !important
+            
+        &-list::-webkit-scrollbar-thumb 
+            background-color: $gray !important
+            border-radius: 10px !important
+            cursor: pointer !important
+        
+    &__option
+        transition: background-color 0.3s !important
+        border-radius: 6px !important 
+        cursor: pointer !important
+        padding: 12px 8px !important
+        background-color: transparent !important
+        color: $white !important
+
+        &:hover
+            background-color: $t-red !important
+        
+    &__multi-value 
+        background: $sub-black-2 !important
+        border-radius: 4px !important
+        padding: 4px 2px
+
+        &__remove
+            background-color: transparent !important
+            transition: background-color 0.3s !important
+            
+            &:hover
+                background: $t-red !important    
+
+    &__multi-value__label
+        margin-right: 5px !important
+        background: $sub-black-2 !important
+        color: white  !important
