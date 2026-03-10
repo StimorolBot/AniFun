@@ -11,7 +11,7 @@ export const InputSearch = memo(({setVal, val, ...props}) => {
             id="input-search"
             type="search" 
             autoComplete="off"
-            onChange={(e) => setVal(e.target.value)}
+            onChange={setVal}
             placeholder="Введите название аниме..."
             value={val}
             {...props}
