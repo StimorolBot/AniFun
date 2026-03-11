@@ -3,15 +3,14 @@ import json
 from fastapi import APIRouter, Depends, status
 from fastapi_pagination import Page
 from fastapi_pagination.ext.sqlalchemy import paginate
-
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
 from src.app.anime.models.v1 import main as main_table
 from src.app.anime.page.home.api_v1.query import query_main_info
 from src.app.anime.page.release.api_v1 import schemas
-from src.database.session import get_async_session
 from src.app.anime.subquery.v_1 import subquery
+from src.database.session import get_async_session
 
 release_router = APIRouter(prefix="/anime/releases", tags=["release"])
 
