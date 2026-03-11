@@ -1,10 +1,10 @@
 from typing import List
 
-from pydantic import BaseModel, AliasChoices, Field
+from pydantic import AliasChoices, BaseModel, Field
 
 from src.app.anime.enums.v1 import sub as sub_enums
 from src.app.anime.page.home.api_v1.schemas import ExtRespNewEpisodeDTO
-from src.utils.valid import ValidText, ValidNumber
+from src.utils.valid import ValidNumber, ValidText
 
 
 class ExtRespReleaseDTO(ExtRespNewEpisodeDTO):
