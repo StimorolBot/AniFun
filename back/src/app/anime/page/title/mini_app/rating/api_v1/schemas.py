@@ -1,26 +1,14 @@
-from datetime import datetime
-from uuid import UUID
+from pydantic import BaseModel, field_validator
 
-from pydantic import BaseModel, Field
-
-from src.utils.valid import ValidEpisodes, ValidTitle
+from src.utils.valid import ValidNumber, ValidText
 
 
 class Rating(BaseModel):
-    #  ge, le больше/меньше или равно
-    star: int = Field(ge=1, le=10)
-    title: ValidTitle
-
-
-class ResponseVideosDTO(BaseModel):
-    uuid: UUID
-    date_add: datetime
-    episode_number: ValidEpisodes
-    episode_name: ValidTitle | None = None
-    preview: str
+    star: ValidNumber[0, 10]
+    title: ValidText[5, 150]
 
 
 class ResponseRatingDTO(BaseModel):
-    total_count: int = Field(ge=0, le=9999)
-    avg: int = Field(ge=0, le=9999)
-    my_rating: int = Field(ge=0, le=10, default=None)
+    total_count: ValidNumber[0, 9999]
+    avg: float
+    my_rating: ValidNumber[0, 10] | None = None
