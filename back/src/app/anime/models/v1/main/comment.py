@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import TYPE_CHECKING, List
 from uuid import UUID
 
-from sqlalchemy import ForeignKey, func
+from sqlalchemy import ForeignKey, UniqueConstraint, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from src.model import Base
@@ -51,3 +51,17 @@ class ResponseCommentTable(Base):
         back_populates="response_rs",
         foreign_keys=[response_uuid_author],
     )
+
+
+class CommentRatingTable(Base):
+    """Таблица с рейтингом комментариев"""
+
+    __tablename__ = "comment_rating_table"
+
+    id: Mapped[int] = mapped_column(unique=True, autoincrement=True, primary_key=True)
+
+    uuid: Mapped[UUID] = mapped_column(ForeignKey("comment_table.uuid"))
+    author_uuid: Mapped[UUID] = mapped_column(ForeignKey("auth_table.uuid"))
+    rating: Mapped[int] = mapped_column()
+
+    __table_args__ = (UniqueConstraint("uuid", "author_uuid", "rating"),)
