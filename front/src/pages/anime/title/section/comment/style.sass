@@ -1,0 +1,53 @@
+@use "/src/style/color.sass" as * 
+
+
+.title-release__form-comment
+
+    .btn-default
+        font-size: 16px
+        color: $white
+        display: block
+        margin-bottom: 10px
+        margin-left: auto
+        font-family: "Jura", sans-serif
+        transition: color 0.3s
+
+        &:hover
+            color: $red
+    
+.title-release__comment-list
+    position: relative
+    margin-top: 35px
+    padding: 15px 10px 
+
+    &::before
+        content: ""
+        top: 0
+        right: 0
+        position: absolute
+        height: 100%
+        border-radius: 8px
+        width: 100%
+        background-color: $sub-black-2
+        opacity: 0.5
+
+.title-release__response-comment
+    color: $white
+    opacity: 0.8
+    position: relative
+    display: flex
+    align-items: center
+    justify-content: space-between
+    column-gap: 10px
+
+    p
+        overflow: hidden
+        height: 20px
+        display: -webkit-box
+        -webkit-line-clamp: 1
+        -webkit-box-orient: vertical1
+        text-overflow: ellipsis
+        width: 100%
+
+.title-release__comment-list_empty
+    background-color: transparent
