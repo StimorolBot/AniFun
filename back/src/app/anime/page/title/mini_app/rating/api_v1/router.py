@@ -1,8 +1,8 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi.responses import JSONResponse, Response
 from sqlalchemy import func, select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
-from starlette import status
 
 from src.app.anime.models.v1 import main as main_table
 from src.app.anime.page.title.mini_app.rating.api_v1 import schemas
@@ -11,16 +11,17 @@ from src.app.user.utils.utils import get_current_user
 from src.database.session import get_async_session
 from src.utils.crud import crud
 from src.utils.logger import anime_log
+from src.utils.valid import ValidText
 
 rating_router = APIRouter(tags=["rating"], prefix="/anime/rating")
 
 
 @rating_router.get("/", status_code=status.HTTP_200_OK, summary="Получить рейтинг")
 async def get_rating(
-        title: str,
+        title: ValidText[5, 150],
         session: AsyncSession = Depends(get_async_session),
         current_user: dict = Depends(get_current_user)
-) -> schemas.ResponseRatingDTO | None:
+):
     rating_subquery = subquery.subquery_rating(current_user.get("sub"), title=title)
     query = (
         select(
@@ -35,14 +36,18 @@ async def get_rating(
     )
 
     result = await session.execute(query)
-    return result.mappings().one_or_none()
+    data = result.mappings().one_or_none()
+    return (
+        schemas.ResponseRatingDTO.model_validate(
+            data,
+            from_attributes=True
+        )
+    ) \
+        if data \
+        else Response(status_code=status.HTTP_204_NO_CONTENT)
 
 
-@rating_router.post(
-    "/set-rating",
-    status_code=status.HTTP_201_CREATED,
-    summary="Установить рейтинг"
-)
+@rating_router.post("/set-rating", summary="Установить рейтинг")
 async def set_rating(
         data: schemas.Rating,
         current_user: dict = Depends(get_current_user),
@@ -54,15 +59,11 @@ async def set_rating(
             table=main_table.RatingTable,
             data={"uuid": current_user["sub"], "title": data.title, "star": data.star}
         )
-        anime_log.info("Добавление рейтинга %s -> %s -> %s", current_user["sub"], data.title, data.star)
         await session.commit()
-
-        query = subquery.subquery_rating_all_users(title=data.title)
-        result = await session.execute(query)
-        item = result.mappings().one()
-
-        return schemas.ResponseRatingDTO.model_validate(
-            {"my_rating": data.star, "avg": item.avg, "total_count": item.total_count}
+        anime_log.info("Добавление рейтинга %s -> %s -> %s", current_user["sub"], data.title, data.star)
+        return JSONResponse(
+            status_code=status.HTTP_201_CREATED,
+            content=f"Рейтинг создан {data.star}"
         )
     except IntegrityError as e:
         anime_log.warning("При попытке установить рейтинг возникла ошибка: %s", e)
@@ -72,11 +73,7 @@ async def set_rating(
         ) from e
 
 
-@rating_router.delete(
-    "/delete-rating",
-    status_code=status.HTTP_204_NO_CONTENT,
-    summary="Удалить рейтинг"
-)
+@rating_router.delete("/delete-rating", summary="Удалить рейтинг")
 async def delete_rating(
         data: schemas.Rating,
         current_user: dict = Depends(get_current_user),
@@ -88,43 +85,30 @@ async def delete_rating(
         title=data.title,
         uuid=current_user["sub"]
     )
-    anime_log.info("Удаление рейтинга %s -> %s -> %s", current_user["sub"], data.title, data.star)
     await session.commit()
-
-    query = subquery.subquery_rating_all_users(title=data.title)
-    result = await session.execute(query)
-    item = result.mappings().one_or_none()
-
-    try:
-        return {"my_rating": data.star, "avg": item.get("avg"), "total_count": item.total_count}
-    except AttributeError as e:
-        anime_log.warning(
-            "При попытке пользователя %s удалить рейтинг у тайтла %s возникла ошибка: %s",
-            current_user["sub"],
-            data.title,
-            e
-        )
-        return {"my_rating": data.star, "avg": 0, "total_count": 0}
+    anime_log.info("Удаление рейтинга %s -> %s -> %s", current_user["sub"], data.title, data.star)
+    return JSONResponse(
+        status_code=status.HTTP_204_NO_CONTENT,
+        content="Рейтинг удален"
+    )
 
 
-@rating_router.patch("/update-rating", status_code=status.HTTP_200_OK, summary="Обновить рейтинг")
+@rating_router.patch("/update-rating", summary="Обновить рейтинг")
 async def update_rating(
         data: schemas.Rating,
         current_user: dict = Depends(get_current_user),
         session: AsyncSession = Depends(get_async_session),
 ):
     await crud.update(
-        session=session, table=main_table.RatingTable,
+        session=session,
+        table=main_table.RatingTable,
         data={"star": data.star},
-        uuid=current_user["sub"], title=data.title
+        uuid=current_user["sub"],
+        title=data.title
     )
-    anime_log.info("Обновление рейтинга %s -> %s -> %s", current_user["sub"], data.title, data.star)
     await session.commit()
-
-    query = subquery.subquery_rating_all_users(title=data.title)
-    result = await session.execute(query)
-    item = result.mappings().one()
-
-    return schemas.ResponseRatingDTO.model_validate(
-        {"my_rating": data.star, "avg": item.avg, "total_count": item.total_count}
+    anime_log.info("Обновление рейтинга %s -> %s -> %s", current_user["sub"], data.title, data.star)
+    return JSONResponse(
+        status_code=status.HTTP_200_OK,
+        content=f"Обновление рейтинга: {data.star}"
     )
