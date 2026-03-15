@@ -1,3 +1,5 @@
+from uuid import UUID
+
 from fastapi import APIRouter, Depends, status
 from fastapi_pagination import Page
 from fastapi_pagination.ext.sqlalchemy import paginate
@@ -7,22 +9,23 @@ from starlette.responses import JSONResponse
 
 from src.app.anime.models.v1 import main as main_table
 from src.app.anime.page.title.mini_app.comment.api_v1 import schemas
-from src.app.anime.page.title.mini_app.comment.api_v1.subquery import \
-    count_response_comment
+from src.app.anime.page.title.mini_app.comment.api_v1.subquery import (
+    count_response_comment, response_author_name_subquery)
 from src.app.auth.models.v1.main.auth import AuthTable
 from src.app.user.models.v1.avatar import AvatarTable
 from src.app.user.utils.utils import get_current_user
 from src.database.session import get_async_session
 from src.utils.crud import crud
+from src.utils.valid import ValidText
 
-comment_router = APIRouter(tags=["anime/title/comment"], prefix="/anime/title")
+comment_router = APIRouter(tags=["comment"], prefix="/anime/comments")
 
 
-@comment_router.get("/release/{title}/comment", status_code=status.HTTP_200_OK, summary="Получить комментарии")
+@comment_router.get("/{title}", status_code=status.HTTP_200_OK, summary="Получить комментарии")
 async def get_comment(
-        title: str,
+        title: ValidText[5, 150],
         session: AsyncSession = Depends(get_async_session)
-) -> Page[schemas.CommentDTO]:
+) -> Page[schemas.ResponseCommentDTO]:
     count_response = count_response_comment()
     query = (
         select(
@@ -31,7 +34,7 @@ async def get_comment(
             main_table.CommentTable.date_add,
             main_table.CommentTable.author_uuid,
             AuthTable.user_name,
-            AvatarTable.avatar,
+            AvatarTable.avatar_uuid,
             count_response
         )
         .select_from(main_table.CommentTable)
@@ -39,28 +42,22 @@ async def get_comment(
         .join(AuthTable, main_table.CommentTable.author_uuid == AuthTable.uuid)
         .join(AvatarTable, main_table.CommentTable.author_uuid == AvatarTable.uuid)
         .where(main_table.CommentTable.title == title)
-        .order_by(main_table.CommentTable.date_add.asc())
+        .order_by(main_table.CommentTable.date_add)
     )
 
     return await paginate(session, query)
 
 
 @comment_router.get(
-    "/release/{title}/comment/response",
+    "/response/{comment_uuid}",
     status_code=status.HTTP_200_OK,
     summary="Загрузить ответы на комментарий"
 )
 async def get_response_comment(
-        comment_uuid: str,
+        comment_uuid: UUID,
         session: AsyncSession = Depends(get_async_session)
-):
-    s = (
-        select(AuthTable.user_name.label("response_author_name"), AuthTable.uuid)
-        .where(
-            AuthTable.uuid == main_table.ResponseCommentTable.response_uuid_author
-
-        )
-    ).subquery()
+) -> Page[schemas.ResponseLoadCommentDTO]:
+    author_name_subquery = response_author_name_subquery()
 
     query = (
         select(
@@ -68,28 +65,24 @@ async def get_response_comment(
             main_table.ResponseCommentTable.content,
             main_table.ResponseCommentTable.date_add,
             main_table.ResponseCommentTable.author_uuid,
-            AvatarTable.avatar,
+            AvatarTable.avatar_uuid,
             AuthTable.user_name,
-            s
+            author_name_subquery
         )
         .select_from(main_table.ResponseCommentTable)
         .join(AvatarTable, main_table.ResponseCommentTable.author_uuid == AvatarTable.uuid)
         .join(AuthTable, main_table.ResponseCommentTable.author_uuid == AuthTable.uuid)
-        .join(s, main_table.ResponseCommentTable.author_uuid == s.c.uuid)
-        .where(
-            main_table.ResponseCommentTable.response_uuid_comment == comment_uuid
-        )
-        .order_by(main_table.CommentTable.date_add.asc())
+        .join(author_name_subquery, main_table.ResponseCommentTable.author_uuid == author_name_subquery.c.uuid)
+        .where(main_table.ResponseCommentTable.response_uuid_comment == comment_uuid)
+        .order_by(main_table.ResponseCommentTable.date_add)
     )
 
-    result = await session.execute(query.distinct())
-    items = result.mappings().all()
-    return [schemas.ResponseCommentDTO.model_validate(item, from_attributes=True) for item in items]
+    return await paginate(session, query)
 
 
-@comment_router.post("/release/{alias}/comment", summary="Оставить комментарий")
+@comment_router.post("/create", summary="Создать комментарий")
 async def set_comment(
-        data: schemas.SetComment,
+        data: schemas.CreateComment,
         session: AsyncSession = Depends(get_async_session),
         current_user: dict = Depends(get_current_user)
 ) -> JSONResponse:
