@@ -1,8 +1,4 @@
 .vscode
 node_modules
-.auth
-.genres
 package-lock.json
-favicon
-.public
-.test
+public
