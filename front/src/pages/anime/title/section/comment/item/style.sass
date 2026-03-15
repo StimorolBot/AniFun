@@ -1,0 +1,133 @@
+@use "/src/style/color.sass" as * 
+
+
+.title-release__comment-item
+    position: relative
+    
+    &:not(:last-child)::before
+        content: ""
+        bottom: -10px
+        left: 0
+        width: 100%
+        position: absolute
+        height: 1px 
+        background-color: $sub-white
+
+    & ~ .title-release__comment-item
+        margin-top: 20px
+
+.title-release__comment-inner
+    display: flex
+    align-items: center
+    justify-content: space-between
+
+.title-release__comment-container
+    display: flex
+    align-items: center
+    width: 100%
+
+.title-release__comment-link:has(.title-release__img)
+    overflow: hidden
+    width: 65px
+    height: 65px
+    border-radius: 8px
+    margin-right: 10px
+    flex-shrink: 0
+    
+.title-release__img
+    height: 100%
+    width: 100%
+    object-fit: cover
+
+.title-release__comment-item-content
+    display: flex
+    flex-direction: column
+
+.title-release__comment-wrapper
+    display: flex
+    column-gap: 20px
+    align-items: center
+    color: $sub-white-2
+
+    time 
+        font-size: 14px
+        position: relative
+
+        &::before
+            content: ""
+            position: absolute
+            width: 5px
+            height: 5px
+            background-color: $gray
+            border-radius: 50%
+            top: 7px
+            left: -8px
+
+.title-release__comment-author-name
+    color: $red
+    font-size: 20px
+    transition: opacity 0.3s
+
+    &:hover
+        opacity: 0.8
+
+.title-release__comment-text
+    margin: 8px 0
+    max-width: 900px
+    width: fit-content
+
+    a
+        margin-right: 5px
+        background-color: $sub-black-2
+        padding: 5px 4px
+        border-radius: 5px
+
+.release__comment-btn-container
+    border: 1px solid $sub-white
+    margin-top: 10px
+    margin-bottom: 5px
+    border-radius: 5px
+
+    .btn-default
+        padding: 8px 0
+        display: block
+        margin: 0 auto
+        color: $gray
+        transition: color 0.3s
+
+        &:hover
+            color: $white
+
+.release__comment-response
+    transition: 0.3s
+    margin: 25px 0 25px 25px
+    position: relative
+    height: calc-size(auto, size)
+
+    &::before
+        content: ""
+        position: absolute
+        left: -15px
+        top: 0
+        width: 2px
+        height: 100%
+        background-color: $red
+        border-radius: 2px
+        
+.title-release__btn-container
+    .btn-default
+        font-size: 16px
+        transition: opacity 0.3s
+
+        &:hover
+            opacity: 0.6
+
+.release__comment-response_empty
+    height: 0
+    overflow: hidden
+    opacity: 0
+    visibility: hidden
+    margin: 0
+
+    &::before
+        content: unset
