@@ -1,5 +1,5 @@
 from src.app.anime.models.v1.main.anime import AnimeTable
-from src.app.anime.models.v1.main.comment import (CommentRatingTable,
+from src.app.anime.models.v1.main.comment import (ReactionCommentTable,
                                                   CommentTable,
                                                   ResponseCommentTable)
 from src.app.anime.models.v1.main.episode import (EpisodePreviewTable,
@@ -17,6 +17,6 @@ __all__ = (
     EpisodePreviewTable,
     ScheduleTable, SequelTable,
     RatingTable, CommentTable,
-    CommentRatingTable, ResponseCommentTable,
+    ReactionCommentTable, ResponseCommentTable,
     ReleaseDayTable, BannerTable
 )
