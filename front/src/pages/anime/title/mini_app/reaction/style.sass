@@ -1,0 +1,44 @@
+@use "/src/style/color.sass" as * 
+
+
+.reaction-comment__list
+    display: flex
+    column-gap: 15px
+    align-items: center
+
+.reaction-comment__item
+    display: flex
+    column-gap: 5px
+    align-items: center
+
+    p
+        font-size: 20px
+
+    svg
+        height: 100%
+        width: 100%
+        opacity: 0.7
+        transition: opacity 0.3s
+
+        &:hover
+            opacity: 1
+
+.reaction-comment__like-count
+    color: $green
+
+.reaction-comment__dislike-count
+    color: $red
+
+.reaction-comment-like
+    stroke: $green !important
+    fill: none !important
+
+    &_active
+        fill: $green !important
+
+.reaction-comment-dislike
+    stroke: $red !important
+    fill: none !important
+
+    &_active
+        fill: $red !important
