@@ -10,8 +10,8 @@ from src.app.anime.page.title.mini_app.comment.api_v1.router import \
     comment_router
 from src.app.anime.page.title.mini_app.rating.api_v1.router import \
     rating_router
-from src.app.anime.page.title.mini_app.rating_comment.api_v1.router import \
-    rating_comment_router
+from src.app.anime.page.title.mini_app.reaction_comment.api_v1.router import \
+    reaction_comment_router
 from src.app.anime.page.video.api_v1.router import video_router
 from src.app.auth.base.api_v1.router import auth_router
 from src.app.auth.oauth.api_v1.router import oauth_router
@@ -34,7 +34,7 @@ def include_router(app: FastAPI):
 
     app.include_router(comment_router)
     app.include_router(rating_router)
-    app.include_router(rating_comment_router)
+    app.include_router(reaction_comment_router)
 
     app.include_router(video_router)
 
