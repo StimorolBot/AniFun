@@ -15,28 +15,28 @@ export const Rating = memo(({title}) => {
     const queryClient = useQueryClient()
     
     const {data: ratingData, isLoading} = useQuery({
-        queryKey: ["rating-data"],
+        queryKey: ["rating-data", title],
         staleTime: 1000 * 60 * 3,
         retry: false,
         queryFn: async () => {
-            return await api.get("/anime/rating/", {params: {"title": title, "is_raise_exception": false}}).then(r => r.data) 
+            return await api.get("anime/rating/", {params: {"title": title, "is_raise_exception": false}}).then(r => r.data) 
         }
     })
 
     const callback = async (currentRating) => {
         if (ratingData?.my_rating == currentRating)
             return await api.delete(
-                "/anime/rating/delete-rating", 
+                "anime/rating/delete-rating", 
                 {data: {"star": currentRating, "title": title}}
             ).then(r => r.data)
-        else if ((ratingData?.my_rating === 0) || (ratingData?.my_rating === undefined))
+        else if ((ratingData?.my_rating === null) || (ratingData?.my_rating === undefined))
             return await api.post(
-                "/anime/rating/set-rating", 
+                "anime/rating/set-rating", 
                 {"star": currentRating, "title": title}
             ).then(r => r.data)
         else if (ratingData?.my_rating != currentRating)
             return await api.patch(
-                "/anime/rating/update-rating",
+                "anime/rating/update-rating",
                 {"star": currentRating, "title": title}
             ).then(r => r.data)
     }
@@ -44,7 +44,7 @@ export const Rating = memo(({title}) => {
     const mutation = useMutation({
         mutationFn: callback,
         onSuccess: () => {
-            queryClient.invalidateQueries({queryKey: ["rating-data"]})
+            queryClient.invalidateQueries({queryKey: ["rating-data", title]})
         }
     }) 
 
