@@ -1,4 +1,4 @@
-import {  useState } from "react"
+import { useState } from "react"
 import { useQueries, useQuery } from "@tanstack/react-query"
 
 import { api } from "../../../../../api"
@@ -8,6 +8,7 @@ import { InputSearch } from "../../../../../ui/input/InputSearch"
 import { ProgressEpisode } from "../../../../../ui/progressbar/ProgressEpisode"
 
 import { Loader } from "../../../../../components/loader/Loader"
+import { episodeCache, episodePreviewCache } from "../../../../../query_key"
 
 import "./style.sass"
 
@@ -16,7 +17,7 @@ export const TitleVideo = ({title, alias, totalEpisodes, currentSlide}) => {
     const [titleSearch, setTitleSearch] = useState("")
     
     const {data: episodeData, isLoading} = useQuery({
-        queryKey: ["episode-data", alias],
+        queryKey: [episodeCache, alias],
         staleTime: 1000 * 60 * 3,
         retry: false,
         queryFn: async () => {
@@ -27,7 +28,7 @@ export const TitleVideo = ({title, alias, totalEpisodes, currentSlide}) => {
 
     const imgData = useQueries({
         queries: episodeData?.map(item => ({
-        queryKey: ["episode-preview", item.preview_uuid],
+        queryKey: [episodePreviewCache, item.preview_uuid],
         staleTime: 1000 * 60 * 3,
         queryFn: async () => {
             return await api.get(`/s3/anime-${item.title_uuid}/${item.preview_uuid}`).then(r => r.data)
@@ -55,7 +56,7 @@ export const TitleVideo = ({title, alias, totalEpisodes, currentSlide}) => {
                         <div className="title-release__container">
                             <InputSearch
                                 val={titleSearch} 
-                                setVal={setTitleSearch} 
+                                setVal={(e) => setTitleSearch(e.target.value)} 
                                 placeholder={"Введите название или номер серии"}
                             />
                         </div>
