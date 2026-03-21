@@ -20,22 +20,22 @@ export function SlideMain({item, imgData}) {
                     {item.anime.title}
                 </h3>
                 <ul className="slide-desc__list">
-                    <li className="slide-desc__item">
+                    <li className="slide-desc__item point">
                         <Link className="slide__link" to={`/anime`} state={item.anime.season.value}>
                             {item.anime.season.label}
                         </Link>
                     </li>
-                    <li className="slide-desc__item">
+                    <li className="slide-desc__item point">
                         <Link className="slide__link" to={`/anime`} state={item.anime.year}>
                             {item.anime.year}
                         </Link>
                     </li>
-                    <li className="slide-desc__item">
+                    <li className="slide-desc__item point">
                         {item.anime.total_episode &&
                             `${item.anime.total_episode} ${getPostfix("эпизод", item.anime.episode_count)}`
                         }
                     </li>
-                    <li className="slide-desc__item">
+                    <li className="slide-desc__item point">
                         <Link className="slide__link" to={`/anime`} state={item.anime.age_restrict.value}>
                             {item.anime.age_restrict.label}
                         </Link>
@@ -44,7 +44,7 @@ export function SlideMain({item, imgData}) {
                 <ul className="slide-desc__list">
                     {item?.anime.genres?.map((genre, index) => {
                         return(
-                            <li className="slide-desc__item slide-desc__item_gray" key={index}>
+                            <li className="slide-desc__item point" key={index}>
                                 <Link className="slide__link" to={`anime/genres/${genre.value}`}>
                                     {genre.label}                            
                                 </Link>
