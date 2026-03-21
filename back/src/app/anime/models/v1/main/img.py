@@ -13,7 +13,7 @@ if TYPE_CHECKING:
 class PosterTable(Base):
     __tablename__ = "poster_table"
 
-    id: Mapped[int] = mapped_column(primary_key=True)
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     title: Mapped[str] = mapped_column(
         ForeignKey("anime_table.title", onupdate="CASCADE", ondelete="CASCADE"),
         index=True
@@ -25,7 +25,7 @@ class PosterTable(Base):
 class BannerTable(Base):
     __tablename__ = "banner_table"
 
-    id: Mapped[int] = mapped_column(primary_key=True)
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     title: Mapped[str] = mapped_column(
         ForeignKey("anime_table.title", onupdate="CASCADE", ondelete="CASCADE"),
         index=True
