@@ -9,7 +9,6 @@ import { Loader } from "../loader/Loader"
 import { BtnDefault } from "../../ui/btn/BtnDefault"
 
 import { api } from "../../api"
-import { useFetch } from "../../hook/useFetch"
 import { cookies } from "../../cookie"
 
 import "./style/header.sass"
@@ -39,14 +38,6 @@ export function Header() {
             ).then(r => r.data)
         }
     })
-
-    const [requestRandomTitle, _] = useFetch(
-        async () => {
-            await api.get("/random-title").then((r) => {
-                navigate(`/anime/${r.data.alias}`)
-            })
-        }
-    )
 
     const handleKeyDown = (e) => {
         if (e.keyCode === 191){
@@ -94,7 +85,15 @@ export function Header() {
                     </nav>
                     <ul className="header__list">
                         <li className="header__list-item">
-                            <BtnDefault callback={async () => await requestRandomTitle()} isStroke={false} title="Случайное аниме">
+                            <BtnDefault
+                                callback={async () => 
+                                    await api.get("/random-title").then((r) => {
+                                        navigate(`/anime/${r.data.alias}`)
+                                    })
+                                }
+                                isStroke={false}
+                                title="Случайное аниме"
+                            >
                                 <svg >
                                     <use xlinkHref="/public/svg/header.svg#random-svg"/>
                                 </svg>
