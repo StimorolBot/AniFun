@@ -7,16 +7,17 @@ import { EpisodeItem } from "./item/EpisodeItem"
 import { WrapperSection } from "../../../wrapper/WrapperSection"
 import { Loader } from "../../../../../components/loader/Loader"
 
+import { newEpisodeCache, newEpisodePosterCache } from "../../../../../query_key"
+
 import "./style.sass"
 
 
 export const NewEpisodes= memo(() => {
   const transitionRef = useRef()
 
-  const {data: episodeData, isLoading, error} = useQuery({
-    queryKey: ["new-episode"],
+  const {data: episodeData, isLoading} = useQuery({
+    queryKey: [newEpisodeCache],
     staleTime: 1000 * 60 * 3,
-    retry: false,
     queryFn: async () => {
       return await api.get("/new-episode", {params: {"limit": 6}}).then(r => r.data)
     },
@@ -25,7 +26,7 @@ export const NewEpisodes= memo(() => {
  
   const imgData = useQueries({
     queries: episodeData?.map(item => ({
-      queryKey: ["new-episode-poster", item.anime.poster.poster_uuid],
+      queryKey: [newEpisodePosterCache, item.anime.poster.poster_uuid],
       staleTime: 1000 * 60 * 3,
       queryFn: async () => {
         return await api.get(`/s3/anime-${item.anime.uuid}/${item.anime.poster.poster_uuid}`).then(r => r.data)
