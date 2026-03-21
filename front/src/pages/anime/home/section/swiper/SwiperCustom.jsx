@@ -11,6 +11,8 @@ import { api } from "../../../../../api"
 import { SlideMain } from "./slide/SlideMain"
 import { Loader } from "../../../../../components/loader/Loader"
 
+import { sliderCache, sliderBannerCache } from "../../../../../query_key"
+
 import "swiper/css"
 import "swiper/css/pagination"
 import "swiper/css/navigation"
@@ -20,10 +22,9 @@ import "./style.sass"
 export function SwiperCustom() {
   const transitionRef = useRef()
 
-  const {data: sliderData, isLoading, error} = useQuery({
-    queryKey: ["slider"],
+  const {data: sliderData, isLoading} = useQuery({
+    queryKey: [sliderCache],
     staleTime: 1000 * 60 * 3,
-    retry: false,
     queryFn: async () => {
       return await api.get("/slides").then(r => r.data)
     },
@@ -32,7 +33,7 @@ export function SwiperCustom() {
   
   const imgData = useQueries({
     queries: sliderData?.map(item => ({
-      queryKey: ["slider-banner", item.anime.banner.uuid_banner],
+      queryKey: [sliderBannerCache, item.anime.banner.uuid_banner],
       staleTime: 1000 * 60 * 3,
         queryFn: async () => {
           return await api.get(`/s3/anime-${item.anime.uuid}/${item.anime.banner.uuid_banner}`).then(r => r.data)
