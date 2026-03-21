@@ -14,14 +14,14 @@ export const AsideNewEpisodeItem = memo(({item, imgData, ...props}) => {
                     <h4>{item.anime.title}</h4>
                     <p>Эпизод {item.number}</p>
                     <ul className="aside-ep-desc__list">    
-                        <li>{item.anime.year}</li>
-                        <li>{item.anime.season.label}</li>
-                        <li>{item.anime.type.label}</li>
-                        <li>{item.anime.age_restrict.label}</li>
+                        <li className="point">{item.anime.year}</li>
+                        <li className="point">{item.anime.season.label}</li>
+                        <li className="point">{item.anime.type.label}</li>
+                        <li className="point">{item.anime.age_restrict.label}</li>
                     </ul>
                     <ul className="aside-ep-desc__list">
                         {item.anime.genres?.map((genre, index) => {
-                            return <li key={index}>{genre.label}</li>
+                            return <li  className="point" key={index}>{genre.label}</li>
                         })    
                         }
                     </ul>
