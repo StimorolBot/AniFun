@@ -53,7 +53,7 @@ export const Search = memo(({ref, setIsShow}) => {
                 </button>
                 <search>
                     <form action="/search-title" method="get">
-                        <InputSearch setVal={setSearchVal} val={searchVal} autoComplete={"off"}/>
+                        <InputSearch setVal={(e) => setSearchVal(e.target.value)} val={searchVal} autoComplete={"off"}/>
                     </form>
                 </search>
 
