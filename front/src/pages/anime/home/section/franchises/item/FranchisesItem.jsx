@@ -21,10 +21,10 @@ export function FranchisesItem({item, imgData, ...props}){
                             {item.start_year} - {item.end_year}
                         </li>
                         <li className="franchises__desc-item">
-                            <span>
+                            <span className="point">
                                 {item.seasons_count} {getPostfix("сезон", item.seasons_count)}
                             </span>
-                            <span>
+                            <span className="point">
                                 {item.total_episodes} {getPostfix("эпизод", item.total_episodes)}
                             </span>
                         </li>
