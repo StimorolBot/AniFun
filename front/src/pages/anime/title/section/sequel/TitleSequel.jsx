@@ -5,15 +5,17 @@ import { api } from "../../../../../api"
 
 import { TitleSequelItem } from "./item/TitleSequelItem"
 import { Loader } from "../../../../../components/loader/Loader"
+import { titleSequelCache, titleSequelPosterCache } from "../../../../../query_key"
 
 import "./style.sass"
 
 
 export const TitleSequel = memo(({currentSlide, title, alias, isOrigin}) => {
+    
     const {data: titleSequelData, isLoading, error} = useQuery({
-        queryKey: ["title-sequel-data", alias],
+        queryKey: [titleSequelCache, alias],
         staleTime: 1000 * 60 * 3,
-        retry: false,
+        enabled: currentSlide.section === "continuation" ? true : false,
         queryFn: async () => {
             return await api.get(`anime/sequel/${title}`, {params: {"title": title, "is_origin": isOrigin}}).then(r => r.data)
         },
@@ -22,7 +24,7 @@ export const TitleSequel = memo(({currentSlide, title, alias, isOrigin}) => {
 
     const imgData = useQueries({
         queries: titleSequelData?.map(item => ({
-        queryKey: ["title-sequel-poster", item.poster_uuid],
+        queryKey: [titleSequelPosterCache, item.poster_uuid],
         staleTime: 1000 * 60 * 3,
         queryFn: async () => {
             return await api.get(`/s3/anime-${item.uuid}/${item.poster_uuid}`).then(r => r.data)
