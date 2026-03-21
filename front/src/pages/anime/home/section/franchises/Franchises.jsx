@@ -7,16 +7,16 @@ import { WrapperSection } from "../../../wrapper/WrapperSection"
 import { FranchisesItem } from "./item/FranchisesItem"
 import { Loader } from "../../../../../components/loader/Loader"
 
+import { franchisesCache, franchisesPosterCache } from "../../../../../query_key"
 import "./style.sass"
 
 
 export function Franchises(){
     const transitionRef = useRef()
 
-    const {data: FranchisesData = [], isLoading, error} = useQuery({
-        queryKey: ["franchises"],
+    const {data: FranchisesData = [], isLoading} = useQuery({
+        queryKey: [franchisesCache],
         staleTime: 1000 * 60 * 3,
-        retry: false,
         queryFn: async () => {
             return await api.get("/franchises").then(r => r.data)
         }
@@ -24,7 +24,7 @@ export function Franchises(){
 
     const imgData = useQueries({
         queries: FranchisesData?.map(item => ({
-            queryKey: ["franchises-poster", item.poster_uuid],
+            queryKey: [franchisesPosterCache, item.poster_uuid],
             staleTime: 1000 * 60 * 3,
             queryFn: async () => {
                 return await api.get(`/s3/anime-${item.title_uuid}/${item.poster_uuid}`).then(r => r.data)
