@@ -81,7 +81,7 @@ class ResponseGenresDTO(BaseModel):
     genres_count: schemas.ValidNumber[1, 999]
     label: sub_enum.GenresLabel
     value: sub_enum.GenresValue
-    poster_uuid: schemas.UUIDValid
+    poster_uuid: schemas.UUIDValid | None = None
 
 
 class RandomTitleDTO(BaseModel):
