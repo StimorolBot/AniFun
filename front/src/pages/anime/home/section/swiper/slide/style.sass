@@ -46,10 +46,6 @@
     opacity: 0.1
     transition: opacity 0.3s
 
-    &:not([src])
-        opacity: 0
-        visibility: hidden
-
 .slide__inner
     position: absolute
     top: 50%
@@ -72,32 +68,9 @@
     position: relative
     text-transform: capitalize
 
-    &::before
-        content: ""
-        position: absolute
-        top: 7px
-        left: -11px
-        width: 6px
-        height: 6px
-        background-color: $gray
-        border-radius: 50%
-
 .slide-desc__item_gray
     color: $sub-white-2
     transition: color 0.3s
-
-    + .slide-desc__item_gray
-        position: relative
-        
-        &::before 
-            content: ""
-            width: 6px
-            height: 6px
-            top: 8px
-            left: -10px
-            position: absolute
-            border-radius: 50% 
-            background-color: $gray
     
 .slide__description
     margin: 15px 0
