@@ -25,11 +25,11 @@ export const TitleSequelItem = memo(({item, index, title, imgData, ...props}) =>
                             {item.title}
                         </h4>
                             <ul>
-                                <li>{item.year}</li>
-                                <li>{item.season}</li>
-                                <li>{item.type}</li>
-                                <li>{item.total_episode} {getPostfix("эпизод", item?.total_episode)}</li>
-                                <li>{item.age_restrict}</li>
+                                <li className="point">{item.year}</li>
+                                <li className="point">{item.season}</li>
+                                <li className="point">{item.type}</li>
+                                <li className="point">{item.total_episode} {getPostfix("эпизод", item?.total_episode)}</li>
+                                <li className="point">{item.age_restrict}</li>
                             </ul>
                     </div>
                 </div>
