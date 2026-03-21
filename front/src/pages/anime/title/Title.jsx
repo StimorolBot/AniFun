@@ -18,20 +18,21 @@ import { AboutTitle } from "./section/about/AboutTitle"
 import { TitleVideo } from "./section/video/TitleVideo"
 import { TitleSequel } from "./section/sequel/TitleSequel"
 import { TitleComment } from "./section/comment/TitleComment"
+import { titleCache, titleCachePoster } from "../../../query_key"
 import { TitleSchedule } from "./section/schedule/TitleSchedule"
 
 import "./style.sass"
 
 
-export const Title = () => {    
+export const Title = () => {  
+      
     const {alias} = useParams() 
     const transitionRef = useRef(null)
     const [currentSlide, setCurrentSlide] = useState({"position": 0, "width": 94, "section": "episode"})
     
     const {data: titleData, isLoading, error} = useQuery({
-        queryKey: ["title-data", alias],
+        queryKey: [titleCache, alias],
         staleTime: 1000 * 60 * 3,
-        retry: false,
         queryFn: async () => {
             return await api.get(`anime/about/${alias}`, {params: {"alias": alias}}).then(r => r.data)
         },
@@ -39,7 +40,7 @@ export const Title = () => {
     })
 
     const {data: imgData} = useQuery({
-        queryKey: ["title-poster"],
+        queryKey: [titleCachePoster],
         enabled: !! titleData?.anime?.poster.poster_uuid,
         staleTime: 1000 * 60 * 3,
         retry: false,
