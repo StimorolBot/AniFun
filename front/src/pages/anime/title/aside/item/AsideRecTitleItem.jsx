@@ -13,10 +13,10 @@ export const AsideRecTitleItem = memo(({item, imgData, ...props}) => {
                 <div className="rec-title__inner">
                     <h4>{item.title}</h4>
                     <ul>
-                        <li>{item.year}</li>
-                        <li>{item.season}</li>
-                        <li>{item.type}</li>
-                        <li>{item.age_restrict}</li>
+                        <li className="point">{item.year}</li>
+                        <li className="point">{item.season}</li>
+                        <li className="point">{item.type}</li>
+                        <li className="point">{item.age_restrict}</li>
                     </ul>
                 </div>
             </Link>        
