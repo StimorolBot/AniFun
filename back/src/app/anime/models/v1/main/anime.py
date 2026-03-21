@@ -11,7 +11,9 @@ from src.utils.utils import generate_uuid, get_unc_now
 if TYPE_CHECKING:
     from src.app.anime.models.v1.main.episode import EpisodeTable
     from src.app.anime.models.v1.main.genres_anime import GenresTable
-    from src.app.anime.models.v1.main.img import ImgTable
+    from src.app.anime.models.v1.main.img import BannerTable, PosterTable
+    from src.app.anime.models.v1.main.release_day import ReleaseDayTable
+    from src.app.anime.models.v1.main.schedule import ScheduleTable
     from src.app.anime.models.v1.sub import (AgeRestrictSubTable,
                                              SeasonSubTable, StatusSubTable,
                                              TypeSubTable)
@@ -30,18 +32,23 @@ class AnimeTable(Base):
     date_add: Mapped[datetime] = mapped_column(default=get_unc_now, server_default=func.now())
     is_origin: Mapped[bool] = mapped_column(default=True, server_default=true())
 
-    type: Mapped[str] = mapped_column(ForeignKey("type_sub_table.type"))
-    season: Mapped[str] = mapped_column(ForeignKey("season_sub_table.season"))
-    age_restrict: Mapped[str] = mapped_column(ForeignKey("age_r_sub_table.restrict"))
-    status: Mapped[str] = mapped_column(ForeignKey("status_sub_table.status"))
+    type: Mapped[str] = mapped_column(ForeignKey("type_sub_table.label"))
+    season: Mapped[str] = mapped_column(ForeignKey("season_sub_table.label"))
+    age_restrict: Mapped[str] = mapped_column(ForeignKey("age_r_sub_table.label"))
+    status: Mapped[str] = mapped_column(ForeignKey("status_sub_table.label"))
 
     type_rs: Mapped["TypeSubTable"] = relationship(back_populates="anime_rs")
     season_rs: Mapped["SeasonSubTable"] = relationship(back_populates="anime_rs")
     age_restrict_rs: Mapped["AgeRestrictSubTable"] = relationship(back_populates="anime_rs")
     status_rs: Mapped["StatusSubTable"] = relationship(back_populates="anime_rs")
-    img_rs: Mapped["ImgTable"] = relationship(back_populates="anime_rs", cascade="all, delete-orphan")
+    poster_rs: Mapped["PosterTable"] = relationship(back_populates="anime_rs", cascade="all, delete-orphan",
+                                                    uselist=False)
+    banner_rs: Mapped["BannerTable"] = relationship(back_populates="anime_rs", cascade="all, delete-orphan",
+                                                    uselist=False)
     genres_rs: Mapped[List["GenresTable"]] = relationship(
         back_populates="anime_rs",
         foreign_keys="[GenresTable.title]"
     )
     episode_rs: Mapped["EpisodeTable"] = relationship(back_populates="anime_rs")
+    release_day_rs: Mapped["ReleaseDayTable"] = relationship(back_populates="anime_rs")
+    schedule_rs: Mapped["ScheduleTable"] = relationship(back_populates="anime_rs")
