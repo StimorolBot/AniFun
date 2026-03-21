@@ -1,23 +1,12 @@
 @use "/src/style/color.sass" as * 
 
 
-.coming-soon__desc-item
+.schedule__desc-item
     position: relative
     text-transform: capitalize
     font-weight: 600
-
-    &:before
-        content: ""
-        position: absolute
-        top: 50%
-        left: -5px
-        transform: translate(-50%, -50%)
-        width: 3px
-        height: 3px
-        background: $gray
-        border-radius: 50%
-
-.coming-soon__bg
+   
+.schedule__bg
     position: absolute
     top: 50%
     left: 0
@@ -29,7 +18,7 @@
     object-fit: cover
     display: block
 
-.coming-soon__item
+.schedule__item
     font-size: 14px
     border-radius: 10px
     overflow: hidden
@@ -47,31 +36,31 @@
        background-color: $sub-black-2
        opacity: 0.3
 
-    +.coming-soon__item
+    +.schedule__item
         margin-top: 10px
     
     &:hover
-        .coming-soon__bg
+        .schedule__bg
             opacity: 0.1 
             visibility: visible
 
-.coming-soon__link
+.schedule__link
     display: block
     padding: 8px 16px
     position: relative
 
-.coming-soon__title
+.schedule__title
     font-size: 18px
     font-weight: 900
 
-.coming-soon__episode
+.schedule__episode
     margin-top: 10px
     margin-bottom: 5px
     font-size: 14px
     opacity: 0.7
     font-weight: 600
 
-.coming-soon__desc-list
+.schedule__desc-list
     display: flex
     column-gap: 15px
     font-size: 12px
