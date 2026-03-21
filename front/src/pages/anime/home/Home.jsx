@@ -5,7 +5,7 @@ import { Footer } from "../../../components/footer/Footer"
 
 import { SwiperCustom } from "./section/swiper/SwiperCustom"
 import { NewEpisodes } from "./section/new_episodes/NewEpisodes"
-import { ComingSoon } from "./section/coming_soon/ComingSoon"
+import { Schedule } from "./section/schedule/Schedule"
 import { Franchises } from "./section/franchises/Franchises"
 import { Genres } from "./section/genres/Genres"
 
@@ -24,7 +24,7 @@ export const Home = () => {
                 </h1>
                 <SwiperCustom/>
                 <NewEpisodes/> 
-                <ComingSoon/>
+                <Schedule/>
                 <Franchises/>
                 <Genres/>
             </main>
