@@ -5,7 +5,7 @@ from fastapi import APIRouter, Depends, HTTPException, Response, status
 from fastapi_cache.decorator import cache
 from fastapi_pagination import Page
 from fastapi_pagination.ext.sqlalchemy import paginate
-from pydantic_core._pydantic_core import ValidationError
+from pydantic import ValidationError
 from sqlalchemy import distinct, func, select
 from sqlalchemy.exc import NoResultFound
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -20,13 +20,13 @@ from src.app.anime.page.home.api_v1.query import query_main_info
 from src.app.anime.schemas.api_v1.schemas import ValidText
 from src.app.anime.subquery.v_1 import subquery
 from src.database.session import get_async_session
-from src.redis.name_space import RadisNameSpace
+from src.redis.name_space import RedisNameSpace, Expire
 from src.utils.logger import anime_log
 
 home_router = APIRouter(tags=["home"])
 
 
-@cache(expire=180, namespace=RadisNameSpace.HOME_PAGE.value)
+@cache(expire=Expire.THREE.value, namespace=RedisNameSpace.SLIDER.value)
 @home_router.get("/slides", status_code=status.HTTP_200_OK, summary="Получить слайды с аниме")
 async def get_slide(session: AsyncSession = Depends(get_async_session)):
     sq = subquery.subquery_rating_all_users()
@@ -45,7 +45,7 @@ async def get_slide(session: AsyncSession = Depends(get_async_session)):
         return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 
-@cache(expire=180, namespace=RadisNameSpace.HOME_PAGE.value)
+@cache(expire=Expire.THREE.value, namespace=RedisNameSpace.NEW_EPISODE.value)
 @home_router.get("/new-episode", status_code=status.HTTP_200_OK, summary="Получить новые эпизоды")
 async def get_new_episode(limit: Literal["3", "6"] = "6", session: AsyncSession = Depends(get_async_session)):
     query = (
@@ -67,13 +67,13 @@ async def get_new_episode(limit: Literal["3", "6"] = "6", session: AsyncSession 
     return [schemas.ResponseNewEpisodeDTO.model_validate(item, from_attributes=True) for item in items]
 
 
-@cache(expire=180, namespace=RadisNameSpace.HOME_PAGE.value)
+@cache(expire=Expire.THREE.value, namespace=RedisNameSpace.SCHEDULES.value)
 @home_router.get(
     "/schedules",
     status_code=status.HTTP_200_OK,
     summary="Получить расписание релизов"
 )
-async def get_release_schedule(
+async def get_schedule(
         schedule: Literal["today", "tomorrow"] = "today",
         session: AsyncSession = Depends(get_async_session)
 ):
@@ -89,7 +89,7 @@ async def get_release_schedule(
             main_table.ScheduleTable.date_release == datetime.now().date()
             if schedule == "today"
             else
-            main_table.ScheduleTable.date_release == (datetime.now().date() + timedelta(hours=24))
+            main_table.ScheduleTable.date_release == (datetime.now().date() + timedelta(days=1))
         )
     )
     result = await session.execute(query)
@@ -97,7 +97,7 @@ async def get_release_schedule(
     return [schemas.ResponseSchedulesDTO.model_validate(item, from_attributes=True) for item in items]
 
 
-@cache(expire=180, namespace=RadisNameSpace.HOME_PAGE.value)
+@cache(expire=Expire.THREE.value, namespace=RedisNameSpace.FRANCHISES.value)
 @home_router.get("/franchises", status_code=status.HTTP_200_OK, summary="Получить франшизы")
 async def get_franchise(session: AsyncSession = Depends(get_async_session)):
     title_query = (
@@ -172,9 +172,13 @@ async def get_franchise(session: AsyncSession = Depends(get_async_session)):
     return [schemas.FranchisesDTO.model_validate(item, from_attributes=True) for item in items]
 
 
-@cache(expire=180, namespace=RadisNameSpace.HOME_PAGE.value)
+@cache(expire=Expire.THREE.value, namespace=RedisNameSpace.GENRES.value)
 @home_router.get("/genres", status_code=status.HTTP_200_OK, summary="Получить жанры")
-async def get_genres(session: AsyncSession = Depends(get_async_session)):
+async def get_genres(
+        is_random: bool = True,
+        limit: Literal[6, 31] = 6,
+        session: AsyncSession = Depends(get_async_session)
+):
     query = (
         select(
             GenresTable.label,
@@ -185,11 +189,15 @@ async def get_genres(session: AsyncSession = Depends(get_async_session)):
         .select_from(GenresTable)
         .join(GenresSubTable, GenresTable.value == GenresSubTable.value)
         .group_by(GenresTable.label, GenresTable.value, GenresSubTable.uuid_poster)
-        .order_by(func.random())
-        .limit(6)
+        .order_by(GenresTable.label.asc())
+        .limit(limit)
     )
 
-    result = await session.execute(query)
+    result = await session.execute(
+        query.order_by(func.random())
+        if is_random is True
+        else query
+    )
     items = result.mappings().all()
     return [schemas.ResponseGenresDTO.model_validate(item, from_attributes=True) for item in items]
 
@@ -218,9 +226,9 @@ async def search_title(
 ) -> Page[schemas.SearchTitleDTO]:
     query = (
         select(main_table.AnimeTable)
-        .filter(main_table.AnimeTable.title.ilike(f"%{title}%"))
         .join(main_table.AnimeTable.poster_rs)
         .options(selectinload(main_table.AnimeTable.poster_rs))
+        .filter(main_table.AnimeTable.title.ilike(f"%{title}%"))
         .distinct()
     )
     return await paginate(session, query)
