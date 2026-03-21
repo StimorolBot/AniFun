@@ -18,8 +18,9 @@ svg
     width: 21px
     height: 21px
 
-img[alt]
-    font-size: 14px
+img:not([src])
+    opacity: 0
+    visibility: hidden
 
 .wrapper
     min-height: 100dvh
@@ -85,3 +86,13 @@ body
     opacity: 0
     visibility: hidden
     transition: opacity 0.3s, visibility 0.3s 
+
+.point + .point::before
+    content: ""
+    position: absolute
+    top: 7px
+    left: -11px
+    width: 6px
+    height: 6px
+    background-color: $gray
+    border-radius: 50%
