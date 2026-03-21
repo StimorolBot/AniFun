@@ -29,10 +29,6 @@
     opacity: 0.7
     transition: opacity 0.3s
     
-    &:not([src])
-        opacity: 0
-        visibility: hidden
-
 .rec-title__inner
     position: absolute
     top: 50%
@@ -58,6 +54,11 @@
         flex-wrap: wrap
         opacity: 0.6
 
-        li + li::marker
-            content: " • "
-            align-self: center
+        .point::before
+            width: 5px
+            height: 5px
+            left: -8px
+            top: 6px
+
+        li
+            position: relative
