@@ -2,12 +2,11 @@
     
 
 .genres__item
-    flex-basis: 220px
     position: relative
     border-radius: 10px
     overflow: hidden
-    min-height: 220px
-    min-width: 180px
+    height: 330px
+    width: 210px
 
     &:not([src])::before
         content: ""
@@ -35,10 +34,6 @@
     width: 100%
     object-fit: cover
     opacity: 0.3
-
-    &:not([src])
-        opacity: 0
-        visibility: hidden
 
 .genres__desc-list
     position: absolute
