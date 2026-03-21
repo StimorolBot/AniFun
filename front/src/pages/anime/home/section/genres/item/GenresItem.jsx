@@ -9,7 +9,7 @@ export const GenresItem = memo(({item, imgData, ...props}) => {
     
     return(
         <li className="genres__item" {...props}>
-            <Link className="genres__item-link" to={`anime/genres/${item.value}`}>
+            <Link className="genres__item-link" to={`/anime/genres/${item.value}`}>
                 <div className="genres__bg-container">
                     <img className="genres__bg" src={imgData} loading="lazy" alt="genres-bg" />                            
                 </div>
