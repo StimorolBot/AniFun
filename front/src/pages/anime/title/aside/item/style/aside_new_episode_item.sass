@@ -30,10 +30,6 @@
     opacity: 0.05
     transition: opacity 0.3s
 
-    &:not([src])
-        opacity: 0
-        visibility: hidden
-
 .aside-ep__info
     padding: 0 10px
     position: absolute
@@ -67,6 +63,11 @@
     column-gap: 12px
     opacity: 0.4
     text-transform: capitalize
+    
+    .point::before
+        width: 5px
+        height: 5px
+        left: -7px
 
-    li + li::marker
-        content: "• "
+    li
+        position: relative
