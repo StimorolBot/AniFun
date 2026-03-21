@@ -8,6 +8,7 @@ import { Loader } from "../../../../../components/loader/Loader"
 import { BtnDefault } from "../../../../../ui/btn/BtnDefault"
 
 import { differenceInDays, formatDays } from "../../../../../utils/utils"
+import { titleScheduleCache } from "../../../../../query_key"
 
 
 import "./style.sass"
@@ -17,9 +18,10 @@ export const TitleSchedule = memo(({currentSlide, title, alias}) => {
     const [isShowMore, setIsShowMore] = useState(false)
 
     const {data: titleScheduleData, isLoading, error} = useQuery({
-        queryKey: ["title-schedule-data", alias],
+        queryKey: [titleScheduleCache, alias],
         staleTime: 1000 * 60 * 3,
         retry: false,
+        enabled: currentSlide.section === "schedule" ? true : false,
         queryFn: async () => {
             return await api.get(`anime/schedule/${title}`, {params: {"title": title}}).then(r => r.data)
         },
