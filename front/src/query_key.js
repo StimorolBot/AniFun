@@ -36,3 +36,8 @@ export const asideRecTitleImgCache = "asideRecTitleImgCache"
 export const asideNewEpisodeCache = "asideNewEpisodeCache"
 export const asideNewEpisodeImgCache = "asideNewEpisodeImgCache"
 
+// VideoPage
+
+export const videoCache = "videoCache"
+export const posterVideoCache = "posterVideoCache"
+
