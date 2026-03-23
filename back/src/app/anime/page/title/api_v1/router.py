@@ -11,13 +11,13 @@ from src.app.anime.page.title.api_v1.subquery import sequel_title_subquery
 from src.app.anime.schemas.api_v1.schemas import ValidText
 from src.app.anime.subquery.v_1 import subquery
 from src.database.session import get_async_session
-from src.redis.name_space import RadisNameSpace
+from src.redis.name_space import RedisNameSpace, Expire
 from src.utils.logger import anime_log
 
 title_router = APIRouter(tags=["title"], prefix="/anime")
 
 
-@cache(expire=120, namespace=RadisNameSpace.TITLE_PAGE.value)
+@cache(expire=Expire.THREE.value, namespace=RedisNameSpace.ABOUT_TITLE.value)
 @title_router.get(
     "/about/{alias}",
     status_code=status.HTTP_200_OK,
@@ -63,7 +63,7 @@ async def get_title(
         ) from e
 
 
-@cache(expire=120, namespace=RadisNameSpace.TITLE_PAGE.value)
+@cache(expire=Expire.THREE, namespace=RedisNameSpace.RECOMMEND_TITLE.value)
 @title_router.get(
     "/recommend-title",
     status_code=status.HTTP_200_OK,
@@ -106,7 +106,7 @@ async def get_recommend_title(session: AsyncSession = Depends(get_async_session)
     return [schemas.ResponseRecTitleDTO.model_validate(i, from_attributes=True) for i in items]
 
 
-@cache(expire=120, namespace=RadisNameSpace.TITLE_PAGE.value)
+@cache(expire=Expire.THREE.value, namespace=RedisNameSpace.EPISODE_TITLE.value)
 @title_router.get("/episodes/{title}", status_code=status.HTTP_200_OK, summary="Получить эпизоды")
 async def get_episodes(title: ValidText[5, 150], session: AsyncSession = Depends(get_async_session)):
     query = (
@@ -127,14 +127,14 @@ async def get_episodes(title: ValidText[5, 150], session: AsyncSession = Depends
             main_table.AnimeTable.title == main_table.EpisodeTable.title
         )
         .where(main_table.EpisodeTable.title == title)
-        .order_by(main_table.EpisodeTable.number.asc())
+        .order_by(main_table.EpisodeTable.number.desc())
     )
     result = await session.execute(query)
     items = result.mappings().all()
     return [schemas.ResponseEpisodeDTO.model_validate(item, from_attributes=True) for item in items]
 
 
-@cache(expire=120, namespace=RadisNameSpace.TITLE_PAGE.value)
+@cache(expire=Expire.THREE.value, namespace=RedisNameSpace.SEQUEL.value)
 @title_router.get(
     "/sequel/{title}",
     status_code=status.HTTP_200_OK,
@@ -179,7 +179,7 @@ async def get_sequel(
     return [schemas.ResponseSequel.model_validate(item, from_attributes=True) for item in items]
 
 
-@cache(expire=120, namespace=RadisNameSpace.TITLE_PAGE.value)
+@cache(expire=Expire.THREE.value, namespace=RedisNameSpace.SCHEDULE.value)
 @title_router.get(
     "/schedule/{title}",
     status_code=status.HTTP_200_OK,
