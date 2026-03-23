@@ -11,6 +11,7 @@ import { TitleCommentItem } from "./item/TitleCommentItem"
 import { Loader } from "../../../../../components/loader/Loader"
 import { BtnDefault } from "../../../../../ui/btn/BtnDefault"
 import { TextareaDefault } from "../../../../../ui/input/TextareaDefault"
+import { titleCommentCache } from "../../../../../query_key"
 
 import "./style.sass"
 
@@ -28,7 +29,7 @@ export const TitleComment = memo(({currentSlide, title, alias}) => {
 
 
     const {data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading} = useInfiniteQuery({
-        queryKey: ["comment-data", alias],
+        queryKey: [titleCommentCache, alias],
         staleTime: 1000 * 60 * 3,
         enabled: currentSlide.section === "comments" ? true : false,
         queryFn: async (pageParam) => {
@@ -58,7 +59,7 @@ export const TitleComment = memo(({currentSlide, title, alias}) => {
     const mutation = useMutation({
         mutationFn: callback,
         onSuccess: () => {
-            queryClient.invalidateQueries({queryKey: ["comment-data", alias]})
+            queryClient.invalidateQueries({queryKey: [titleCommentCache, alias]})
         },
         onError: (e) => {
             console.log(e)
@@ -75,7 +76,7 @@ export const TitleComment = memo(({currentSlide, title, alias}) => {
                 }).then(r => r.data)
         },
         onSuccess: (data, variables) => {
-            queryClient.setQueryData(["comment-data", alias], oldData => {
+            queryClient.setQueryData([titleCommentCache, alias], oldData => {
                 if (!oldData) 
                     return oldData
                 
@@ -137,7 +138,8 @@ export const TitleComment = memo(({currentSlide, title, alias}) => {
                                 mutation={mutationLoadComment}
                                 index={index}
                                 alias={alias}   
-                                title={title}                    
+                                title={title}
+                                queryClient={queryClient}                  
                                 key={index}
                             />
                         )
