@@ -7,7 +7,8 @@ import { cookies } from "../../../../../../cookie"
 
 import { convertDate } from "../../../../../../utils/utils"
 import { BtnDefault } from "../../../../../../ui/btn/BtnDefault"
-import { RatingComment } from "../../../mini_app/rating_comment/RatingComment"
+import { ReactionComment } from "../../../mini_app/reaction/ReactionComment"
+import { titleCommentUserAvatar } from "../../../../../../query_key"
 
 import "./style.sass"
 
@@ -21,23 +22,25 @@ export const TitleCommentItem = memo(({
     setResponseComment,
     mutation,
     index,
+    alias,
+    title,
+    queryClient,
     ...props
 }) => {
-    
     if (level > maxLevel)
         return null
 
     const [isShowCommentResponse, setIsShowCommentResponse] = useState(false)
     
-    const clickOnAnchor = (uuid, authorUuid, content) => {
+    const clickOnAnchor = (uuid, content, authorUuid) => {
         if (!cookies.get("access_token")){
             return navigate("/auth/login")
         }
 
         setResponseComment({
-            "uuid_comment": uuid, 
-            "uuid_author": authorUuid,
+            "responseCommentUuid": uuid, 
             "content": content,
+            "responseAuthorUuid": authorUuid
         })
 
         ref.current?.scrollIntoView({
@@ -48,7 +51,7 @@ export const TitleCommentItem = memo(({
     }
     
     const {data: imgData}  = useQuery({
-        queryKey: ["comment-avatar", item.avatar_uuid],
+        queryKey: [titleCommentUserAvatar, item.avatar_uuid],
         staleTime: 1000 * 60 * 3,
         queryFn: async () => {
             return await api.get(`/s3/user-${item.author_uuid}/${item.avatar_uuid}`).then(r => r.data)
@@ -82,17 +85,27 @@ export const TitleCommentItem = memo(({
                             <span>{item.content}</span>
                         </div>
                         <div className="title-release__btn-container">
-                            <BtnDefault callback={() => clickOnAnchor(
-                                item.uuid,
-                                item.author_uuid, 
-                                item.content
-                            )}>
-                                Ответить
-                            </BtnDefault>    
+                            {level < maxLevel && 
+                                <BtnDefault callback={() => clickOnAnchor(
+                                    item.uuid,
+                                    item.content,
+                                    item.author_uuid
+                                )}>
+                                    Ответить
+                                </BtnDefault>
+                            }    
                         </div>
                     </div>
                 </div>
-                <RatingComment/>
+                <ReactionComment
+                    uuid={item.uuid} 
+                    title={title}
+                    likeCount={item.like_count}
+                    dislikeCount={item.dislike_count}
+                    myReaction={item.my_reaction}
+                    queryClient={queryClient}
+                    alias={alias}
+                />
             </div>
             <ul 
                 className={
@@ -109,8 +122,12 @@ export const TitleCommentItem = memo(({
                             level={level + 1}
                             navigate={navigate}
                             maxLevel={maxLevel}
+                            title={title}
+                            alias={alias}
                             setResponseComment={setResponseComment}
-                            index={""}
+                            mutation={mutation}
+                            index={index}
+                            queryClient={queryClient}
                             key={index}
                         />
                     )})
