@@ -34,3 +34,7 @@ class S3ClientAbc(ABC):
     @staticmethod
     async def copy_file(*args, **kwargs):
         pass
+
+    @staticmethod
+    async def read_file(*args, **kwargs):
+        pass
