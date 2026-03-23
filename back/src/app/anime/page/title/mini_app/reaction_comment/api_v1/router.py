@@ -32,10 +32,13 @@ async def set_rating(
         )
 
         await session.commit()
-        anime_log.info("Добавление реакции %s -> %s -> %s", current_user["sub"], data.uuid.hex, data.reaction_type)
+        anime_log.info(
+            "Добавление реакции %s -> %s -> %s",
+            current_user["sub"], data.uuid.hex, data.reaction_type.value
+        )
         return JSONResponse(
             status_code=status.HTTP_201_CREATED,
-            content=f"Реакция создана {data.reaction_type}"
+            content=data.reaction_type.value
         )
     except IntegrityError as e:
         anime_log.warning("При попытке установить реакцию на комментарий возникла ошибка: %s", e)
@@ -79,8 +82,8 @@ async def update_reaction(
         uuid=data.uuid
     )
     await session.commit()
-    anime_log.info("Обновление реакции %s -> %s -> %s", current_user["sub"], data.title, data.reaction_type)
+    anime_log.info("Обновление реакции %s -> %s -> %s", current_user["sub"], data.title, data.reaction_type.value)
     return JSONResponse(
         status_code=status.HTTP_200_OK,
-        content=f"Обновление реакции: {data.reaction_type}"
+        content=data.reaction_type.value
     )
