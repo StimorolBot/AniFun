@@ -1,56 +1,50 @@
-import { useEffect, useRef, useState } from "react"
+import { useRef } from "react"
 
 import { Helmet } from "react-helmet"
-import { Link, useNavigate, useParams } from "react-router-dom"
+import { useQuery } from "@tanstack/react-query"
+import { useParams } from "react-router-dom"
 import { CSSTransition, SwitchTransition } from "react-transition-group"
 
 import { api } from "../../../api"
-import { useFetch } from "../../../hook/useFetch"
 
 import { VideoPlayer } from "./player/VideoPlayer"
 import { Loader } from "../../../components/loader/Loader"
+
+import { videoCache, posterVideoCache } from "../../../query_key"
 
 import "./style.sass"
 
 
 export const Video = () => {
-    const navigate = useNavigate()
     const { uuid } = useParams()
 
     const videoRef = useRef(null)
     const transitionRef = useRef(null)
 
-
-    const [response, setResponse] = useState({
-        "title" : "",
-        "episode_number": "",
-        "episode_name": "",
-        "preview": ""
+    const {data: videoData, isLoading} = useQuery({
+        queryKey: [videoCache, uuid],
+        staleTime: 1000 * 60 * 3,
+        queryFn: async () => {
+            return await api.get(`anime/videos/episode/episode-info/${uuid}`, {params: {"uuid": uuid}}).then(r => r.data)
+        },
+        placeholderData: []
     })
 
-    const [request, isLoading, error] = useFetch(
-        async () => {
-            await api.get(`anime/videos/episode/episode-info/${uuid}`)
-            .then(r => setResponse(r.data))
+    const {data: posterData} = useQuery({
+        queryKey: [posterVideoCache, uuid],
+        enabled: !! videoData?.poster_uuid,
+        staleTime: 1000 * 60 * 3,
+         queryFn: async () => {
+            return await api.get(`/s3/anime-${videoData.title_uuid}/${videoData.poster_uuid}`).then(r => r.data)
         }
-    )
-    
-    useEffect(() => {(
-        async () => {
-            await request()
-        })()
-    }, [])
+    })
 
     return(<>
         <Helmet>
             <title>
-                {
-                    `Эпизод ${response.episode_number} | 
-                    ${response.title || null} | 
-                    ${response.title}`
-                }
+                {`Эпизод ${videoData.number} | ${videoData.title}`}
             </title>
-            <meta property="og:image" content={`data:image/webp;base64,${response.preview}`}/>
+            <meta property="og:image" content={posterData}/>
         </Helmet>
         <main className="video-page">
             <h1 className="title-page">
@@ -66,20 +60,15 @@ export const Video = () => {
                     { isLoading
                         ? <Loader/>
                         : <div className="video__container">
-                            <header className="video__header">
-                                <Link className="video__link" onClick={() => navigate(-1)}>
-                                    <img className="video__img" src="/public/btn/prev-btn.svg" alt="back"/>
-                                </Link>
-                                <p className="video__title">
-                                    {response.title}
-                                </p>
-                            </header>
-                            <VideoPlayer 
-                                uuid={uuid}
-                                videoRef={videoRef}
-                                episodeNumber={response.episode_number} 
-                                episodeName={response.episode_name}
-                            />
+                            {videoData.length !== 0 && 
+                                <VideoPlayer 
+                                    uuid={uuid}
+                                    videoRef={videoRef}
+                                    episodeNumber={videoData.number} 
+                                    episodeName={videoData.name}
+                                    titleUuid={videoData.title_uuid}
+                                />
+                            }
                         </div>
                     }
                 </CSSTransition>
