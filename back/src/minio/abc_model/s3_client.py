@@ -36,5 +36,5 @@ class S3ClientAbc(ABC):
         pass
 
     @staticmethod
-    async def read_file(*args, **kwargs):
+    async def get_file_metadata(*args, **kwargs):
         pass
