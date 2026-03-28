@@ -9,9 +9,9 @@ export const HotKey = memo(({setSelectSettingsItem}) => {
         <nav className="settings-video__nav">
             <div className="settings-video__btn">
                 <BtnDefault callback={() => setSelectSettingsItem("nav")}>
-                    <div className="btn-close-settings-video__container">
+                    <div className="btn-back-settings-video__container">
                         <svg>
-                            <use xlinkHref="/svg/video.svg#btn-close-settings-video"/>
+                            <use xlinkHref="/svg/video.svg#btn-back-settings-video"/>
                         </svg>
                         <p>Назад</p>
                     </div>
