@@ -1,0 +1,44 @@
+@use "/src/style/color.sass" as * 
+
+
+.input-checkbox__container
+    width: 30px
+    height: 14px
+    position: relative
+    
+.input-checkbox
+    z-index: -1
+    opacity: 0
+
+    & + .input-checkbox__label
+        cursor: pointer
+        transition: 0.3s
+
+        &::before
+            content: ""
+            position: absolute
+            top: 0
+            right: 0
+            width: 28px
+            height: 14px
+            border-radius: 10px
+            background-color: $gray
+            transition: background-color 0.3s ease
+
+        &::after 
+            content: ""
+            position: absolute
+            top: 50%
+            left: 4px
+            width: 10px
+            height: 10px
+            border-radius: 50%
+            transition: left 0.3s ease
+            background-color: $white
+            transform: translateY(-50%)
+
+    &:checked + .input-checkbox__label:before 
+        background-color: $red
+
+    &:checked + .input-checkbox__label:after 
+        left: 18px
