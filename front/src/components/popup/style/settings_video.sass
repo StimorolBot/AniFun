@@ -1,0 +1,110 @@
+@use "/src/style/color.sass" as * 
+
+
+.settings-video
+    position: absolute
+    left: -250px
+    bottom: 35px
+    border: none
+    font-size: 14px
+    padding: 0
+    background-color: transparent
+    transition: opacity 0.3s
+
+    &:not([open])
+        opacity: 0
+        display: block
+        pointer-events: none
+
+    &[open]
+        opacity: 1
+
+.settings-video__background
+    position: fixed
+    min-height: 100%
+    min-width: 100%
+    top: 0
+    left: 0
+    background-color: $t-black
+
+.settings-video__container
+    padding: 10px
+    width: 270px
+    border-radius: 10px
+    color: $white
+    background-color: $gray
+
+.settings-video__nav
+    position: relative
+    z-index: 999
+
+.settings__item
+    display: flex
+    font-weight: 600
+    justify-content: space-between
+    cursor: pointer
+    transition: background-color 0.3s
+    border-radius: 6px
+    padding: 4px 5px
+
+    &:hover
+        background-color: $sub-white
+
+    + .settings__item
+        margin-top: 1px
+
+    span
+        margin-right: 5px
+
+.settings__item_active
+    position: relative
+
+.settings__item_title
+    margin-top: 5px !important 
+    color: $gray
+    cursor: default
+    font-size: 12px
+    
+    &:hover
+        background-color: unset !important
+
+.settings-video__btn
+    margin-bottom: 20px
+    position: relative
+    transition: background-color 0.3s
+    border-radius: 6px
+    padding: 3px 0
+
+    &::before
+        content: ""
+        position: absolute
+        bottom: -10px
+        left: 0
+        width: 100%
+        height: 1px
+        background-color: $sub-white
+
+    .btn-default
+        font-family: "Jura", sans-serif
+        color: $white
+
+    &:hover
+        background-color: $sub-white
+
+    span
+        margin-right: 10px
+        color: $gray
+        font-size: 12px
+
+
+.btn-close-settings-video__container
+    display: flex
+    gap: 5px
+
+    svg
+        height: 12px
+        width: 12px
+
+.settings__item-select
+    color: $gray
+    font-size: 12px
