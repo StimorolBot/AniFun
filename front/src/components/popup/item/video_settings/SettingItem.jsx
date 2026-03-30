@@ -22,7 +22,7 @@ export const SettingItem = memo(({valueList, value, setSelectSettingsItem, callb
                         <li 
                             className={item === value ? "settings__item settings__item_active" : "settings__item"} 
                             key={item}
-                            onClick={() => callback()}
+                            onClick={() => item !== value && callback(item)}
                         >
                             {item}{prefix}
                         </li>
