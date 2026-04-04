@@ -3,12 +3,12 @@ import { memo } from "react"
 import "./style/input_volume.sass"
 
 
-export const InputVolume = memo(({ref, volume, setVolume}) => {
+export const InputVolume = memo(({ref, volume, callback}) => {
     const clampedVolume = Math.min(1, Math.max(0, Number(volume) || 0))
     
     const handleVolumeChange = (event) => {
         const nextVolume = Number(event.target.value)
-        setVolume(nextVolume)
+        callback(nextVolume)
         ref.current.volume = nextVolume
     }
 
