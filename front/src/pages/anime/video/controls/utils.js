@@ -1,4 +1,7 @@
-export const handlePip = (ref) => {
+import { handlerTogglePlay, handleFullScreen } from "../player/utils"
+
+ 
+export const handlePip = (ref) => {fff
     if (document.pictureInPictureElement)
         document.exitPictureInPicture()
     else
