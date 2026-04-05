@@ -17,7 +17,7 @@ import {
 import "./style/video_player.sass"
 
 
-export const VideoPlayer = ({videoRef, uuid, episodeNumber, episodeName, titleUuid}) => {    
+export const VideoPlayer = ({alias, videoRef, uuid, episodeNumber, episodeName, titleUuid}) => {    
     const playerContainerRef = useRef()
     const timerRef = useRef()
     
@@ -36,7 +36,7 @@ export const VideoPlayer = ({videoRef, uuid, episodeNumber, episodeName, titleUu
     const videoSrc = `${api.defaults.baseURL}/anime/videos/episode/${titleUuid}/${uuid}`
 
     const sendLastFrameTime = () => { 
-        const data = JSON.parse(localStorage.getItem("last_frame_time") || "{}")
+        const data = JSON.parse(localStorage.getItem(alias) || "{}")
         navigator.sendBeacon(
             `${api.defaults.baseURL}/anime/videos/save-last-frame-time`,
             JSON.stringify({"uuid": uuid, ...data[uuid]})
@@ -123,7 +123,7 @@ export const VideoPlayer = ({videoRef, uuid, episodeNumber, episodeName, titleUu
             </div>
             <div
                 style={{"flex": "1"}}
-                onClick={() => handlerTogglePlay(videoRef, setIsPlaying, uuid)}
+                onClick={() => handlerTogglePlay(videoRef, alias, uuid, setIsPlaying)}
             >
                 <video 
                     className="video-player"
@@ -150,6 +150,7 @@ export const VideoPlayer = ({videoRef, uuid, episodeNumber, episodeName, titleUu
                 <Controls
                     uuid={uuid}
                     player={player}
+                    alias={alias}
                     videoRef={videoRef}
                     playerContainerRef={playerContainerRef}
                     bufferProgress={bufferProgress}
