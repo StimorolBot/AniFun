@@ -7,7 +7,7 @@ import "./style/input_video_progress.sass"
 
 
 export const InputVideoProgress = memo(({
-    uuid, ref, player, videoDuration, seekProgress, bufferProgress, currentProgress 
+    uuid, alias, ref, player, videoDuration, seekProgress, bufferProgress, currentProgress 
 }) => {
 
     const handleChange = (e) => {
@@ -15,7 +15,7 @@ export const InputVideoProgress = memo(({
         if (!player || Number.isNaN(newTime)) return
 
         player.currentTime(newTime)   
-        setDataLocalStorage(uuid, newTime, ref.current.duration)
+        setDataLocalStorage(uuid, alias, newTime, ref.current.duration)
     }
 
     const [seekMouseMoveHandler, seekTooltipPosition, seekTooltip] = useProgressVideo(ref, player, videoDuration)
