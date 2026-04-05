@@ -6,7 +6,7 @@ export const setDataLocalStorage = (uuid, alias, currentTime, duration) => {
     const localData = JSON.parse(localStorage.getItem(alias) || "{}")
 
     localData[uuid] = {
-        "time": currentTime,
+        "time": Math.round(currentTime),
         "progress": progress,
         "is_watch": progress > 80 ? true : false,
     }
