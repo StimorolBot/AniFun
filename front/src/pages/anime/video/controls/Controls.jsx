@@ -16,6 +16,7 @@ import "./style.sass"
 
 export const Controls = memo(({
     uuid,
+    alias,
     player,
     videoRef,
     playerContainerRef,
@@ -50,12 +51,14 @@ export const Controls = memo(({
         
         const onKeyDown = (event) => handleKeyPress(
             event,
-            videoRef,
-            setIsPlaying,
+            videoRef,            
+            playerContainerRef,
             player,
+            uuid,
+            alias,
             videoSettings.volume,
             setVideoSettings,
-            playerContainerRef
+            setIsPlaying
         )
 
         document.addEventListener("keydown", onKeyDown)
@@ -69,6 +72,7 @@ export const Controls = memo(({
         <div className={isShowControls ? "controls__container controls__container_active" : "controls__container"}>
             <InputVideoProgress
                 uuid={uuid}
+                alias={alias}
                 player={player}
                 ref={videoRef}
                 bufferProgress={bufferProgress}
@@ -79,8 +83,8 @@ export const Controls = memo(({
             <div className="controls__btn-container">
                 <div className="controls__btn controls__btn_center">
                     <BtnDefault
-                        value={isPlaying} 
-                        callback={() => handlerTogglePlay(videoRef, setIsPlaying, uuid)}
+                        value={isPlaying}
+                        callback={() => handlerTogglePlay(videoRef, alias, uuid, setIsPlaying)}
                     >
                         {isLoading
                             ? <div className="loader__container_active">
