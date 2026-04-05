@@ -3,13 +3,13 @@ import { memo } from "react"
 import "./style/progress_episode.sass"
 
 
-export const ProgressEpisode = memo(({maxValue}) => {
+export const ProgressEpisode = memo(({value, maxValue}) => {
 
     return(
         <div className="progress-episode__container">
-            <progress className="progress-episode" min={0} max={maxValue} value="0"/>
+            <progress className="progress-episode" min={0} max={maxValue} value={value}/>
             <p className="progress-episode__text">
-                {`Просмотрено 0 из ${maxValue}`}
+                {`Просмотрено ${value} из ${maxValue}`}
             </p>
         </div>
     )
