@@ -1,6 +1,6 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Cookie, Depends, HTTPException, status, Request
+from fastapi import APIRouter, Cookie, Depends, HTTPException, Request, status
 from fastapi.responses import JSONResponse
 from fastapi_cache.decorator import cache
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -106,7 +106,11 @@ async def login(
     await crud.update(session=session, table=AuthTable, uuid=user.uuid, data={"is_active": True})
 
     task = send_email.apply_async(
-        args=(user.identifier, TypeEmail.LOGIN.value, request.client.host),
+        kwargs={
+            "user_email": user.identifier,
+            "email_type": TypeEmail.LOGIN.value,
+            "ip": request.client.host
+        },
         ignore_result=False
     )
     celery.AsyncResult(task.id)
