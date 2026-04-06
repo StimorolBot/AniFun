@@ -13,8 +13,10 @@ class TestAuthPos:
     @pytest.mark.dependency()
     async def test_register(self, ac: AsyncClient):
         user_data = {
-            "identifier": TEST_USER_EMAIL, "user_name": "string123",
-            "password": "string123", "password_confirm": "string123"
+            "identifier": TEST_USER_EMAIL,
+            "user_name": "string123",
+            "password": "string123",
+            "password_confirm": "string123"
         }
         response = await ac.post("/auth/register", json=user_data)
         response_dist = response.json()
@@ -106,3 +108,8 @@ class TestAuthNeg:
     async def test_logout(self, ac: AsyncClient):
         response = await ac.patch("/auth/logout", cookies={"access_token": ""})
         assert response.status_code == status.HTTP_401_UNAUTHORIZED
+
+    @pytest.mark.dependency(depends=["TestAuthPos::test_verify_email"])
+    async def test_verify_email_reuse_token(self, ac: AsyncClient):
+        redis_data = await redis_manager.get_value(pytest.recaptcha_token["recaptcha_token"])
+        assert redis_data == None
