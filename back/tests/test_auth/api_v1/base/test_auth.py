@@ -8,10 +8,6 @@ from tests.conftest import ac
 TEST_USER_EMAIL = "user@example.com"
 
 
-# запуск тестов
-# pytest -vv -s tests/test_auth/api_v1/base/test_auth.py::TestAuthPos
-
-
 class TestAuthPos:
 
     @pytest.mark.dependency()
@@ -32,8 +28,8 @@ class TestAuthPos:
         user_data = {"identifier_token": redis_data["identifier_token"], "recaptcha_token": pytest.recaptcha_token}
         response = await ac.post("/auth/verify-email", json=user_data)
 
-        response_dist = response.json()
-        pytest.refresh_token = response_dist["refresh_token"]
+        response_dict = response.json()
+        pytest.refresh_token = response_dict["refresh_token"]
 
         assert response.status_code == status.HTTP_201_CREATED
 
@@ -41,13 +37,13 @@ class TestAuthPos:
     async def test_login(self, ac: AsyncClient):
         user_data = {"identifier": TEST_USER_EMAIL, "password": "string123"}
         response = await ac.patch("/auth/login", json=user_data)
-        pytest.access_token = response.json()
-
+        response_dict = response.json()
+        pytest.access_token = response_dict["access_token"]
         assert response.status_code == status.HTTP_200_OK
 
     @pytest.mark.dependency(depends=["TestAuthPos::test_login"])
     async def test_logout(self, ac: AsyncClient):
-        response = await ac.patch("/auth/logout", cookies=pytest.access_token)
+        response = await ac.patch("/auth/logout", cookies={"access_token": pytest.access_token})
         assert response.status_code == status.HTTP_200_OK
 
     @pytest.mark.dependency()
@@ -67,12 +63,11 @@ class TestAuthPos:
         assert response.status_code == status.HTTP_200_OK
 
     @pytest.mark.dependency(depends=["TestAuthPos::test_verify_email"])
-    async def test_verify_email(self, ac: AsyncClient):
+    async def test_refresh_token(self, ac: AsyncClient):
         response = await ac.post("/auth/refresh-token", cookies={"refresh_token": pytest.refresh_token})
         assert response.status_code == status.HTTP_200_OK
 
 
-# pytest -vv -s tests/test_auth/api_v1/base/test_auth.py::TestAuthNeg
 class TestAuthNeg:
     @pytest.mark.parametrize(
         "user_name, identifier, password, password_confirm",
