@@ -9,7 +9,6 @@ from src.model import Base
 from src.utils.utils import generate_uuid, get_unc_now
 
 if TYPE_CHECKING:
-    from src.app.anime.models.v1.main.comment import ResponseCommentTable
     from src.app.auth.models.v1.main.ban import BanTable
     from src.app.user.models.v1.avatar import AvatarTable
 
@@ -29,9 +28,5 @@ class AuthTable(Base):
 
     ban_rs: Mapped["BanTable"] = relationship(back_populates="auth_rs")
     avatar_rs: Mapped["AvatarTable"] = relationship(back_populates="auth_rs")
-    response_rs: Mapped["ResponseCommentTable"] = relationship(
-        back_populates="auth_rs",
-        foreign_keys="[ResponseCommentTable.response_uuid_author]"
-    )
 
     __table_args__ = (UniqueConstraint("identifier", "auth_type"),)
