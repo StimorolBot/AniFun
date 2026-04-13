@@ -1,0 +1,64 @@
+@use "/src/style/color.sass" as *
+
+
+.input-default__container
+    position: relative
+
+    &:has(.input-default:optional)::before
+        position: absolute
+        content: "*"
+        color: $red
+        font-size: 25px
+        top: 0
+        right: 0
+
+    label
+        position: absolute
+        background-color: $white
+        opacity: 0.3
+        width: 100%
+        height: 2px
+        bottom: -2px
+        left: 0
+        right: 0
+        
+        &::before,
+        &::after
+            content: ""
+            position: absolute
+            background-color: $red
+            width: 0
+            height: 2px
+            transition: width 0.8s
+
+        &::before
+            right: 50%
+        
+        &::after
+            left: 50%
+
+.input-default
+    width: 100%
+    height: 30px
+    padding: 8px 14px 10px 10px
+    background-color: transparent
+    color: $white
+    font-size: 20px
+    font-family: "Jura", sans-serif
+    line-height: normal
+    font-weight: 600
+
+    &:first-letter
+        text-transform: capitalize
+
+    &:focus ~ label::before,
+    &:focus ~ label::after
+        width: 50%
+
+.input-default__error
+    color: $red
+    position: absolute
+    top: -9px
+    right: 0
+    font-size: 14px
+    font-weight: 600
