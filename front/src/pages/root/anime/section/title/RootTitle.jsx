@@ -33,12 +33,7 @@ const ageRestrictList = [
     {"value": "r", "label": "18+"},
 ]
 
-const breakpoints = {
-    "default": 2,
-    "1280": 1
-}
-
-export const RootTitle = memo(({isShowAlert, setUpdateAlert, setAlertData}) => {
+export const RootTitle = memo(({isShowAlert, setUpdateAlert, setAlertData, breakpoints}) => {
     
     return(
         <section className="root-anime__section">
