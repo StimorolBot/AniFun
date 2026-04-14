@@ -36,6 +36,11 @@ const sectionList = [
     {"value": "genres", "label": "Жанры"}
 ]
 
+const breakpoints = {
+    "default": 2,
+    "1280": 1
+}
+
 
 export const RootAnime = memo(() => {    
     const [activeSection, setActiveSection] = useState("title")
@@ -67,36 +72,42 @@ export const RootAnime = memo(() => {
                     isShowAlert={isShowAlert}
                     setUpdateAlert={setUpdateAlert}
                     setAlertData={setAlertData}
+                    breakpoints={breakpoints}
                 />
             case "media":
                 return <RootMedia
                     isShowAlert={isShowAlert}
                     setUpdateAlert={setUpdateAlert}
                     setAlertData={setAlertData}
+                    breakpoints={breakpoints}
                 />
             case "episode":
                 return <RootEpisode
                     isShowAlert={isShowAlert}
                     setUpdateAlert={setUpdateAlert}
                     setAlertData={setAlertData}
+                    breakpoints={breakpoints}
                 />
             case "schedule":
                 return <RootSchedule
                     isShowAlert={isShowAlert}
                     setUpdateAlert={setUpdateAlert}
                     setAlertData={setAlertData}
+                    breakpoints={breakpoints}
                 />
             case "sequel":
                 return <RootSequel
                     isShowAlert={isShowAlert}
                     setUpdateAlert={setUpdateAlert}
                     setAlertData={setAlertData}
+                    breakpoints={breakpoints}
                 />
             case "genres":
                 return <RootGenres
                     isShowAlert={isShowAlert}
                     setUpdateAlert={setUpdateAlert}
                     setAlertData={setAlertData}
+                    breakpoints={breakpoints}
                 />
         }    
     }
