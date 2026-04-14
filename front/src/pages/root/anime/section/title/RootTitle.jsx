@@ -1,4 +1,5 @@
 import { memo} from "react"
+import Masonry from "react-masonry-css"
 
 import { CreateTitle } from "./item/CreateTitle"
 import { UpdateTitle } from "./item/UpdateTitle"
@@ -32,23 +33,44 @@ const ageRestrictList = [
     {"value": "r", "label": "18+"},
 ]
 
+const breakpoints = {
+    "default": 2,
+    "1280": 1
+}
 
-export const RootTitle = memo(() => {
+export const RootTitle = memo(({isShowAlert, setUpdateAlert, setAlertData}) => {
+    
     return(
         <section className="root-anime__section">
-            <CreateTitle 
-                typeList={typeList}
-                seasonList={seasonList}
-                statusList={statusList}
-                ageRestrictList={ageRestrictList}
-            />            
-            <UpdateTitle
-                typeList={typeList}
-                seasonList={seasonList}
-                statusList={statusList}
-                ageRestrictList={ageRestrictList}
-            />
-            <DeleteTitle/>
+            <Masonry
+                className="masonry-root"
+                breakpointCols={breakpoints} 
+                columnClassName="masonry__column-root"
+            >        
+                <CreateTitle 
+                    typeList={typeList}
+                    seasonList={seasonList}
+                    statusList={statusList}
+                    ageRestrictList={ageRestrictList}
+                    isShowAlert={isShowAlert}
+                    setUpdateAlert={setUpdateAlert}
+                    setAlertData={setAlertData}
+                />            
+                <UpdateTitle
+                    typeList={typeList}
+                    seasonList={seasonList}
+                    statusList={statusList}
+                    ageRestrictList={ageRestrictList}
+                    isShowAlert={isShowAlert}
+                    setUpdateAlert={setUpdateAlert}
+                    setAlertData={setAlertData}
+                />
+                <DeleteTitle
+                    isShowAlert={isShowAlert}
+                    setUpdateAlert={setUpdateAlert}
+                    setAlertData={setAlertData}
+                />
+            </Masonry>
         </section>
     )
 })
