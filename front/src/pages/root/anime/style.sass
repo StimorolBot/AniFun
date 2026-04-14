@@ -1,0 +1,76 @@
+@use "/src/style/color.sass" as *
+
+
+.root-anime__section-nav
+    display: flex
+    flex-wrap: wrap
+    gap: 10px
+    margin: 15px 0 20px 0 
+
+.masonry-root
+    margin-top: 20px
+    display: -webkit-box
+    display: -ms-flexbox
+    display: flex
+    gap: 20px 
+    width: auto
+
+.masonry__column-root > .root-anime__item
+    margin-bottom: 20px
+
+.root-anime__item
+    display: flex
+    flex-direction: column
+    gap: 10px
+    padding: 16px
+    height: fit-content
+    position: relative
+
+    &::before
+        content: ""
+        position: absolute
+        top: 0
+        left: 0
+        right: 0
+        bottom: 0
+        background-color: $sub-black-2
+        border-radius: 12px
+        opacity: 0.5
+
+.root-anime__title
+    position: relative
+    margin: 0 0 2px
+    font-size: 22px
+    font-weight: 900
+    color: $white
+
+.root-anime__row
+    display: grid
+    grid-template-columns: repeat(2, minmax(0, 1fr))
+    gap: 10px
+
+.root-anime__btn-container
+    position: relative
+    margin: 0 auto
+
+    .btn-default
+        font-size: 18px
+
+.root-anime-switch-enter
+    opacity: 0
+    transform: translateY(10px) scale(.995)
+
+.root-anime-switch-enter-active
+    opacity: 1
+    transform: translateY(0) scale(1)
+    transition: opacity .26s ease, transform .26s ease
+
+.root-anime-switch-exit
+    opacity: 1
+    transform: translateY(0) scale(1)
+
+.root-anime-switch-exit-active
+    opacity: 0
+    transform: translateY(-6px) scale(.995)
+    transition: opacity .18s ease, transform .18s ease
+
