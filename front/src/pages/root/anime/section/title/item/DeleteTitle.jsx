@@ -1,4 +1,4 @@
-import { memo, useRef, useState } from "react"
+import { memo, useRef } from "react"
 import { useForm } from "react-hook-form"
 import { useQuery } from "@tanstack/react-query"
 
@@ -9,23 +9,14 @@ import { BtnDefault } from "../../../../../../ui/btn/BtnDefault"
 import { InputTitle } from "../../../../ui/Input/InputTitle"
 
 import { Loader } from "../../../../../../components/loader/Loader"
-import { AlertResponse } from "../../../../../../ui/alert/AlertResponse"
 import { alertHandler } from "../../../../../../utils/utils"
 
 
-export const DeleteTitle = memo(() => {
-    const [isShowAlert, setIsShowAlert] = useState(false)
-    const [updateAlert, setUpdateAlert] = useState(0)
-    const [alertData, setAlertData] = useState({
-        "msg": undefined,
-        "statusCode": undefined,
-        "prefix": undefined,
-    })
-
+export const DeleteTitle = memo(({isShowAlert, setUpdateAlert, setAlertData}) => {
     const formDataRef = useRef()
     const {register, handleSubmit, formState: {errors, isValid} } = useForm({"mode": "onChange"})
 
-    const {data, isFetching, refetch, error} = useQuery({
+    const {isFetching, refetch, error} = useQuery({
         queryKey: [rootAnimeTitle.delete],
         retry: 1,
         enabled: false,
@@ -69,14 +60,6 @@ export const DeleteTitle = memo(() => {
                     </BtnDefault>
                 }
             </div>
-            <AlertResponse
-                msg={alertData.msg} 
-                statusCode={alertData.statusCode} 
-                update={updateAlert}
-                prefix={alertData.prefix}
-                isShowAlert={isShowAlert}
-                setIsShowAlert={setIsShowAlert}
-            /> 
         </form>
     )
 })
