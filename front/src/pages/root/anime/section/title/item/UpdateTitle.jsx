@@ -17,20 +17,18 @@ import { CheckboxDefault } from "../../../../../../ui/input/CheckboxDefault"
 import { BtnDefault } from "../../../../../../ui/btn/BtnDefault"
 
 import { Loader } from "../../../../../../components/loader/Loader"
-import { AlertResponse } from "../../../../../../ui/alert/AlertResponse"
-
 import { alertHandler } from "../../../../../../utils/utils"
 
 
-export const UpdateTitle = memo(({typeList, seasonList, statusList, ageRestrictList}) => {
-    const [isShowAlert, setIsShowAlert] = useState(false)
-    const [updateAlert, setUpdateAlert] = useState(0)
-    const [alertData, setAlertData] = useState({
-        "msg": undefined,
-        "statusCode": undefined,
-        "prefix": undefined,
-    })
-
+export const UpdateTitle = memo(({
+    typeList, 
+    seasonList, 
+    statusList, 
+    ageRestrictList,
+    isShowAlert, 
+    setUpdateAlert, 
+    setAlertData
+}) => {
     const formDataRef = useRef()
     const [genres, setGenres] = useState()
     const [params, setParams] = useState()
@@ -189,14 +187,6 @@ export const UpdateTitle = memo(({typeList, seasonList, statusList, ageRestrictL
                     </BtnDefault>
                 }
             </div>
-            <AlertResponse
-                msg={alertData.msg} 
-                statusCode={alertData.statusCode} 
-                update={updateAlert}
-                prefix={alertData.prefix}
-                isShowAlert={isShowAlert}
-                setIsShowAlert={setIsShowAlert}
-            />
         </form>
     )
 })
