@@ -1,176 +1,162 @@
 import { createBrowserRouter } from "react-router-dom"
 
-import { Root } from "./pages/root/page/Root"
-import {Anime } from "./pages/root/page/Anime"
+import { Login } from "./pages/auth/page/Login"
+import { OAuthPage } from "./pages/auth/page/OAuthPage"
+import { Register } from "./pages/auth/page/Register"
+import { ResetPassword } from "./pages/auth/page/ResetPassword"
+import { ResetPasswordToken } from "./pages/auth/page/ResetPasswordToken"
+import { VerifyEmail } from "./pages/auth/page/VerifyEmail"
 
 import { Home } from "./pages/anime/home/Home"
 import { Release } from "./pages/anime/release/Release"
 import { Title } from "./pages/anime/title/Title"
 import { Video } from "./pages/anime/video/Video"
-import { NewEpisode } from "./pages/new_episode/NewEpisode"
+
+import { Franchise } from "./pages/franchise/franchise/Franchise"
+import { Franchises } from "./pages/franchise/franchises/Franchises"
+
 import { Schedule } from "./pages/schedule/Schedules"
 
-import { Genres } from "./pages/genre/genres/Genres"
 import { Genre } from "./pages/genre/genre/Genre"
+import { Genres } from "./pages/genre/genres/Genres"
 
-import { Franchises } from "./pages/franchise/franchises/Franchises"
-import { Franchise } from "./pages/franchise/franchise/Franchise"
+import { NewEpisode } from "./pages/new_episode/NewEpisode"
 
-import { HomeUser } from "./pages/user/home/HomeUser"
-import { Settings } from "./pages/user/settings/Settings"
-import { Libs } from "./pages/user/libs/Libs"
+import { RootAnime } from "./pages/root/anime/RootAnime"
+import { Root } from "./pages/root/home/Root"
 
-import { Login } from "./pages/auth/page/Login"
-import { Register } from "./pages/auth/page/Register"
-import { VerifyEmail } from "./pages/auth/page/VerifyEmail"
-import { ResetPasswordToken } from "./pages/auth/page/ResetPasswordToken"
-import { ResetPassword } from "./pages/auth/page/ResetPassword"
-import { OAuthPage } from "./pages/auth/page/OAuthPage"
+import { User } from "./pages/user/User"
 
 import { Error } from "./pages/error/Error"
 
-
 export const router = createBrowserRouter([
-    {
-        path: "/",
-        element: <Home/>
-    },
-    {
-        path: "/anime",
-        children: [
-            {
-                path: "",
-                element: <Release/>
-            },
-            {
-                path: ":alias",
-                children: [
-                    {
-                        path: "",
-                        element: <Title/>
-                    },
-                    {
-                        path:"episode/:uuid",
-                        element: <Video/>
-                    }
-                ]
-            },
-            {
-                path: "new-episode",
-                element: <NewEpisode/>
-            },
-            {
-                path: "genres",
-                children:[
-                    {
-                        path: "",
-                        element: <Genres/>
-                    },
-                    {
-                        path: ":genre",
-                        element: <Genre/>
-                    }
-                ]
-            },
-            {
-                path: "schedules",
-                element: <Schedule/>
-            },
-            {
-                path: "franchises",
-                children: [
-                    {
-                        path: "",
-                        element: <Franchises/>
-                    },
-                    {
-                        path: ":alias",
-                        element: <Franchise/>
-                    }
-                ]
-            },
-        ]
-    },
-    {
-        path: "/users",
-        children:[
-            {
-                path: ":uuid",
-                children: [
-                    {
-                        path: "",
-                        element: <HomeUser/>
-                    },
-                    {
-                        path: "root",
-                        children: [
-                            {
-                                path: "",
-                                element: <Root/>
-                            },
-                            {
-                                path: "anime",
-                                element: <Anime/>
-                            }
-                        ]
-                    },
-                    {
-                        path: "settings",
-                        element: <Settings/> 
-                    },
-                    {
-                        path: "libs",
-                        element: <Libs/>
-                    }
+	{
+		path: "/",
+		element: <Home />,
+	},
+	{
+		path: "/anime",
+		children: [
+			{
+				path: "",
+				element: <Release />,
+			},
+			{
+				path: ":alias",
+				children: [
+					{
+						path: "",
+						element: <Title />,
+					},
+					{
+						path: "episode/:uuid",
+						element: <Video />,
+					},
+				],
+			},
+			{
+				path: "new-episode",
+				element: <NewEpisode />,
+			},
+			{
+				path: "genres",
+				children: [
+					{
+						path: "",
+						element: <Genres />,
+					},
+					{
+						path: ":genre",
+						element: <Genre />,
+					},
+				],
+			},
+			{
+				path: "schedules",
+				element: <Schedule />,
+			},
+			{
+				path: "franchises",
+				children: [
+					{
+						path: "",
+						element: <Franchises />,
+					},
+					{
+						path: ":alias",
+						element: <Franchise />,
+					},
+				],
+			},
+		],
+	},
+	{
+		path: "/users/:userUuid",
+		element: <User />,
+	},
+	{
+		path: "/root",
+		children: [
+			{
+				path: "",
+				element: <Root />,
+			},
 
-                ]
-            }
-        ]
-    },
-    {
-        path: "/auth",
-        children: [
-            {
-                path: "login",
-                element: <Login/>
-            },
-            {
-                path: "register",
-                element: <Register/>
-            },
-            {
-                path: "verify-email",
-                element: <VerifyEmail/>
-            },
-            {
-                path: "reset-password-token",
-                element: <ResetPasswordToken/>
-            },
-            {
-                path: "reset-password",
-                element: <ResetPassword/>
-            },
-            {
-                path: "oauth2",
-                children: [
-                    {
-                        path: "uri-google",
-                        element:<OAuthPage url={"auth/oauth2/auth-google"}/>
-                    },
-                    {
-                        path: "uri-discord",
-                        element: <OAuthPage url={"auth/oauth2/auth-discord"}/>
-                    },
-                    {
-                        path: "uri-telegram",
-                        element: <OAuthPage url={"auth/oauth2/auth-telegram"} isTelegram={true}/>
-                    }
-                ]
-            }
-        ]
-    },
-    {
-        path: "*",
-        element: <Error/>,
-    }
+			{
+				path: "anime",
+				element: <RootAnime />,
+			},
+		],
+	},
+	{
+		path: "/auth",
+		children: [
+			{
+				path: "login",
+				element: <Login />,
+			},
+			{
+				path: "register",
+				element: <Register />,
+			},
+			{
+				path: "verify-email",
+				element: <VerifyEmail />,
+			},
+			{
+				path: "reset-password-token",
+				element: <ResetPasswordToken />,
+			},
+			{
+				path: "reset-password",
+				element: <ResetPassword />,
+			},
+			{
+				path: "oauth2",
+				children: [
+					{
+						path: "uri-google",
+						element: <OAuthPage url={"auth/oauth2/auth-google"} />,
+					},
+					{
+						path: "uri-discord",
+						element: <OAuthPage url={"auth/oauth2/auth-discord"} />,
+					},
+					{
+						path: "uri-telegram",
+						element: (
+							<OAuthPage
+								url={"auth/oauth2/auth-telegram"}
+								isTelegram={true}
+							/>
+						),
+					},
+				],
+			},
+		],
+	},
+	{
+		path: "*",
+		element: <Error />,
+	},
 ])
