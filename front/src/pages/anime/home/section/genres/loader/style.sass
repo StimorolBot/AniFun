@@ -1,0 +1,26 @@
+@use "/src/style/color.sass" as *
+
+    
+.genres__item-skeleton-container
+    width: 100%
+    height: 100%
+
+    span
+        width: 100%
+        height: 100%
+
+.genres__item-skeleton-item
+    position: absolute
+    bottom: 30px
+    width: 100%
+    display: flex
+    flex-direction: column
+    justify-content: center
+    align-items: center
+    gap: 5px
+
+    span
+        width: 120px
+        height: 18px
+        --base-color: $base-color-skeleton !important
+        --highlight-color: $highlight-color-skeleton !important
