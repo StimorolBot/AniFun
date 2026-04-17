@@ -1,7 +1,7 @@
 import { memo } from "react"
 import { Link } from "react-router-dom"
 
-import { getPostfix } from "../../../../../../utils/utils"
+import { getPostfix } from "../../../../utils/utils"
 
 import "./style.sass"
 
