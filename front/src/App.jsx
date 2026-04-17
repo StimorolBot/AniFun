@@ -1,5 +1,6 @@
 import { useState } from "react"
 import { SkeletonTheme } from "react-loading-skeleton"
+import "react-loading-skeleton/dist/skeleton.css"
 import { RouterProvider } from "react-router-dom"
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
