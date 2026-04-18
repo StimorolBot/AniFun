@@ -1,3 +1,4 @@
+import { memo } from "react"
 import { Helmet } from "react-helmet"
 
 import { Footer } from "../../../components/footer/Footer"
