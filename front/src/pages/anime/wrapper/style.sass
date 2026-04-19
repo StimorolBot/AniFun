@@ -12,8 +12,16 @@
 .section__link
     display: flex
     align-items: center
-    column-gap: 5px
-    width: fit-content
+    width: 600px
+    justify-content: center
+
+    &::after,
+    &::before
+        content: ""
+        height: 2px
+        flex: 1
+        background-color: $gray
+        border-radius: 2px
 
 .section__title
     font-size: 30px
@@ -21,25 +29,6 @@
     position: relative
     padding: 0px 10px
     transition: color 0.3s
-
-    &::after,
-    &::before
-        content: ""
-        position: absolute
-        bottom: 40%
-        height: 1px
-        max-width: 250px
-        width: 100%
-        background-color: $gray
-        pointer-events: none
-        
-    &::before
-        left: 0
-        transform: translate(-100%, -50%)
-
-    &::after
-        right: 0
-        transform: translate(100%, -50%)
 
     &:hover
         color: $white
