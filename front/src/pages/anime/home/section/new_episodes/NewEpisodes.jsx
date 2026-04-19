@@ -1,55 +1,95 @@
-import { memo, useRef } from "react"
+import { memo, useEffect, useRef, useState } from "react"
+
 import { useQueries, useQuery } from "@tanstack/react-query"
 
-import { api } from "../../../../../api"
-
 import { EpisodeItem } from "./item/EpisodeItem"
-import { WrapperSection } from "../../../wrapper/WrapperSection"
-import { Loader } from "../../../../../components/loader/Loader"
 
-import { newEpisodeCache, newEpisodePosterCache } from "../../../../../query_key"
+import { LoaderSkeleton } from "./loader/LoaderSkeleton"
+
+import { WrapperSection } from "../../../wrapper/WrapperSection"
+
+import { api } from "../../../../../api"
+import { useObserverImg } from "../../../../../hook/useObserverImgProvider"
+import { newEpisodeSection } from "./query_key"
 
 import "./style.sass"
 
+export const NewEpisodes = memo(() => {
+	const { observe } = useObserverImg()
 
-export const NewEpisodes= memo(() => {
-  const transitionRef = useRef()
+	const sectionRef = useRef()
+	const transitionRef = useRef()
 
-  const {data: episodeData, isLoading} = useQuery({
-    queryKey: [newEpisodeCache],
-    staleTime: 1000 * 60 * 3,
-    queryFn: async () => {
-      return await api.get("/new-episode", {params: {"limit": 6}}).then(r => r.data)
-    },
-    placeholderData: []
-  })
- 
-  const imgData = useQueries({
-    queries: episodeData?.map(item => ({
-      queryKey: [newEpisodePosterCache, item.anime.poster.poster_uuid],
-      staleTime: 1000 * 60 * 3,
-      queryFn: async () => {
-        return await api.get(`/s3/anime-${item.anime.uuid}/${item.anime.poster.poster_uuid}`).then(r => r.data)
-      }
-    }))
-  })
-  
-  return(
-    <section className="new-episodes">
-      <div className="container">
-        <WrapperSection title={"Новые эпизоды"} link={"anime/new-episode"} ref={transitionRef} value={isLoading}>
-          <div className="container-new-episodes transition" ref={transitionRef}>
-            { isLoading
-              ? <Loader/>
-              : <ul className="episode__list">
-                {episodeData?.map((item, index) => {
-                  return <EpisodeItem item={item} imgData={imgData[index].data} key={index} />
-                })}
-              </ul>
-            }
-          </div>
-        </WrapperSection>
-      </div>
-    </section>
-  )
+	const [isView, setIsView] = useState(false)
+
+	const { data: episodeData, isFetching } = useQuery({
+		queryKey: [newEpisodeSection.getData],
+		staleTime: 1000 * 60 * 3,
+		enabled: isView,
+		queryFn: async () => {
+			return await api
+				.get("/new-episode", { params: { limit: 6 } })
+				.then((r) => r.data)
+		},
+		placeholderData: [],
+	})
+
+	const imgData = useQueries({
+		queries: episodeData?.map((item) => ({
+			queryKey: [
+				newEpisodeSection.getImg,
+				item.anime?.poster?.poster_uuid,
+			],
+			staleTime: 1000 * 60 * 3,
+			enabled: !!item.anime?.poster?.poster_uuid,
+			queryFn: async () => {
+				return await api
+					.get(
+						`/s3/anime-${item.anime.uuid}/${item.anime?.poster?.poster_uuid}`,
+					)
+					.then((r) => r.data)
+			},
+		})),
+	})
+
+	useEffect(() => {
+		const el = sectionRef.current
+		if (!el) return
+
+		observe(el, () => setIsView(true))
+	}, [observe])
+
+	return (
+		<section className="new-episodes" ref={sectionRef}>
+			<div className="container">
+				<WrapperSection
+					title={"Новые эпизоды"}
+					link={"anime/new-episode"}
+					ref={transitionRef}
+					value={isFetching}
+				>
+					<div
+						className="container-new-episodes transition"
+						ref={transitionRef}
+					>
+						{isFetching ? (
+							<LoaderSkeleton count={6} />
+						) : (
+							<ul className="episode__list">
+								{episodeData?.map((item, index) => {
+									return (
+										<EpisodeItem
+											item={item}
+											imgData={imgData[index].data}
+											key={index}
+										/>
+									)
+								})}
+							</ul>
+						)}
+					</div>
+				</WrapperSection>
+			</div>
+		</section>
+	)
 })
