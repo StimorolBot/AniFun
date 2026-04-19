@@ -1,20 +1,30 @@
-import { memo, useRef } from "react"
+import { memo, useEffect, useRef, useState } from "react"
 
 import { useQueries, useQuery } from "@tanstack/react-query"
 
-import { api } from "../../../../../api"
-import { WrapperSection } from "../../../wrapper/WrapperSection"
 import { FranchisesItem } from "./item/FranchisesItem"
+
 import { LoaderSkeleton } from "./loader/LoaderSkeleton"
+
+import { WrapperSection } from "../../../wrapper/WrapperSection"
+
+import { api } from "../../../../../api"
+import { useObserverImg } from "../../../../../hook/useObserverImgProvider"
 import { franchisesSection } from "./query_key"
 
 import "./style.sass"
 
 export const Franchises = memo(() => {
+	const { observe } = useObserverImg()
+
+	const sectionRef = useRef()
 	const transitionRef = useRef()
+
+	const [isView, setIsView] = useState(false)
 
 	const { data: FranchisesData = [], isFetching } = useQuery({
 		queryKey: [franchisesSection.getData],
+		enabled: isView,
 		staleTime: 1000 * 60 * 3,
 		queryFn: async () => {
 			return await api.get("/franchises").then((r) => r.data)
@@ -32,9 +42,15 @@ export const Franchises = memo(() => {
 			},
 		})),
 	})
+	useEffect(() => {
+		const el = sectionRef.current
+		if (!el) return
+
+		observe(el, () => setIsView(true))
+	}, [observe])
 
 	return (
-		<section className="franchises">
+		<section className="franchises" ref={sectionRef}>
 			<div className="container">
 				<WrapperSection
 					title={"Франшизы"}
