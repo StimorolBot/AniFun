@@ -10,7 +10,7 @@ export const LoaderSkeleton = memo(({ count }) => {
 				.fill(0)
 				.map((_, index) => {
 					return (
-						<div className="franchises__item" key={index}>
+						<li className="franchises__item" key={index}>
 							<div className="franchises__item-skeleton-container">
 								<div className="franchises__item-skeleton-bg">
 									<Skeleton />
@@ -30,7 +30,7 @@ export const LoaderSkeleton = memo(({ count }) => {
 									</div>
 								</div>
 							</div>
-						</div>
+						</li>
 					)
 				})}
 		</ul>
