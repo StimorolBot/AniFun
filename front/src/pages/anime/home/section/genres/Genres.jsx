@@ -1,20 +1,30 @@
-import { memo, useRef } from "react"
+import { memo, useEffect, useRef, useState } from "react"
 
 import { useQueries, useQuery } from "@tanstack/react-query"
 
-import { api } from "../../../../../api"
-import { WrapperSection } from "../../../wrapper/WrapperSection"
 import { GenresItem } from "./item/GenresItem"
+
 import { LoaderSkeleton } from "./loader/LoaderSkeleton"
+
+import { WrapperSection } from "../../../wrapper/WrapperSection"
+
+import { api } from "../../../../../api"
+import { useObserverImg } from "../../../../../hook/useObserverImgProvider"
 import { genresSection } from "./query_key"
 
 import "./style.sass"
 
 export const Genres = memo(() => {
+	const { observe } = useObserverImg()
+
+	const sectionRef = useRef()
 	const transitionRef = useRef()
+
+	const [isView, setIsView] = useState(false)
 
 	const { data: genresData = [], isFetching } = useQuery({
 		queryKey: [genresSection.getData],
+		enabled: isView,
 		staleTime: 1000 * 60 * 3,
 		queryFn: async () => {
 			return await api.get("/genres").then((r) => r.data)
@@ -25,18 +35,24 @@ export const Genres = memo(() => {
 		queries: genresData?.map((item) => ({
 			queryKey: [genresSection.getImg, item.poster_uuid],
 			staleTime: 1000 * 60 * 3,
+			enabled: !!item.poster_uuid,
 			queryFn: async () => {
-				if (item.poster_uuid)
-					return await api
-						.get(`/s3/img-genres-poster/${item.poster_uuid}`)
-						.then((r) => r.data)
-				return null
+				return await api
+					.get(`/s3/img-genres-poster/${item.poster_uuid}`)
+					.then((r) => r.data)
 			},
 		})),
 	})
 
+	useEffect(() => {
+		const el = sectionRef.current
+		if (!el) return
+
+		observe(el, () => setIsView(true))
+	}, [observe])
+
 	return (
-		<section className="genres">
+		<section className="genres" ref={sectionRef}>
 			<div className="container">
 				<WrapperSection
 					title={"Жанры"}
