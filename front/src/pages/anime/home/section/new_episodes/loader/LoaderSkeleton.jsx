@@ -39,10 +39,6 @@ export const LoaderSkeleton = memo(({ count }) => {
 											</div>
 										</li>
 									</ul>
-									<div className="episode__desc-item-skeleton-genres">
-										<Skeleton />
-										<Skeleton />
-									</div>
 									<div className="episode__desc-item-skeleton-btn">
 										<Skeleton />
 									</div>
