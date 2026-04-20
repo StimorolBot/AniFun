@@ -12,7 +12,6 @@ import { Search } from "../popup/Search"
 
 import { api } from "../../api"
 import { cookies } from "../../cookie"
-import { TooltipDefault } from "../tooltip/TooltipDefault"
 
 import "./style/header.sass"
 
@@ -95,41 +94,37 @@ export const Header = memo(() => {
 						</nav>
 						<ul className="header__list">
 							<li className="header__list-item">
-								<TooltipDefault text="Случайное аниме">
-									<BtnDefault
-										callback={async () =>
-											await api
-												.get("/random-title")
-												.then((r) => {
-													navigate(
-														`/anime/${r.data.alias}`,
-													)
-												})
-										}
-										isStroke={false}
-									>
-										<svg className="header__svg">
-											<use xlinkHref="/public/svg/header.svg#random-svg" />
-										</svg>
-									</BtnDefault>
-								</TooltipDefault>
+								<BtnDefault
+									callback={async () =>
+										await api
+											.get("/random-title")
+											.then((r) => {
+												navigate(
+													`/anime/${r.data.alias}`,
+												)
+											})
+									}
+									isStroke={false}
+								>
+									<svg className="header__svg">
+										<use xlinkHref="/public/svg/header.svg#random-svg" />
+									</svg>
+								</BtnDefault>
 							</li>
 							<li className="header__list-item">
-								<TooltipDefault text="Поиск">
-									<BtnDefault
-										callback={(e) => {
-											document.body.classList.add(
-												"scroll_block",
-											)
-											setIsShowPopup(true)
-											e.stopPropagation()
-										}}
-									>
-										<svg className="header__svg">
-											<use xlinkHref="/public/svg/header.svg#search-svg" />
-										</svg>
-									</BtnDefault>
-								</TooltipDefault>
+								<BtnDefault
+									callback={(e) => {
+										document.body.classList.add(
+											"scroll_block",
+										)
+										setIsShowPopup(true)
+										e.stopPropagation()
+									}}
+								>
+									<svg className="header__svg">
+										<use xlinkHref="/public/svg/header.svg#search-svg" />
+									</svg>
+								</BtnDefault>
 							</li>
 							<li className="header__list-item">
 								{isFetching ? (
@@ -146,27 +141,21 @@ export const Header = memo(() => {
 										/>
 									</Link>
 								) : (
-									<TooltipDefault
-										text="Вход"
-										style={{
-											height: "28px",
-										}}
+									<Link
+										className="header__link"
+										popoverTarget={"auth-tooltip"}
+										to={"/auth/login"}
 									>
-										<Link
-											className="header__link"
-											to={"/auth/login"}
+										<svg
+											className="header__svg"
+											style={{
+												width: "28px",
+												height: "28px",
+											}}
 										>
-											<svg
-												className="header__svg"
-												style={{
-													width: "28px",
-													height: "28px",
-												}}
-											>
-												<use xlinkHref="/public/svg/header.svg#login-svg" />
-											</svg>
-										</Link>
-									</TooltipDefault>
+											<use xlinkHref="/public/svg/header.svg#login-svg" />
+										</svg>
+									</Link>
 								)}
 							</li>
 						</ul>
