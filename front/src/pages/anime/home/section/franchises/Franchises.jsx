@@ -8,8 +8,9 @@ import { LoaderSkeleton } from "./loader/LoaderSkeleton"
 
 import { WrapperSection } from "../../../wrapper/WrapperSection"
 
-import { api } from "../../../../../api"
 import { useObserverImg } from "../../../../../hook/useObserverImgProvider"
+
+import { api } from "../../../../../api"
 import { franchisesSection } from "./query_key"
 
 import "./style.sass"
