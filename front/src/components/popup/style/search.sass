@@ -32,8 +32,8 @@
                 stroke: $white
 
 .search-popup__container
-    max-width: 400px
-    max-height: 400px
+    max-width: 500px
+    max-height: 500px
     flex: 1 1 auto
     padding: 10px
     display: flex
@@ -43,32 +43,6 @@
     background-color: $sub-gray
     border-radius: 10px
     color: $white
-    font-family: sans-serif
-
-.search-popup__svg
-    flex: 1 1 100%
-    display: flex
-    flex-direction: column
-    justify-content: center
-    align-items: center 
-
-    svg
-        width: 150px
-        height: 150px
-
-    p
-        &:last-child
-            font-size: 13px
-            color: $gray
-            margin-top: 10px
-            overflow: hidden
-            display: -webkit-box
-            -webkit-line-clamp: 1
-            -webkit-box-orient: vertical
-            text-overflow: ellipsis
-            max-width: 370px
-            text-align: center
-            word-break: break-all
 
 .search-popup__list
     display: flex
@@ -87,10 +61,40 @@
         border-radius: 10px
         cursor: pointer
 
-.search-popup__info
+.search-popup__svg
+    flex: 1 1 100%
+    display: flex
+    flex-direction: column
+    justify-content: center
+    align-items: center 
+
+    svg
+        width: 200px
+        height: 200px
+
+    p
+        &:last-child
+            font-size: 14px
+            color: $gray
+            margin-top: 10px
+            font-weight: 600
+
+.search-popup__not-found
+    align-self: center
+    margin-top: auto
+    margin-bottom: auto
+    text-align: center
+    font-size: 18px
+
+    svg
+        width: 200px
+        height: 200px
+
+.search-popup__footer
     margin-top: 15px
-    font-size: 13px
+    font-size: 14px
     color: $white
+    font-weight: 600
 
     p
         text-align: center
