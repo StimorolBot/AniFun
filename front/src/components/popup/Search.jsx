@@ -46,7 +46,7 @@ export const Search = memo(({ ref, setIsShow }) => {
 
 	useEffect(() => {
 		;(async () => {
-			if (debounceSearchVal.length >= 3) await refetch()
+			if (debounceSearchVal.length >= 5) await refetch()
 		})()
 	}, [debounceSearchVal])
 
@@ -69,7 +69,7 @@ export const Search = memo(({ ref, setIsShow }) => {
 						<InputSearch
 							setVal={(e) => setSearchVal(e.target.value)}
 							val={searchVal}
-							minLength={3}
+							minLength={5}
 							maxLength={150}
 							autoComplete={"off"}
 							placeholder="Введите название аниме..."

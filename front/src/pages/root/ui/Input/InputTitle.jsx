@@ -7,12 +7,12 @@ export const InputTitle = memo(
 		return (
 			<InputDefault
 				id={id}
-				minLength={3}
+				minLength={5}
 				maxLength={150}
 				{...props}
 				errorMsg={errorMsg}
 				register={register(param, {
-					minLength: { value: 3, message: "Название от 3 символов" },
+					minLength: { value: 5, message: "Название от 5 символов" },
 					maxLength: {
 						value: 150,
 						message: "Название до 150 символов",
