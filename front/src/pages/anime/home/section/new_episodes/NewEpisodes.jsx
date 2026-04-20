@@ -8,8 +8,9 @@ import { LoaderSkeleton } from "./loader/LoaderSkeleton"
 
 import { WrapperSection } from "../../../wrapper/WrapperSection"
 
-import { api } from "../../../../../api"
 import { useObserverImg } from "../../../../../hook/useObserverImgProvider"
+
+import { api } from "../../../../../api"
 import { newEpisodeSection } from "./query_key"
 
 import "./style.sass"
@@ -45,7 +46,7 @@ export const NewEpisodes = memo(() => {
 			queryFn: async () => {
 				return await api
 					.get(
-						`/s3/anime-${item.anime.uuid}/${item.anime?.poster?.poster_uuid}`,
+						`/s3/anime-${item.anime.uuid}/${item.anime.poster.poster_uuid}`,
 					)
 					.then((r) => r.data)
 			},
