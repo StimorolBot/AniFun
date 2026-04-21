@@ -1,0 +1,28 @@
+@use "/src/style/color.sass" as * 
+
+.btn-burger
+    width: 30px
+    height: 22px
+    display: flex
+    flex-direction: column
+    justify-content: space-between
+    cursor: pointer
+    padding: 0
+
+    span
+        display: block
+        height: 3px
+        width: 100%
+        background-color: $white
+        border-radius: 2px
+        transition: all 0.3s ease
+
+    &_active
+        span:nth-child(1)
+            transform: translateY(9px) rotate(45deg)
+
+        span:nth-child(2)
+            opacity: 0
+
+        span:nth-child(3)
+            transform: translateY(-9px) rotate(-45deg)
