@@ -7,6 +7,8 @@ import { NewEpisodes } from "./section/new_episodes/NewEpisodes"
 import { Schedule } from "./section/schedule/Schedule"
 import { SwiperCustom } from "./section/swiper/SwiperCustom"
 
+import "./adaptive.sass"
+
 export const Home = memo(() => {
 	return (
 		<>
