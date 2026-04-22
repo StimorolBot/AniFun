@@ -10,17 +10,18 @@ import { SwiperCustom } from "./section/swiper/SwiperCustom"
 import "./adaptive.sass"
 
 export const Home = memo(() => {
+	const storageUrl = import.meta.env.VITE_STORAGE_URL
 	return (
 		<>
 			<Helmet>
 				<title>AniFun</title>
 			</Helmet>
 			<h1 className="title-page">Главная страница</h1>
-			<SwiperCustom />
-			<NewEpisodes />
-			<Schedule />
-			<Franchises />
-			<Genres />
+			<SwiperCustom storageUrl={storageUrl} />
+			<NewEpisodes storageUrl={storageUrl} />
+			<Schedule storageUrl={storageUrl} />
+			<Franchises storageUrl={storageUrl} />
+			<Genres storageUrl={storageUrl} />
 		</>
 	)
 })
