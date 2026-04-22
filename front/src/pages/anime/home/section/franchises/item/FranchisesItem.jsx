@@ -7,11 +7,11 @@ import { getPostfix } from "../../../../utils/utils"
 
 import "./style.sass"
 
-export const FranchisesItem = memo(({ item, imgData, ...props }) => {
+export const FranchisesItem = memo(({ item, storageUrl, ...props }) => {
 	const ref = useAutoFontSize({
 		minSize: 18,
 		maxSize: 26,
-		deps: item?.title,
+		deps: [item?.title],
 	})
 	return (
 		<li className="franchises__item" {...props}>
@@ -22,7 +22,7 @@ export const FranchisesItem = memo(({ item, imgData, ...props }) => {
 				<div className="franchises__bg-container">
 					<img
 						className="franchises__bg"
-						src={imgData}
+						src={`${storageUrl}/anime-${item.title_uuid}/${item.poster_uuid}.webp`}
 						loading="lazy"
 						alt="franchises"
 					/>
