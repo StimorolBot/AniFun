@@ -5,13 +5,16 @@
     position: relative
     text-transform: capitalize
     font-weight: 600
-   
+
+.schedule__link
+    width: 100%
+
 .schedule__bg
     position: absolute
     top: 50%
-    left: 0
+    left: 50%
     width: 100%
-    transform: translate(0, -50%)
+    transform: translate(-50%, -50%)
     opacity: 0
     visibility: hidden
     transition: opacity 0.3s, visibility 0.3s
@@ -50,8 +53,9 @@
     position: relative
 
 .schedule__title
-    font-size: 18px
     font-weight: 900
+    max-width: 300px
+    word-break: break-word
 
 .schedule__episode
     margin-top: 10px
