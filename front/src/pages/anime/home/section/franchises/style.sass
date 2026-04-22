@@ -1,13 +1,14 @@
 .franchises
-    min-height: 300px
+    .transition
+        width: 100%
 
-    
 .franchises__list
-    display: flex
-    column-gap: 20px
-    margin-top: 20px
-    overflow: hidden
-    justify-content: space-between
+    display: grid
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr))
+    gap: 20px
 
-.transition:has(.franchises__list)
-    width: 100%
+.franchises__list_one-item
+    display: flex
+
+    .franchises__link
+        width: 500px
