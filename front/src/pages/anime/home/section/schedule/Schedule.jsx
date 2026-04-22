@@ -20,9 +20,9 @@ import "./style.sass"
 
 const breakpoints = {
 	default: 4,
-	1280: 3,
-	880: 2,
-	590: 1,
+	1300: 3,
+	960: 2,
+	650: 1,
 }
 
 export const Schedule = () => {
