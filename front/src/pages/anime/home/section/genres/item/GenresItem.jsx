@@ -5,14 +5,9 @@ import { getPostfix } from "../../../../utils/utils"
 
 import "./style.sass"
 
-export const GenresItem = memo(({ item, imgData, ...props }) => {
+export const GenresItem = memo(({ item, storageUrl, ...props }) => {
 	return (
-		<li
-			className={
-				imgData ? "genres__item" : "genres__item background-plug"
-			}
-			{...props}
-		>
+		<li className={"genres__item"} {...props}>
 			<Link
 				className="genres__item-link"
 				to={`/anime/genres/${item.value}`}
@@ -20,7 +15,7 @@ export const GenresItem = memo(({ item, imgData, ...props }) => {
 				<div className="genres__bg-container">
 					<img
 						className="genres__bg"
-						src={imgData}
+						src={`${storageUrl}/img-genres-poster/${item.poster_uuid}.webp`}
 						loading="lazy"
 						alt="genres-bg"
 					/>
