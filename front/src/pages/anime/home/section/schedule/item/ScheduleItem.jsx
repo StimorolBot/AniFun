@@ -4,18 +4,18 @@ import { useAutoFontSize } from "../../../../../../hook/useAutoFontSize"
 
 import "./style.sass"
 
-export const ScheduleItem = ({ item, imgData, ...props }) => {
+export const ScheduleItem = ({ item, storageUrl, ...props }) => {
 	const ref = useAutoFontSize({
 		minSize: 14,
 		maxSize: 20,
-		deps: item.anime.title,
+		deps: [item.anime.title],
 	})
 	return (
 		<li className="schedule__item" {...props}>
 			<Link className="schedule__link" to={`/anime/${item.anime.alias}`}>
 				<img
 					className="schedule__bg"
-					src={imgData}
+					src={`${storageUrl}/anime-${item.anime.uuid}/${item.anime.poster.poster_uuid}.webp`}
 					loading="lazy"
 					alt="preview"
 				/>
