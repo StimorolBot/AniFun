@@ -1,13 +1,20 @@
 import { memo } from "react"
 import { Link } from "react-router-dom"
 
+import { useAutoFontSize } from "../../../../../../hook/useAutoFontSize"
+
 import "./style.sass"
 
 export const EpisodeItem = memo(({ item, imgData, ...props }) => {
+	const ref = useAutoFontSize({
+		minSize: 14,
+		maxSize: 20,
+		deps: item.anime.title,
+	})
 	return (
 		<li
 			className={
-				imgData ? "episode__item" : "episode__item  background-plug"
+				imgData ? "episode__item" : "episode__item background-plug"
 			}
 			{...props}
 		>
@@ -19,9 +26,11 @@ export const EpisodeItem = memo(({ item, imgData, ...props }) => {
 			/>
 			<div className="episode__description">
 				<p className="episode__number">{item.number} эпизод</p>
+
 				<Link
 					className="episode__title"
 					to={`/anime/${item.anime.alias}`}
+					ref={ref}
 				>
 					{item.anime.title}
 				</Link>
