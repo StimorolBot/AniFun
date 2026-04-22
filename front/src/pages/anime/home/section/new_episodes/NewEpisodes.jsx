@@ -1,6 +1,6 @@
 import { memo, useEffect, useRef, useState } from "react"
 
-import { useQueries, useQuery } from "@tanstack/react-query"
+import { useQuery } from "@tanstack/react-query"
 
 import { EpisodeItem } from "./item/EpisodeItem"
 
@@ -12,7 +12,6 @@ import { useObserverImg } from "../../../../../hook/useObserverImgProvider"
 import { useViewport } from "../../../../../hook/useViewport"
 
 import { api } from "../../../../../api"
-import { newEpisodeSection } from "./query_key"
 
 import "./style.sass"
 
@@ -21,7 +20,7 @@ const getLimit = (w) => {
 	return 4
 }
 
-export const NewEpisodes = memo(() => {
+export const NewEpisodes = memo(({ storageUrl }) => {
 	const { observe } = useObserverImg()
 
 	const sectionRef = useRef()
@@ -33,7 +32,7 @@ export const NewEpisodes = memo(() => {
 	const limit = getLimit(widthViewport)
 
 	const { data: episodeData, isFetching } = useQuery({
-		queryKey: [newEpisodeSection.getData, limit],
+		queryKey: ["new-episode-section", limit],
 		staleTime: 1000 * 60 * 3,
 		enabled: isView,
 		queryFn: async () => {
@@ -41,25 +40,6 @@ export const NewEpisodes = memo(() => {
 				.get("/new-episode", { params: { limit: limit } })
 				.then((r) => r.data)
 		},
-		placeholderData: [],
-	})
-
-	const imgData = useQueries({
-		queries: episodeData?.map((item) => ({
-			queryKey: [
-				newEpisodeSection.getImg,
-				item.anime?.poster?.poster_uuid,
-			],
-			staleTime: 1000 * 60 * 3,
-			enabled: !!item.anime?.poster?.poster_uuid,
-			queryFn: async () => {
-				return await api
-					.get(
-						`/s3/anime-${item.anime.uuid}/${item.anime.poster.poster_uuid}`,
-					)
-					.then((r) => r.data)
-			},
-		})),
 	})
 
 	useEffect(() => {
@@ -90,7 +70,7 @@ export const NewEpisodes = memo(() => {
 									return (
 										<EpisodeItem
 											item={item}
-											imgData={imgData[index].data}
+											storageUrl={storageUrl}
 											key={index}
 										/>
 									)
