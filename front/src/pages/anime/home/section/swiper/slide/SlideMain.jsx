@@ -3,19 +3,25 @@ import { Link } from "react-router-dom"
 
 import { useAutoFontSize } from "../../../../../../hook/useAutoFontSize"
 
+import { api } from "../../../../../../api"
 import { getPostfix } from "../../../../utils/utils"
 
 import "./style.sass"
 
-export const SlideMain = memo(({ item, imgData }) => {
+export const SlideMain = memo(({ item, storageUrl }) => {
 	const ref = useAutoFontSize({
 		minSize: 20,
 		maxSize: 32,
-		deps: item.anime.title,
+		deps: [item.anime.title],
 	})
+
 	return (
 		<div className="slide transition">
-			<img className="slide__bg" src={imgData} alt="Баннер" />
+			<img
+				className="slide__bg"
+				src={`${storageUrl}/anime-${item.anime.uuid}/${item.anime.banner.uuid_banner}.webp`}
+				alt="Баннер"
+			/>
 			{item?.avg && (
 				<div className="slide__inner-rating">
 					<div />
