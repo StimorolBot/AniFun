@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react"
 import Masonry from "react-masonry-css"
 
-import { useQueries, useQuery } from "@tanstack/react-query"
+import { useQuery } from "@tanstack/react-query"
 
 import { SwitchDay } from "./ui/SwitchDay"
 
@@ -14,7 +14,6 @@ import { WrapperSection } from "../../../wrapper/WrapperSection"
 import { useObserverImg } from "../../../../../hook/useObserverImgProvider"
 
 import { api } from "../../../../../api"
-import { scheduleSection } from "./query_key"
 
 import "./style.sass"
 
@@ -25,7 +24,7 @@ const breakpoints = {
 	650: 1,
 }
 
-export const Schedule = () => {
+export const Schedule = ({ storageUrl }) => {
 	const { observe } = useObserverImg()
 
 	const sectionRef = useRef()
@@ -35,7 +34,7 @@ export const Schedule = () => {
 	const [schedule, setSchedule] = useState("today")
 
 	const { data: scheduleData, isFetching } = useQuery({
-		queryKey: [scheduleSection.getData, schedule],
+		queryKey: ["schedule-section-list-data", schedule],
 		staleTime: 1000 * 60 * 3,
 		enabled: isView,
 		queryFn: async () => {
@@ -46,19 +45,6 @@ export const Schedule = () => {
 		placeholderData: [],
 	})
 
-	const imgData = useQueries({
-		queries: scheduleData?.map((item) => ({
-			queryKey: [scheduleSection.getImg, item.anime.poster.poster_uuid],
-			staleTime: 1000 * 60 * 3,
-			queryFn: async () => {
-				return await api
-					.get(
-						`/s3/anime-${item.anime.uuid}/${item.anime.poster.poster_uuid}`,
-					)
-					.then((r) => r.data)
-			},
-		})),
-	})
 	useEffect(() => {
 		const el = sectionRef.current
 		if (!el) return
@@ -98,7 +84,7 @@ export const Schedule = () => {
 										return (
 											<ScheduleItem
 												item={item}
-												imgData={imgData[index].data}
+												storageUrl={storageUrl}
 												key={index}
 											/>
 										)
