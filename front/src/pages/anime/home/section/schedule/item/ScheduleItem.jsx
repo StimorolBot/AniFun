@@ -1,8 +1,15 @@
 import { Link } from "react-router-dom"
 
+import { useAutoFontSize } from "../../../../../../hook/useAutoFontSize"
+
 import "./style.sass"
 
 export const ScheduleItem = ({ item, imgData, ...props }) => {
+	const ref = useAutoFontSize({
+		minSize: 14,
+		maxSize: 20,
+		deps: item.anime.title,
+	})
 	return (
 		<li className="schedule__item" {...props}>
 			<Link className="schedule__link" to={`/anime/${item.anime.alias}`}>
@@ -12,7 +19,9 @@ export const ScheduleItem = ({ item, imgData, ...props }) => {
 					loading="lazy"
 					alt="preview"
 				/>
-				<p className="schedule__title">{item.anime.title}</p>
+				<div className="schedule__title" ref={ref}>
+					{item.anime.title}
+				</div>
 				<p className="schedule__episode">
 					{`${item.episode_number} ${"Эпизод"}`}
 				</p>
