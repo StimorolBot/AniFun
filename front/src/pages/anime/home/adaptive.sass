@@ -1,0 +1,35 @@
+@media(max-width: 960px)
+    .container-slider
+        display: none
+    
+    .section__wrapper 
+        margin-top: 0
+
+    .episode__list
+        grid-template-columns: repeat(auto-fit, minmax(175px, 1fr))
+
+    .franchises__list
+        display: flex
+        flex-direction: column
+        gap: 20px
+    
+    .franchises__link
+        aspect-ratio: 6 / 3
+
+@media(max-width: 680px)
+    .genres__list
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr))
+
+@media(max-width: 550px)
+    .section__inner
+        &::before,
+        &::after
+            display: none
+
+    .section__title
+        padding: 0
+        font-size: 24px
+
+@media(max-width: 400px)
+    .episode__list
+        grid-template-columns: repeat(auto-fit, minmax(130px, 1fr))
