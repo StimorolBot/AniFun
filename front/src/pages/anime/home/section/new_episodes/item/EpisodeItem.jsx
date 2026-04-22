@@ -5,22 +5,17 @@ import { useAutoFontSize } from "../../../../../../hook/useAutoFontSize"
 
 import "./style.sass"
 
-export const EpisodeItem = memo(({ item, imgData, ...props }) => {
+export const EpisodeItem = memo(({ item, storageUrl, ...props }) => {
 	const ref = useAutoFontSize({
 		minSize: 14,
 		maxSize: 20,
-		deps: item.anime.title,
+		deps: [item.anime.title],
 	})
 	return (
-		<li
-			className={
-				imgData ? "episode__item" : "episode__item background-plug"
-			}
-			{...props}
-		>
+		<li className={"episode__item"} {...props}>
 			<img
 				className="episode__img"
-				src={imgData}
+				src={`${storageUrl}/anime-${item.anime.uuid}/${item.anime.poster?.poster_uuid}.webp`}
 				loading="lazy"
 				alt="poster"
 			/>
