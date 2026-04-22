@@ -1,6 +1,6 @@
 import { memo, useEffect, useRef, useState } from "react"
 
-import { useQueries, useQuery } from "@tanstack/react-query"
+import { useQuery } from "@tanstack/react-query"
 
 import { FranchisesItem } from "./item/FranchisesItem"
 
@@ -12,7 +12,6 @@ import { useObserverImg } from "../../../../../hook/useObserverImgProvider"
 import { useViewport } from "../../../../../hook/useViewport"
 
 import { api } from "../../../../../api"
-import { franchisesSection } from "./query_key"
 
 import "./style.sass"
 
@@ -21,7 +20,7 @@ const getLimit = (w) => {
 	return 2
 }
 
-export const Franchises = memo(() => {
+export const Franchises = memo(({ storageUrl }) => {
 	const { observe } = useObserverImg()
 
 	const sectionRef = useRef()
@@ -32,8 +31,8 @@ export const Franchises = memo(() => {
 	const widthViewport = useViewport()
 	const limit = getLimit(widthViewport)
 
-	const { data: FranchisesData = [], isFetching } = useQuery({
-		queryKey: [franchisesSection.getData, limit],
+	const { data: FranchisesData, isFetching } = useQuery({
+		queryKey: ["franchises-section-list-data", limit],
 		enabled: isView,
 		staleTime: 1000 * 60 * 3,
 		queryFn: async () => {
@@ -41,19 +40,9 @@ export const Franchises = memo(() => {
 				.get("/franchises", { params: { limit: limit } })
 				.then((r) => r.data)
 		},
+		placeholderData: [],
 	})
 
-	const imgData = useQueries({
-		queries: FranchisesData?.map((item) => ({
-			queryKey: [franchisesSection.getImg, item.poster_uuid],
-			staleTime: 1000 * 60 * 3,
-			queryFn: async () => {
-				return await api
-					.get(`/s3/anime-${item.title_uuid}/${item.poster_uuid}`)
-					.then((r) => r.data)
-			},
-		})),
-	})
 	useEffect(() => {
 		const el = sectionRef.current
 		if (!el) return
@@ -85,7 +74,7 @@ export const Franchises = memo(() => {
 									return (
 										<FranchisesItem
 											item={item}
-											imgData={imgData[index].data}
+											storageUrl={storageUrl}
 											key={index}
 										/>
 									)
