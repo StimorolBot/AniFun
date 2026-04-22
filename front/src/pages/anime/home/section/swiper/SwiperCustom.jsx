@@ -10,6 +10,8 @@ import { Swiper, SwiperSlide } from "swiper/react"
 
 import { LoaderSkeleton } from "./loader/LoaderSkeleton"
 
+import { useViewport } from "../../../../../hook/useViewport"
+
 import { api } from "../../../../../api"
 import { slider } from "./query_key"
 import { SlideMain } from "./slide/SlideMain"
@@ -18,9 +20,11 @@ import "./style.sass"
 
 export const SwiperCustom = memo(() => {
 	const transitionRef = useRef()
+	const widthViewport = useViewport()
 
 	const { data: sliderData, isFetching } = useQuery({
-		queryKey: [slider.getData],
+		queryKey: [slider.getData, widthViewport > 960],
+		enabled: widthViewport > 960,
 		staleTime: 1000 * 60 * 3,
 		queryFn: async () => {
 			return await api.get("/slides").then((r) => r.data)
