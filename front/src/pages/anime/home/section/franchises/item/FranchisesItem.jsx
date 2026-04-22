@@ -1,11 +1,18 @@
 import { memo } from "react"
 import { Link } from "react-router-dom"
 
+import { useAutoFontSize } from "../../../../../../hook/useAutoFontSize"
+
 import { getPostfix } from "../../../../utils/utils"
 
 import "./style.sass"
 
 export const FranchisesItem = memo(({ item, imgData, ...props }) => {
+	const ref = useAutoFontSize({
+		minSize: 18,
+		maxSize: 26,
+		deps: item?.title,
+	})
 	return (
 		<li className="franchises__item" {...props}>
 			<Link
@@ -21,7 +28,9 @@ export const FranchisesItem = memo(({ item, imgData, ...props }) => {
 					/>
 				</div>
 				<div className="franchises__container">
-					<h3 className="franchises__desc_title">{item?.title}</h3>
+					<div className="franchises__desc_title" ref={ref}>
+						{item?.title}
+					</div>
 					<ul className="franchises__desc-list">
 						<li className="franchises__desc-item">
 							{item.start_year} - {item.end_year}
