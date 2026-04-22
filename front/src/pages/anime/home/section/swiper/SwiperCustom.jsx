@@ -1,7 +1,7 @@
 import { memo, useRef } from "react"
 import { CSSTransition, SwitchTransition } from "react-transition-group"
 
-import { useQueries, useQuery } from "@tanstack/react-query"
+import { useQuery } from "@tanstack/react-query"
 import "swiper/css"
 import "swiper/css/navigation"
 import "swiper/css/pagination"
@@ -13,37 +13,21 @@ import { LoaderSkeleton } from "./loader/LoaderSkeleton"
 import { useViewport } from "../../../../../hook/useViewport"
 
 import { api } from "../../../../../api"
-import { slider } from "./query_key"
 import { SlideMain } from "./slide/SlideMain"
 
 import "./style.sass"
 
-export const SwiperCustom = memo(() => {
+export const SwiperCustom = memo(({ storageUrl }) => {
 	const transitionRef = useRef()
 	const widthViewport = useViewport()
 
 	const { data: sliderData, isFetching } = useQuery({
-		queryKey: [slider.getData, widthViewport > 960],
+		queryKey: ["slide-data", widthViewport > 960],
 		enabled: widthViewport > 960,
 		staleTime: 1000 * 60 * 3,
 		queryFn: async () => {
 			return await api.get("/slides").then((r) => r.data)
 		},
-		placeholderData: [],
-	})
-
-	const imgData = useQueries({
-		queries: sliderData?.map((item) => ({
-			queryKey: [slider.getImg, item.anime.banner.uuid_banner],
-			staleTime: 1000 * 60 * 3,
-			queryFn: async () => {
-				return await api
-					.get(
-						`/s3/anime-${item.anime.uuid}/${item.anime.banner.uuid_banner}`,
-					)
-					.then((r) => r.data)
-			},
-		})),
 	})
 
 	return (
@@ -81,7 +65,7 @@ export const SwiperCustom = memo(() => {
 										<SwiperSlide key={index}>
 											<SlideMain
 												item={item}
-												imgData={imgData[index].data}
+												storageUrl={storageUrl}
 											/>
 										</SwiperSlide>
 									)
