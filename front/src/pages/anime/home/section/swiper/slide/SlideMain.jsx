@@ -1,11 +1,18 @@
 import { memo } from "react"
 import { Link } from "react-router-dom"
 
+import { useAutoFontSize } from "../../../../../../hook/useAutoFontSize"
+
 import { getPostfix } from "../../../../utils/utils"
 
 import "./style.sass"
 
 export const SlideMain = memo(({ item, imgData }) => {
+	const ref = useAutoFontSize({
+		minSize: 20,
+		maxSize: 32,
+		deps: item.anime.title,
+	})
 	return (
 		<div className="slide transition">
 			<img className="slide__bg" src={imgData} alt="Баннер" />
@@ -16,7 +23,9 @@ export const SlideMain = memo(({ item, imgData }) => {
 				</div>
 			)}
 			<div className="slide__inner">
-				<h3 className="slide__title">{item.anime.title}</h3>
+				<h2 className="slide__title" ref={ref}>
+					{item.anime.title}
+				</h2>
 				<ul className="slide-desc__list">
 					<li className="slide-desc__item point">
 						<Link
