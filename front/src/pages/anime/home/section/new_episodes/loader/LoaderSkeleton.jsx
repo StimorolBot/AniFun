@@ -10,7 +10,10 @@ export const LoaderSkeleton = memo(({ count }) => {
 				.fill(0)
 				.map((_, index) => {
 					return (
-						<li className="episode__item-skeleton" key={index}>
+						<li
+							className="episode__item episode__item-skeleton"
+							key={index}
+						>
 							<div className="episode__img-skeleton">
 								<Skeleton />
 							</div>
