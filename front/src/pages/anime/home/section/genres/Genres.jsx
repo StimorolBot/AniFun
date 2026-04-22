@@ -1,6 +1,6 @@
 import { memo, useEffect, useRef, useState } from "react"
 
-import { useQueries, useQuery } from "@tanstack/react-query"
+import { useQuery } from "@tanstack/react-query"
 
 import { GenresItem } from "./item/GenresItem"
 
@@ -12,7 +12,6 @@ import { useObserverImg } from "../../../../../hook/useObserverImgProvider"
 import { useViewport } from "../../../../../hook/useViewport"
 
 import { api } from "../../../../../api"
-import { genresSection } from "./query_key"
 
 import "./style.sass"
 
@@ -21,7 +20,7 @@ const getLimit = (w) => {
 	return 4
 }
 
-export const Genres = memo(() => {
+export const Genres = memo(({ storageUrl }) => {
 	const { observe } = useObserverImg()
 
 	const sectionRef = useRef()
@@ -33,7 +32,7 @@ export const Genres = memo(() => {
 	const limit = getLimit(widthViewport)
 
 	const { data: genresData, isFetching } = useQuery({
-		queryKey: [genresSection.getData, limit],
+		queryKey: ["genres-section-list-data", limit],
 		enabled: isView,
 		staleTime: 1000 * 60 * 3,
 		queryFn: async () => {
@@ -41,20 +40,6 @@ export const Genres = memo(() => {
 				.get("/genres", { params: { limit: limit } })
 				.then((r) => r.data)
 		},
-		placeholderData: [],
-	})
-
-	const imgData = useQueries({
-		queries: genresData?.map((item) => ({
-			queryKey: [genresSection.getImg, item.poster_uuid],
-			staleTime: 1000 * 60 * 3,
-			enabled: !!item.poster_uuid,
-			queryFn: async () => {
-				return await api
-					.get(`/s3/img-genres-poster/${item.poster_uuid}`)
-					.then((r) => r.data)
-			},
-		})),
 	})
 
 	useEffect(() => {
@@ -82,7 +67,7 @@ export const Genres = memo(() => {
 									return (
 										<GenresItem
 											item={item}
-											imgData={imgData[index].data}
+											storageUrl={storageUrl}
 											key={index}
 										/>
 									)
