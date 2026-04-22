@@ -9,11 +9,17 @@ import { LoaderSkeleton } from "./loader/LoaderSkeleton"
 import { WrapperSection } from "../../../wrapper/WrapperSection"
 
 import { useObserverImg } from "../../../../../hook/useObserverImgProvider"
+import { useViewport } from "../../../../../hook/useViewport"
 
 import { api } from "../../../../../api"
 import { genresSection } from "./query_key"
 
 import "./style.sass"
+
+const getLimit = (w) => {
+	if (w > 1300) return 6
+	return 4
+}
 
 export const Genres = memo(() => {
 	const { observe } = useObserverImg()
@@ -23,13 +29,19 @@ export const Genres = memo(() => {
 
 	const [isView, setIsView] = useState(false)
 
-	const { data: genresData = [], isFetching } = useQuery({
-		queryKey: [genresSection.getData],
+	const widthViewport = useViewport()
+	const limit = getLimit(widthViewport)
+
+	const { data: genresData, isFetching } = useQuery({
+		queryKey: [genresSection.getData, limit],
 		enabled: isView,
 		staleTime: 1000 * 60 * 3,
 		queryFn: async () => {
-			return await api.get("/genres").then((r) => r.data)
+			return await api
+				.get("/genres", { params: { limit: limit } })
+				.then((r) => r.data)
 		},
+		placeholderData: [],
 	})
 
 	const imgData = useQueries({
@@ -63,7 +75,7 @@ export const Genres = memo(() => {
 				>
 					<div className="transition" ref={transitionRef}>
 						{isFetching ? (
-							<LoaderSkeleton count={6} />
+							<LoaderSkeleton count={limit} />
 						) : (
 							<ul className="genres__list">
 								{genresData?.map((item, index) => {
