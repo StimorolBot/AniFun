@@ -9,11 +9,17 @@ import { LoaderSkeleton } from "./loader/LoaderSkeleton"
 import { WrapperSection } from "../../../wrapper/WrapperSection"
 
 import { useObserverImg } from "../../../../../hook/useObserverImgProvider"
+import { useViewport } from "../../../../../hook/useViewport"
 
 import { api } from "../../../../../api"
 import { newEpisodeSection } from "./query_key"
 
 import "./style.sass"
+
+const getLimit = (w) => {
+	if (w > 1300 || w < 960) return 6
+	return 4
+}
 
 export const NewEpisodes = memo(() => {
 	const { observe } = useObserverImg()
@@ -23,13 +29,16 @@ export const NewEpisodes = memo(() => {
 
 	const [isView, setIsView] = useState(false)
 
+	const widthViewport = useViewport()
+	const limit = getLimit(widthViewport)
+
 	const { data: episodeData, isFetching } = useQuery({
-		queryKey: [newEpisodeSection.getData],
+		queryKey: [newEpisodeSection.getData, limit],
 		staleTime: 1000 * 60 * 3,
 		enabled: isView,
 		queryFn: async () => {
 			return await api
-				.get("/new-episode", { params: { limit: 6 } })
+				.get("/new-episode", { params: { limit: limit } })
 				.then((r) => r.data)
 		},
 		placeholderData: [],
@@ -74,7 +83,7 @@ export const NewEpisodes = memo(() => {
 						ref={transitionRef}
 					>
 						{isFetching ? (
-							<LoaderSkeleton count={6} />
+							<LoaderSkeleton count={limit} />
 						) : (
 							<ul className="episode__list">
 								{episodeData?.map((item, index) => {
