@@ -2,46 +2,27 @@ import Select from "react-select"
 
 import "./style/custom_select.sass"
 
-
-export function CustomSelect({value, setValue, options, className="custom-select",  paramName=undefined, ...props}){    
-    const getValue = () => {
-        if (value){
-            if (paramName && props?.isMulti )
-                return props?.isMulti 
-                    ? options?.filter(f => value[paramName]?.find(d => d.label === f.label))
-                    : options?.find(v => v[paramName].value == value)
-            else
-                return props?.isMulti 
-                    ? options.filter(v => value?.indexOf(v.value) >= 0) 
-                    : options?.find(v => v.value == value)
-        }
-        else
-            return props.isMulti ? [] : ""
-    }
-
-    const onChange = (newValue) =>{
-        if (paramName)
-            setValue(
-                props?.isMulti
-                    ? s => ({
-                        ...s, [paramName] : newValue.map(v => ({"label": v.label, "value": v.value}))
-                    }) 
-                    : s => ({
-                        ...s, [paramName] : ({"label": newValue.label, "value":newValue.value})
-                    })
-            )
-        else
-            setValue(props?.isMulti ?  newValue.map(v => v.value) : newValue)
-    }
-
-    return(
-        <Select
-            className={className}
-            classNamePrefix={className}
-            value={getValue()} 
-            onChange={onChange} 
-            options={options}
-            {...props}
-        />
-    )
+export const CustomSelect = ({
+	options,
+	value,
+	className,
+	onChange,
+	isMulti = false,
+	...props
+}) => {
+	const getValue = () => {
+		if (isMulti) return value.label || value
+		return value.label || value
+	}
+	return (
+		<Select
+			className={className}
+			classNamePrefix={className}
+			value={getValue()}
+			onChange={onChange}
+			options={options}
+			isMulti={isMulti}
+			{...props}
+		/>
+	)
 }
