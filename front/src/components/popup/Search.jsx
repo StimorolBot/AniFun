@@ -1,4 +1,5 @@
-import { memo, useEffect, useRef, useState } from "react"
+import { memo, useRef } from "react"
+import { useForm } from "react-hook-form"
 import { CSSTransition, SwitchTransition } from "react-transition-group"
 
 import { useQuery } from "@tanstack/react-query"
@@ -19,36 +20,42 @@ import "./style/search.sass"
 export const Search = memo(({ ref, setIsShow }) => {
 	const clickRef = useRef()
 	const transitionRef = useRef()
+	const {
+		register,
+		control,
+		formState: { errors, isValid },
+		watch,
+		getValues,
+		reset,
+	} = useForm({
+		mode: "onChange",
+		defaultValues: {
+			title: null,
+		},
+	})
 
-	const [searchVal, setSearchVal] = useState("")
-	const [isEnabledQuery, setIsEnabledQuery] = useState(false)
-
-	const debounceSearchVal = useDebounce(searchVal)
+	const debounceSearchVal = useDebounce(watch("title"))
 
 	const {
 		data: searchData,
 		isFetching,
 		refetch,
 	} = useQuery({
-		queryKey: ["header-search-title-data"],
-		enabled: isEnabledQuery,
+		queryKey: [
+			"header-search-title-data",
+			debounceSearchVal?.length > 5 && isValid ? debounceSearchVal : null,
+		],
 		staleTime: 1000 * 60 * 3,
+		enabled: !!(debounceSearchVal?.length >= 5 && isValid),
 		queryFn: async () => {
 			return await api
 				.get("/search-title", {
-					params: { size: 20, page: 1, title: searchVal },
+					params: { size: 20, page: 1, title: debounceSearchVal },
 				})
 				.then((r) => r.data)
 		},
 	})
-
 	useClickOutside(clickRef, setIsShow, "", true, true)
-
-	useEffect(() => {
-		;(async () => {
-			if (debounceSearchVal.length >= 5) await refetch()
-		})()
-	}, [debounceSearchVal])
 
 	return (
 		<dialog className="search-popup transition" ref={ref}>
@@ -67,12 +74,11 @@ export const Search = memo(({ ref, setIsShow }) => {
 				<search>
 					<form action="/search-title" method="get">
 						<InputSearch
-							setVal={(e) => setSearchVal(e.target.value)}
-							val={searchVal}
-							minLength={5}
-							maxLength={150}
+							id={"search-title-header"}
+							register={register}
+							errorMsg={errors?.title?.message}
 							autoComplete={"off"}
-							placeholder="Введите название аниме..."
+							placeholder={"Введите название аниме"}
 						/>
 					</form>
 				</search>
@@ -88,7 +94,8 @@ export const Search = memo(({ ref, setIsShow }) => {
 						) : (
 							<ul className="search-popup__list transition">
 								{searchData?.items ||
-								debounceSearchVal.length !== 0 ? (
+								(debounceSearchVal !== null &&
+									debounceSearchVal?.length !== 0) ? (
 									searchData?.items.length > 0 ? (
 										searchData?.items?.map(
 											(item, index) => {
