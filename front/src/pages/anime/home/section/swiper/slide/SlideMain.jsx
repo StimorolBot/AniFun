@@ -53,7 +53,12 @@ export const SlideMain = memo(({ item, storageUrl }) => {
 					</li>
 					<li className="slide-desc__item point">
 						{item.anime.total_episode &&
-							`${item.anime.total_episode} ${getPostfix("эпизод", item.anime.episode_count)}`}
+							`${item.anime.total_episode} ${getPostfix(
+								item.anime.episode_count,
+								"эпизод",
+								"эпизода",
+								"эпизодов",
+							)}`}
 					</li>
 					<li className="slide-desc__item point">
 						<Link
