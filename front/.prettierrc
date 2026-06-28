@@ -1,0 +1,46 @@
+{
+	"tabWidth": 4,
+	"useTabs": true,
+	"singleQuote": false,
+	"semi": false,
+	"trailingComma": "all",
+
+	"importOrder": [
+		"^react$",
+		"^react",
+		"<THIRD_PARTY_MODULES>",
+
+		".*/ui/icon/.*",
+		".*/ui/btn/.*",
+		".*/ui/input/.*",
+		".*/ui/.*",
+
+		".*/components/.*",
+		".*/section/.*",
+
+		".*/pages/auth/.*",
+		".*/pages/anime/.*",
+		".*/pages/franchise/.*",
+		".*/pages/schedule/.*",
+		".*/pages/genre/.*",
+		".*/pages/new_episode/.*",
+		".*/pages/root/.*",
+		".*/pages/user/.*",
+		".*/pages/error/.*",
+
+		".*/item/.*",
+		".*/loader/.*",
+		".*/wrapper/.*",
+		".*/popup/.*",
+
+		".*/context/.*",
+		".*/providers/.*",
+		".*/hooks?/.*",
+
+		"^[./](?!.*\\.(css|sass|scss)$)",
+		".*\\.(css|sass|scss)$"
+	],
+
+	"importOrderSeparation": true,
+	"importOrderSortSpecifiers": true
+}
