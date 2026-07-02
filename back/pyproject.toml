@@ -28,6 +28,15 @@ fastapi-pagination = "^0.12.34"
 pytest-asyncio = "^0.25.3"
 pytest-dependency = "^0.6.0"
 python-multipart = "^0.0.20"
+transliterate = "^1.10.2"
+sse-starlette = "^2.2.1"
+fastapi-limiter = "^0.1.6"
+slowapi = "^0.1.9"
+aiosmtplib = "^4.0.1"
+pylint = "^3.3.8"
+vulture = "^2.14"
+aiobotocore = "^3.1.1"
+pillow = "^12.2.0"
 
 
 [build-system]
