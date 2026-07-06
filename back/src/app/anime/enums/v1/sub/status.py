@@ -1,16 +1,13 @@
-from enum import Enum
+from enum import StrEnum
 
 
-class StatusValue(Enum):
+class Status(StrEnum):
     ONGOING = "ongoing"
     COMPLETED = "completed"
 
-
-class StatusLabel(Enum):
-    ONGOING = "онгоинг"
-    COMPLETED = "вышел"
-
-
-class Status(Enum):
-    ONGOING = {"value": StatusValue.ONGOING.value, "label": StatusLabel.ONGOING.value}
-    COMPLETED = {"value": StatusValue.COMPLETED.value, "label": StatusLabel.COMPLETED.value}
+    @property
+    def label(self):
+        return {
+            "ongoing": "онгоинг",
+            "completed": "вышел",
+        }[self.value]
