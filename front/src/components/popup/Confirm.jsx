@@ -14,7 +14,7 @@ export const Confirm = ({ children, ref, onConfirm, onClose }) => {
 				{children}
 				<div className="popup-confirm__container-btn">
 					<BtnDefault callback={onClose}>Отмена</BtnDefault>
-					<BtnDefault callback={onConfirm}>
+					<BtnDefault isStroke={false} callback={onConfirm}>
 						<Remove />
 						Удалить
 					</BtnDefault>
