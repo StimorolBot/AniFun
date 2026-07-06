@@ -1,0 +1,23 @@
+@use "/src/style/color.sass" as *
+    
+.default-pagination__list
+    display: flex
+    justify-content: end
+
+.default-pagination__item
+    margin: 10px 5px
+    border-radius: 4px
+    cursor: pointer
+    transition: background-color 0.3s
+
+    &:hover
+        background-color: $sub-red
+
+    &_active
+        background-color: $red
+
+        &:hover
+            background-color: $red !important
+
+    .btn-default
+        padding: 5px 10px
