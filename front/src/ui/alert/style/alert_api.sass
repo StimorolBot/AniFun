@@ -1,0 +1,84 @@
+@use "/src/style/color.sass" as *
+
+
+@keyframes progress
+    100%
+        left: 100%
+
+.alert-api
+    position: fixed
+    bottom: 20px
+    right: 20px
+    overflow: hidden
+    font-size: medium
+    max-width: 400px
+    transform: translateX(calc(100% + 30px))
+
+    &-enter
+        transform: translateX(calc(100% + 30px))
+        transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.35)
+
+    &-enter-active
+        transform: translateX(0%)
+
+        .alert-api__progress::before
+            animation: progress 6s linear forwards
+
+    &-exit
+        transform: translateX(0%)
+
+        .alert-api__progress::before
+            animation: progress 6s linear forwards
+
+    &-exit-active
+        transform: translateX(calc(100% + 30px))
+        transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.35)
+
+.alert-api__container
+    border-radius: 8px
+    padding: 10px 15px 10px 10px
+
+    &_error
+        background-color: $red
+
+    &_success
+        background-color: $green
+
+.alert-api__status-code
+    font-weight: 900
+    font-size: 20px
+    display: flex
+    justify-content: space-between
+    align-items: flex-start
+    gap: 24px
+
+    svg
+        width: 20px !important
+        height: 20px !important
+
+.alert-api__detail
+    font-size: 16px
+    font-weight: 600
+
+.alert-api__progress
+    position: absolute
+    bottom: 0
+    left: 0
+    height: 5px
+    width: 100%
+
+    &::before
+        content: ""
+        position: absolute
+        bottom: 0
+        left: 0
+        height: 100%
+        width: 100%
+        border-radius: 8px
+
+    &_success::before
+        background-color: $sub-green
+
+    &_error::before
+        background-color: $sub-red
+
