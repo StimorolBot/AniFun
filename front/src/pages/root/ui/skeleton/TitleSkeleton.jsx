@@ -1,10 +1,4 @@
 import Skeleton from "react-loading-skeleton"
-import { Link } from "react-router-dom"
-
-import { Edit } from "../../../../ui/icon/Edit"
-import { Remove } from "../../../../ui/icon/Remove"
-
-import { BtnDefault } from "../../../../ui/btn/BtnDefault"
 
 export const TitleSkeleton = ({ count }) => {
 	const heightSkeleton = 25
@@ -13,7 +7,7 @@ export const TitleSkeleton = ({ count }) => {
 		<>
 			{Array.from({ length: count }).map((_, index) => {
 				return (
-					<tr className="root-title__item">
+					<tr className="root-title__item" key={index}>
 						<td>
 							<div className="root-title__img-container">
 								<Skeleton style={{ height: 100, width: 70 }} />

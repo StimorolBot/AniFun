@@ -1,4 +1,4 @@
-import { memo, useEffect, useRef, useState } from "react"
+import { memo, useRef, useState } from "react"
 
 import { useForm } from "react-hook-form"
 import { Link } from "react-router-dom"
@@ -46,11 +46,7 @@ export const Title = memo(() => {
 	const [page, setPage] = useState(1)
 	const [status, setStatus] = useState(null)
 
-	const {
-		register,
-		formState: { errors, isValid },
-		watch,
-	} = useForm({
+	const { register, watch } = useForm({
 		mode: "onChange",
 		defaultValues: {
 			title: null,
@@ -67,7 +63,6 @@ export const Title = memo(() => {
 	const {
 		data: titleData,
 		isLoading,
-		error,
 		isError,
 	} = useQuery({
 		queryKey: ["root-title-data", page, debounceSearchVal, status],
@@ -178,7 +173,7 @@ export const Title = memo(() => {
 									nodeRef={transitionRef}
 								>
 									<tbody
-										classNames="transition"
+										className="transition"
 										ref={transitionRef}
 									>
 										{isLoading ? (
