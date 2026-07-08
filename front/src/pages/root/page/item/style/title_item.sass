@@ -1,0 +1,57 @@
+@use "/src/style/color.sass" as *
+
+.root-title__item
+    transition: background-color 0.3s
+    border-bottom: 1px solid $sub-gray
+
+    td
+        padding: 14px 10px
+        text-align: center
+        vertical-align: middle
+        font-size: 18px
+        font-weight: 600
+
+        p
+            width: fit-content
+            margin: 0 auto
+            padding: 6px
+            border-radius: 6px
+            text-transform: capitalize
+            max-width: 90px
+            width: 100%
+
+        &[data-status="ongoing"]
+            p
+                color: $green
+                background-color: $t-green
+
+        &[data-status="completed"]
+            p
+                color: $blue
+                background-color: $t-blue
+
+        h4
+            word-break: break-all
+
+    &:hover
+        background-color: $sub-gray
+
+.root-title__img-container
+    max-width: 70px
+    max-height: 120px
+    margin: 0 auto
+
+    img
+        border-radius: 4px
+        width: 100%
+        height: 100%
+        object-fit: cover
+
+.root-title__sub
+    color: $gray
+
+.root-title__btn
+    vertical-align: middle
+    display: inline-flex
+    gap: 15px
+
