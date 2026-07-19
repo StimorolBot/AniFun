@@ -4,6 +4,16 @@
 	"singleQuote": false,
 	"semi": false,
 	"trailingComma": "all",
+	"overrides": [
+		{
+			"files": "*.sass",
+			"options": {
+				"useTabs": false
+			}
+		}
+	],
+
+	"plugins": ["@trivago/prettier-plugin-sort-imports"],
 
 	"importOrder": [
 		"^react$",
