@@ -1,7 +1,7 @@
 from enum import Enum
 
 
-class AuthType(Enum):
+class AuthProvider(Enum):
     BASE = "Base"
     GOOGLE = "Google"
     DISCORD = "Discord"
