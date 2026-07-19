@@ -1,0 +1,55 @@
+@use "/src/style/color.sass" as *
+
+.header-form
+    display: flex
+    justify-content: space-between
+    align-items: center
+    margin-bottom: 25px
+
+.header-form__container
+    display: flex
+    align-items: center
+    gap: 20px
+    font-size: 18px
+
+    .btn-default
+        padding: 10px 14px
+        border-radius: 8px
+        color: $gray
+        background-color: $sub-gray
+        transition: color 0.3s, background-color 0.3s
+        display: flex
+        align-self: center
+        gap: 4px
+
+        &:hover
+            color: $white
+            background-color: $sub-black-2
+
+.header-form__btn
+    display: flex
+    gap: 20px
+
+    .btn-default
+        padding: 10px 14px
+        border-radius: 8px
+        transition: color 0.3s, background-color 0.3s
+        display: flex
+        align-self: center
+        gap: 4px
+
+        &:first-child
+            color: $gray
+            background-color: $sub-gray
+
+            &:hover
+                color: $white
+                background-color: $sub-black-2
+
+        &:last-child
+            color: $sub-white
+            background-color: $sub-red
+
+            &:hover
+                color: $white
+                background-color: $red
