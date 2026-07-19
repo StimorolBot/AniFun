@@ -1,22 +1,18 @@
-from enum import Enum
+from enum import StrEnum
 
 
-class SeasonValue(Enum):
+class Season(StrEnum):
     WINTER = "winter"
     SPRING = "spring"
     SUMMER = "summer"
     AUTUMN = "autumn"
 
+    @property
+    def label(self):
+        return {
+            "winter": "зима",
+            "spring": "весна",
+            "summer": "лето",
+            "autumn": "осень",
 
-class SeasonLabel(Enum):
-    WINTER = "зима"
-    SPRING = "весна"
-    SUMMER = "лето"
-    AUTUMN = "осень"
-
-
-class Season(Enum):
-    WINTER = {"value": SeasonValue.WINTER.value, "label": SeasonLabel.WINTER.value}
-    SPRING = {"value": SeasonValue.SPRING.value, "label": SeasonLabel.SPRING.value}
-    SUMMER = {"value": SeasonValue.SUMMER.value, "label": SeasonLabel.SUMMER.value}
-    AUTUMN = {"value": SeasonValue.AUTUMN.value, "label": SeasonLabel.AUTUMN.value}
+        }[self.value]
