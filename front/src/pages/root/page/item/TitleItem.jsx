@@ -1,4 +1,4 @@
-import { memo, useRef, useState } from "react"
+import { memo } from "react"
 
 import { Link } from "react-router-dom"
 
@@ -35,7 +35,7 @@ export const TitleItem = memo(({ item, storageUrl, callback, ...props }) => {
 						onError={(e) => {
 							const img = e.currentTarget
 							img.onerror = null
-							img.src = `${storageUrl}/posters/none-poster.png`
+							img.src = `${storageUrl}/stickers/6093866d92af49f68292ba298b383eea.png`
 						}}
 					/>
 				</div>
