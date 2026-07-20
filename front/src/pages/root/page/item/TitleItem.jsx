@@ -25,7 +25,7 @@ export const TitleItem = memo(({ item, storageUrl, callback, ...props }) => {
 	})
 
 	return (
-		<tr className="root-title__item" {...props}>
+		<tr className="root-title__item transition" {...props}>
 			<td>
 				<div className="root-title__img-container">
 					<img

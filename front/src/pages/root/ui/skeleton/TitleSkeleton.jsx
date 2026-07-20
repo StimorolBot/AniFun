@@ -7,7 +7,7 @@ export const TitleSkeleton = ({ count }) => {
 		<>
 			{Array.from({ length: count }).map((_, index) => {
 				return (
-					<tr className="root-title__item" key={index}>
+					<tr className="root-title__item transition" key={index}>
 						<td>
 							<div className="root-title__img-container">
 								<Skeleton style={{ height: 100, width: 70 }} />
