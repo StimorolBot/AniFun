@@ -1,122 +1,127 @@
 @use "/src/style/color.sass" as *
 
 .sidebar
-	width: 260px
-	background-color: $sub-black
-	border-right: 1px solid $sub-gray
-	display: flex
-	flex-direction: column
-	min-height: 100dvh
+    width: 260px
+    position: relative
+
+.sidebar__wrapper
+    position: sticky
+    top: 0
+    background-color: $sub-black
+    border-right: 1px solid $sub-gray
+    display: flex
+    flex-direction: column
+    min-height: 100dvh
 
 .sidebar__header
-	padding: 14px
-	border-bottom: 1px solid $sub-gray
-	display: flex
-	align-items: center
-	gap: 12px
+    padding: 14px
+    border-bottom: 1px solid $sub-gray
+    display: flex
+    align-items: center
+    gap: 12px
 
 .sidebar__logo
-	width: 60px
-	height: 60px
+    width: 60px
+    height: 60px
 
-	svg
-		height: 100%
-		width: 100%
+    svg
+        height: 100%
+        width: 100%
 
 .sidebar__title
-	display: flex
-	flex-direction: column
+    display: flex
+    flex-direction: column
 
-	p
-		span
-			font-family: sans-serif
-			font-size: 26px
-			font-weight: 900
-			color: $white
+    p
+        span
+            font-family: sans-serif
+            font-size: 26px
+            font-weight: 900
+            color: $white
 
-	span
-		font-size: 14px
-		color: $gray
-		font-weight: 600
+    span
+        font-size: 14px
+        color: $gray
+        font-weight: 600
 
 .sidebar__nav
-	flex: 1
-	padding: 16px 12px
+    flex: 1
+    padding: 16px 12px
 
 .sidebar-nav__list
-	margin-bottom: 24px
+    margin-bottom: 24px
 
 .sidebar__nav-title
-	font-size: 20px
-	font-weight: 600
-	color: $gray
-	padding: 0 12px
-	margin-bottom: 8px
+    font-size: 20px
+    font-weight: 600
+    color: $gray
+    padding: 0 12px
+    margin-bottom: 8px
 
 .sidebar__nav-item
-	a
-		display: flex
-		align-items: center
-		gap: 12px
-		padding: 10px 12px
-		cursor: pointer
-		color: $gray
-		font-size: 16px
-		font-weight: 600
-		border-radius: 8px
-		transition: background-color 0.3s, color 0.3s
+    a
+        display: flex
+        align-items: center
+        gap: 12px
+        padding: 10px 12px
+        cursor: pointer
+        color: $gray
+        font-size: 16px
+        font-weight: 600
+        border-radius: 8px
+        transition: background-color 0.3s, color 0.3s
 
-		&:hover
-			background-color: $sub-gray
-			color: $white
+        &:hover
+            background-color: $sub-gray
+            color: $white
 
-			svg
-				fill: $white
+            svg
+                fill: $white
 
-	svg
-		fill: $gray
-		transition: fill 0.3s
+    svg
+        fill: $gray
+        transition: fill 0.3s
 
 .sidebar__link_active
-	background-color: $t-red
-	color: $red !important
+    background-color: $t-red
+    color: $red !important
 
-	svg
-		fill: $red !important
+    svg
+        fill: $red !important
 
-	&:hover
-		background-color: $t-red !important
-		color: $red !important
+    &:hover
+        background-color: $t-red !important
+        color: $red !important
 
 .sidebar__footer
-	padding: 16px
-	border-top: 1px solid $sub-gray
+    padding: 16px
+    border-top: 1px solid $sub-gray
 
 .sidebar__footer-wrapper
-	display: flex
-	align-items: center
-	gap: 10px
-	padding: 8px
-	border-radius: 8px
-	cursor: pointer
+    display: flex
+    align-items: center
+    gap: 10px
+    padding: 8px
+    border-radius: 8px
+    cursor: pointer
 
 .sidebar__footer-avatar
-	width: 45px
-	height: 45px
+    width: 45px
+    height: 45px
 
-	img
-		max-width: 100%
-		max-height: 100%
-		object-fit: cover
+    img
+        max-width: 100%
+        max-height: 100%
+        object-fit: cover
 
 .sidebar__user-name
-	font-weight: 600
-	font-size: 18px
+    font-weight: 600
+    font-size: 18px
 
 .sidebar__user-role
-	color: $gray
-	font-size: 16px
+    color: $gray
+    font-size: 16px
 
 .sidebar__user-name::first-letter,
 .sidebar__user-role::first-letter
-	text-transform: uppercase
+    text-transform: uppercase
