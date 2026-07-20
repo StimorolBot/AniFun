@@ -8,6 +8,7 @@ import { InputEpisode } from "../../ui/input/InputEpisode"
 import { InputTitle } from "../../ui/input/InputTitle"
 import { InputYear } from "../../ui/input/InputYear"
 
+import { LblRequired } from "../../../../ui/label/LblRequired"
 import { SearchGenres } from "../../../../ui/search/SearchGenres"
 
 import "./style/form_title.sass"
@@ -39,7 +40,6 @@ const ageRestrictList = [
 	{ value: "nc_17", label: "16+" },
 	{ value: "r", label: "18+" },
 ]
-
 export const FormTitle = ({
 	handleSubmit,
 	errors,
@@ -53,17 +53,17 @@ export const FormTitle = ({
 			<div>
 				<div className="form-title__container">
 					<h3>
-						<Clipboard /> <span>Основная информация</span>
+						<Clipboard />
+						<span>Основная информация</span>
 					</h3>
 					<ul className="form-title__list">
 						<li className="form-title__item">
-							<label
-								className="form-title__input-lbl"
+							<LblRequired
 								htmlFor={"form-title-title"}
-								data-required={isRequiredFields}
+								isRequired={isRequiredFields}
 							>
 								Название
-							</label>
+							</LblRequired>
 							<InputTitle
 								id={"form-title-title"}
 								register={register}
@@ -73,13 +73,12 @@ export const FormTitle = ({
 							/>
 						</li>
 						<li className="form-title__item">
-							<label
-								className="form-title__input-lbl"
+							<LblRequired
 								htmlFor={"form-title-sub-title"}
-								data-required={false}
+								isRequired={false}
 							>
 								Название (оригинальное)
-							</label>
+							</LblRequired>
 							<InputTitle
 								id={"form-title-sub-title"}
 								register={register}
@@ -88,13 +87,12 @@ export const FormTitle = ({
 							/>
 						</li>
 						<li className="form-title__item">
-							<label
-								className="form-title__input-lbl"
+							<LblRequired
 								htmlFor={"form-title-alias"}
-								data-required={false}
+								isRequired={false}
 							>
 								Alias (url)
-							</label>
+							</LblRequired>
 							<InputAlias
 								id={"form-title-alias"}
 								register={register}
@@ -103,13 +101,12 @@ export const FormTitle = ({
 							/>
 						</li>
 						<li className="form-title__item">
-							<label
-								className="form-title__input-lbl"
+							<LblRequired
 								htmlFor={"form-title-desc"}
-								data-required={isRequiredFields}
+								isRequired={isRequiredFields}
 							>
 								Описание
-							</label>
+							</LblRequired>
 							<TextareaValidate
 								id={"form-title-desc"}
 								register={register}
@@ -120,12 +117,9 @@ export const FormTitle = ({
 							/>
 						</li>
 						<li className="form-title__item">
-							<label
-								className="form-title__input-lbl"
-								data-required={isRequiredFields}
-							>
+							<LblRequired isRequired={isRequiredFields}>
 								Жанры
-							</label>
+							</LblRequired>
 							<SearchGenres
 								control={control}
 								required={isRequiredFields}
@@ -137,13 +131,12 @@ export const FormTitle = ({
 							style={{ display: "flex", gap: 20 }}
 						>
 							<div style={{ flex: 1 }}>
-								<label
-									className="form-title__input-lbl"
+								<LblRequired
 									htmlFor={"form-title-year"}
-									data-required={isRequiredFields}
+									isRequired={isRequiredFields}
 								>
 									Год
-								</label>
+								</LblRequired>
 								<InputYear
 									id={"form-title-year"}
 									register={register}
@@ -152,13 +145,12 @@ export const FormTitle = ({
 								/>
 							</div>
 							<div style={{ flex: 1 }}>
-								<label
-									className="form-title__input-lbl"
+								<LblRequired
 									htmlFor={"form-title-episode"}
-									data-required={isRequiredFields}
+									isRequired={isRequiredFields}
 								>
 									Количество эпизодов
-								</label>
+								</LblRequired>
 								<InputEpisode
 									id={"form-title-episode"}
 									register={register}
@@ -178,12 +170,9 @@ export const FormTitle = ({
 						>
 							<div className="form-title__column">
 								<div className="form-title__item">
-									<label
-										className="form-title__input-lbl"
-										data-required={isRequiredFields}
-									>
+									<LblRequired isRequired={isRequiredFields}>
 										Статус
-									</label>
+									</LblRequired>
 									<ValidSelect
 										options={statusList}
 										control={control}
@@ -193,12 +182,9 @@ export const FormTitle = ({
 									/>
 								</div>
 								<div className="form-title__item">
-									<label
-										className="form-title__input-lbl"
-										data-required={isRequiredFields}
-									>
+									<LblRequired isRequired={isRequiredFields}>
 										Сезон
-									</label>
+									</LblRequired>
 									<ValidSelect
 										options={seasonList}
 										control={control}
@@ -210,12 +196,9 @@ export const FormTitle = ({
 							</div>
 							<div className="form-title__column">
 								<div className="form-title__item">
-									<label
-										className="form-title__input-lbl"
-										data-required={isRequiredFields}
-									>
+									<LblRequired isRequired={isRequiredFields}>
 										Возрастной рейтинг
-									</label>
+									</LblRequired>
 									<ValidSelect
 										options={ageRestrictList}
 										control={control}
@@ -225,12 +208,9 @@ export const FormTitle = ({
 									/>
 								</div>
 								<div className="form-title__item">
-									<label
-										className="form-title__input-lbl"
-										data-required={isRequiredFields}
-									>
+									<LblRequired isRequired={isRequiredFields}>
 										Тип
-									</label>
+									</LblRequired>
 									<ValidSelect
 										options={typeList}
 										control={control}
@@ -257,12 +237,9 @@ export const FormTitle = ({
 								required={isRequiredFields}
 								param={"is_origin"}
 							/>
-							<label
-								className="form-title__input-lbl"
-								data-required={isRequiredFields}
-							>
+							<LblRequired isRequired={isRequiredFields}>
 								Оригинал
-							</label>
+							</LblRequired>
 						</li>
 					</ul>
 				</div>
