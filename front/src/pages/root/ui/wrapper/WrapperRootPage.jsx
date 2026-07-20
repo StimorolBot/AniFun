@@ -1,10 +1,12 @@
-import { Outlet, useNavigate } from "react-router-dom"
+import { Outlet } from "react-router-dom"
 
 import { jwtDecode } from "jwt-decode"
 
 import { cookies } from "../../../../cookie"
 import { Error } from "../../../error/Error"
 import { SideBar } from "../aside/SideBar"
+
+import "./root.sass"
 
 export const WrapperRootPage = () => {
 	const accessToken = cookies.get("access_token")
