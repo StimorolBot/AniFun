@@ -36,7 +36,7 @@ export const Title = memo(() => {
 	const transitionRef = useRef()
 	const deleteData = useRef({ title: "", uuid: "" })
 
-	const [deleteTitleResponse, setDeleteTitleResponse] = useState({
+	const [response, setResponse] = useState({
 		id: null,
 		statusCode: null,
 		details: "",
@@ -60,11 +60,7 @@ export const Title = memo(() => {
 		else return null
 	})
 
-	const {
-		data: titleData,
-		isLoading,
-		isError,
-	} = useQuery({
+	const { data: titleData, isLoading } = useQuery({
 		queryKey: ["root-title-data", page, debounceSearchVal, status],
 		staleTime: 1000 * 60 * 3,
 		queryFn: async () => {
@@ -72,7 +68,7 @@ export const Title = memo(() => {
 				.get(`anime/releases`, {
 					params: {
 						page: page,
-						size: 10,
+						size: 20,
 						title: debounceSearchVal || null,
 						status_: status,
 					},
@@ -89,16 +85,15 @@ export const Title = memo(() => {
 				queryKey: ["root-title-data", page],
 			})
 			setIsShowPopup(false)
-			setDeleteTitleResponse({
+			setResponse({
 				id: crypto.randomUUID(),
 				statusCode: r.status,
 				details: r.data,
 			})
 		},
 		onError: (e) => {
-			console.log()
 			setIsShowPopup(false)
-			setDeleteTitleResponse({
+			setResponse({
 				id: crypto.randomUUID(),
 				statusCode: e.status,
 				details: e.response.data?.detail,
@@ -113,14 +108,14 @@ export const Title = memo(() => {
 	})
 
 	return (
-		<div className="root-title">
+		<div className="root">
 			<div className="root-container">
 				<header className="root__header">
 					<div className="root__checkbox-container">
 						<InputRadio
 							id={"root-title-all"}
 							callback={() => setStatus(null)}
-							text={`Все`}
+							text={"Все"}
 							name={"status"}
 						/>
 						<InputRadio
@@ -150,12 +145,12 @@ export const Title = memo(() => {
 						Создать тайтл
 					</Link>
 				</header>
-				<div className="root-title__table">
-					<div className="root-title__table-container">
+				<div className="root__table">
+					<div className="root__table-container">
 						<table>
 							<thead>
 								<tr>
-									<th></th>
+									<th>Постер</th>
 									<th>Название</th>
 									<th>Статус</th>
 									<th>Эпизоды</th>
@@ -172,12 +167,9 @@ export const Title = memo(() => {
 									timeout={300}
 									nodeRef={transitionRef}
 								>
-									<tbody
-										className="transition"
-										ref={transitionRef}
-									>
+									<tbody ref={transitionRef}>
 										{isLoading ? (
-											<TitleSkeleton count={5} />
+											<TitleSkeleton count={20} />
 										) : (
 											titleData?.items?.map(
 												(item, index) => {
@@ -238,7 +230,9 @@ export const Title = memo(() => {
 											className="root-title__msg"
 											ref={titleRef}
 										>
-											"{deleteData.current.title}"
+											&#34;
+											{deleteData.current.title}
+											&#34;
 										</p>
 										<p style={{ fontSize: 14 }}>
 											Это действие нельзя будет отменить
@@ -254,18 +248,18 @@ export const Title = memo(() => {
 						setPage={setPage}
 					/>
 				</div>
-				{isError && (
+				{isLoading === false && titleData?.items.length === 0 && (
 					<div className="root-title__error">
 						<img
-							src={`${storageUrl}/stickers/not-found.png`}
-							alt="стикер"
+							src={`${storageUrl}/stickers/72b0282a20594165a6511c8fbd8c5dfd.png`}
+							alt="Нет результата"
 						/>
 					</div>
 				)}
 				<AlertAPI
-					id={deleteTitleResponse.id}
-					msg={deleteTitleResponse.details}
-					statusCode={deleteTitleResponse.statusCode}
+					id={response.id}
+					msg={response.details}
+					statusCode={response.statusCode}
 				/>
 			</div>
 		</div>
