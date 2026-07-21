@@ -7,21 +7,15 @@ export const CustomSelect = ({
 	value,
 	className,
 	onChange,
-	isMulti = false,
 	...props
 }) => {
-	const getValue = () => {
-		if (isMulti) return value.label || value
-		return value.label || value
-	}
 	return (
 		<Select
 			className={className}
 			classNamePrefix={className}
-			value={getValue()}
+			value={value}
 			onChange={onChange}
 			options={options}
-			isMulti={isMulti}
 			{...props}
 		/>
 	)
