@@ -1,4 +1,4 @@
-@use "/src/style/color.sass" as * 
+@use "/src/style/color.sass" as *
 
 
 .custom-select
@@ -13,11 +13,12 @@
             text-transform: capitalize
 
     &__control
-        background-color: $sub-white !important
-        border-radius: 4px !important
+        background-color: $sub-black !important
+        border-radius: 8px !important
         border-style: none !important
         cursor: pointer !important
         padding: 0 4px !important
+        height: 46px !important
 
         &--is-focused
             box-shadow: none !important
@@ -40,10 +41,22 @@
         top: 45px !important
         background-color: $sub-black-2 !important
         border-radius: 8px !important
-    
+
+        &-list::-webkit-scrollbar
+            width: 6px !important
+            height: 0px !important
+
+        &-list::-webkit-scrollbar-track
+            background-color: $sub-gray !important
+
+        &-list::-webkit-scrollbar-thumb
+            background-color: $gray !important
+            border-radius: 10px !important
+            cursor: pointer !important
+
     &__option
         transition: background-color 0.3s !important
-        border-radius: 6px !important 
+        border-radius: 6px !important
         cursor: pointer !important
         padding: 12px 8px !important
         background-color: transparent !important
@@ -54,4 +67,4 @@
 
         &:hover
             background-color: $t-red !important
-        
+
