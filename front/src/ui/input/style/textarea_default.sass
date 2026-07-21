@@ -3,31 +3,8 @@
 
 .textarea-default__inner
     position: relative
-
-    label
-        position: absolute
-        background-color: $white
-        opacity: 0.2
-        width: 100%
-        height: 2px
-        bottom: 5px
-        left: 0
-        right: 0
-        
-        &::before,
-        &::after
-            content: ""
-            position: absolute
-            background-color: $red
-            width: 0
-            height: 2px
-            transition: width 0.8s
-
-        &::before
-            right: 0
-        
-        &::after
-            left: 0
+    background-color: $sub-black
+    border-radius: 8px
 
 .textarea-default
     padding: 8px
@@ -35,8 +12,13 @@
     width: 100%
     font-size: 20px
     overflow: hidden
-    max-height: 300px
+    font-weight: 600
+    font-family: "Jura", sans-serif
 
-    &:focus ~ label::before,
-    &:focus ~ label::after
-        width: 50%
+.textarea-default__error
+    color: $red
+    position: absolute
+    top: -9px
+    right: 0
+    font-size: 14px
+    font-weight: 600
