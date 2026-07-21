@@ -73,10 +73,7 @@ export const FormTitle = ({
 							/>
 						</li>
 						<li className="form-title__item">
-							<LblRequired
-								htmlFor={"form-title-sub-title"}
-								isRequired={false}
-							>
+							<LblRequired htmlFor={"form-title-sub-title"}>
 								Название (оригинальное)
 							</LblRequired>
 							<InputTitle
@@ -87,10 +84,7 @@ export const FormTitle = ({
 							/>
 						</li>
 						<li className="form-title__item">
-							<LblRequired
-								htmlFor={"form-title-alias"}
-								isRequired={false}
-							>
+							<LblRequired htmlFor={"form-title-alias"}>
 								Alias (url)
 							</LblRequired>
 							<InputAlias
@@ -125,40 +119,6 @@ export const FormTitle = ({
 								required={isRequiredFields}
 								placeholder={""}
 							/>
-						</li>
-						<li
-							className="form-title__item"
-							style={{ display: "flex", gap: 20 }}
-						>
-							<div style={{ flex: 1 }}>
-								<LblRequired
-									htmlFor={"form-title-year"}
-									isRequired={isRequiredFields}
-								>
-									Год
-								</LblRequired>
-								<InputYear
-									id={"form-title-year"}
-									register={register}
-									errorMsg={errors?.year?.message}
-									required={isRequiredFields}
-								/>
-							</div>
-							<div style={{ flex: 1 }}>
-								<LblRequired
-									htmlFor={"form-title-episode"}
-									isRequired={isRequiredFields}
-								>
-									Количество эпизодов
-								</LblRequired>
-								<InputEpisode
-									id={"form-title-episode"}
-									register={register}
-									param={"total_episode"}
-									errorMsg={errors?.total_episode?.message}
-									required={isRequiredFields}
-								/>
-							</div>
 						</li>
 						<li
 							className="form-title__item"
@@ -219,6 +179,40 @@ export const FormTitle = ({
 										required={isRequiredFields}
 									/>
 								</div>
+							</div>
+						</li>
+						<li
+							className="form-title__item"
+							style={{ display: "flex", gap: 20 }}
+						>
+							<div style={{ flex: 1 }}>
+								<LblRequired
+									htmlFor={"form-title-year"}
+									isRequired={isRequiredFields}
+								>
+									Год
+								</LblRequired>
+								<InputYear
+									id={"form-title-year"}
+									register={register}
+									errorMsg={errors?.year?.message}
+									required={isRequiredFields}
+								/>
+							</div>
+							<div style={{ flex: 1 }}>
+								<LblRequired
+									htmlFor={"form-title-episode"}
+									isRequired={isRequiredFields}
+								>
+									Количество эпизодов
+								</LblRequired>
+								<InputEpisode
+									id={"form-title-episode"}
+									register={register}
+									param={"total_episode"}
+									errorMsg={errors?.total_episode?.message}
+									required={isRequiredFields}
+								/>
 							</div>
 						</li>
 						<li
