@@ -15,7 +15,7 @@ export const InputTitle = ({ id, errorMsg, register, param, ...props }) => {
 					message: "Название до 150 символов",
 				},
 				pattern: {
-					value: /(^[a-zA-Zа-яёА-ЯЁ0-9][a-zA-Zа-яёА-ЯЁ0-9\s]*$)/,
+					value: /^[\p{L}\p{N}][\p{L}\p{N}\p{M} .,'":;!?()&+\-/☆★×ー・―]*$/u,
 					message: "Некорректное название",
 				},
 			})}
