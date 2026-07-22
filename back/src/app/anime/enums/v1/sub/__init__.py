@@ -1,15 +1,15 @@
-from .day_week import DayWeek, DayWeekLabel, DayWeekValue
-from .genres import Genres, GenresLabel, GenresValue
-from .restrict import Restrict, RestrictLabel, RestrictValue
-from .season import Season, SeasonLabel, SeasonValue
-from .status import Status, StatusLabel, StatusValue
-from .type import Type, TypeLabel, TypeValue
+from .day_week import DayWeek
+from .genres import Genres
+from .restrict import Restrict
+from .season import Season
+from .status import Status
+from .type import Type
 
 __all__ = (
-    Type, TypeValue, TypeLabel,
-    Season, SeasonValue, SeasonLabel,
-    Restrict, RestrictValue, RestrictLabel,
-    Status, StatusValue, StatusLabel,
-    Genres, GenresValue, GenresLabel,
-    DayWeek, DayWeekValue, DayWeekLabel
+    Type,
+    Season,
+    Restrict,
+    Status,
+    Genres,
+    DayWeek
 )
