@@ -2,14 +2,16 @@ import { Images } from "../../../../ui/icon/Images"
 
 import { InputDragAndDrop } from "../../../../ui/input/InputDragAndDrop"
 
+import { LblRequired } from "../../../../ui/label/LblRequired"
+
 export const FormPosterAndBanner = ({ id, imgFile, setImgFile }) => {
 	return (
-		<form className="form-title" id={id}>
-			<h3>
+		<div>
+			<h3 className="form-title__header">
 				<Images />
 				<span>Медия</span>
 			</h3>
-			<ul
+			<div
 				className="form-title__list"
 				style={{
 					display: "flex",
@@ -18,14 +20,10 @@ export const FormPosterAndBanner = ({ id, imgFile, setImgFile }) => {
 					gap: 20,
 				}}
 			>
-				<li>
-					<label
-						className="form-title__input-lbl"
-						htmlFor="form-title-poster"
-						data-required={false}
-					>
+				<form className="form-title" id={id}>
+					<LblRequired htmlFor="form-title-poster">
 						Для тайтла
-					</label>
+					</LblRequired>
 					<InputDragAndDrop
 						id={"form-title-poster"}
 						payload={imgFile}
@@ -33,15 +31,11 @@ export const FormPosterAndBanner = ({ id, imgFile, setImgFile }) => {
 						paramName={"poster"}
 						ratio={"2:3"}
 					/>
-				</li>
-				<li>
-					<label
-						className="form-title__input-lbl"
-						htmlFor="form-title-banner"
-						data-required={false}
-					>
+				</form>
+				<form>
+					<LblRequired htmlFor="form-title-banner">
 						Для баннер
-					</label>
+					</LblRequired>
 					<InputDragAndDrop
 						id={"form-title-banner"}
 						payload={imgFile}
@@ -49,8 +43,8 @@ export const FormPosterAndBanner = ({ id, imgFile, setImgFile }) => {
 						paramName={"banner"}
 						ratio={"21:9"}
 					/>
-				</li>
-			</ul>
-		</form>
+				</form>
+			</div>
+		</div>
 	)
 }
