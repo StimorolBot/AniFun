@@ -8,14 +8,6 @@
     overflow: hidden
     border-radius: 10px
 
-    &:not([src])::before
-        content: ""
-        position: absolute
-        width: 100%
-        height: 100%    
-        opacity: 0.2
-        background-color: $sub-black-2
-
     &:hover
         .rec-title__img
             opacity: 0.1
@@ -40,7 +32,6 @@
     transition: opacity 0.3s
 
     h4
-        font-size: 14px
         text-align: center
         font-weight: 900
 
