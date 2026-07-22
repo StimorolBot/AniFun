@@ -20,7 +20,7 @@ export const TextareaValidate = ({
 				minLength: { value: 10, message: "От 10" },
 				maxLength: { value: 1000, message: "До 1000" },
 				pattern: {
-					value: /(^[^\s\\$|*/@`%&#]([\s\S]*[^\s\\$|*/@`%&#])?$)/,
+					value: /^(?!\s)[\s\S]*\S$/,
 					message: "Некорректное содержание",
 				},
 			})}
