@@ -2,7 +2,8 @@ from src.app.anime.models.v1.main.anime import AnimeTable
 from src.app.anime.models.v1.main.comment import (CommentTable,
                                                   ReactionCommentTable)
 from src.app.anime.models.v1.main.episode import (EpisodePreviewTable,
-                                                  EpisodeTable)
+                                                  EpisodeTable,
+                                                  EpisodeWatchProgress)
 from src.app.anime.models.v1.main.genres_anime import GenresTable
 from src.app.anime.models.v1.main.img import BannerTable, PosterTable
 from src.app.anime.models.v1.main.rating import RatingTable
@@ -13,7 +14,7 @@ from src.app.anime.models.v1.main.sequel_anime import SequelTable
 __all__ = (
     AnimeTable, PosterTable,
     EpisodeTable, GenresTable,
-    EpisodePreviewTable,
+    EpisodePreviewTable, EpisodeWatchProgress,
     ScheduleTable, SequelTable,
     RatingTable, CommentTable,
     ReactionCommentTable,
