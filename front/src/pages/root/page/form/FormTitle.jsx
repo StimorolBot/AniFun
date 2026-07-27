@@ -52,7 +52,7 @@ export const FormTitle = ({
 		<form className="form-title" id={id} onSubmit={handleSubmit}>
 			<div>
 				<div className="form-title__container">
-					<h3>
+					<h3 className="form-title__header">
 						<Clipboard />
 						<span>Основная информация</span>
 					</h3>
@@ -84,7 +84,10 @@ export const FormTitle = ({
 							/>
 						</li>
 						<li className="form-title__item">
-							<LblRequired htmlFor={"form-title-alias"}>
+							<LblRequired
+								htmlFor={"form-title-alias"}
+								isRequired={isRequiredFields}
+							>
 								Alias (url)
 							</LblRequired>
 							<InputAlias
@@ -92,6 +95,7 @@ export const FormTitle = ({
 								register={register}
 								errorMsg={errors?.alias?.message}
 								placeholder=""
+								required={isRequiredFields}
 							/>
 						</li>
 						<li className="form-title__item">
