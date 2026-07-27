@@ -6,9 +6,16 @@ import { Save } from "../../../../ui/icon/Save"
 
 import { BtnDefault } from "../../../../ui/btn/BtnDefault"
 
+import { Loader } from "../../../../components/loader/Loader"
+
 import "./style/header_form.sass"
 
-export const HeaderForm = ({ nameForm, resetCallback, children }) => {
+export const HeaderForm = ({
+	nameForm,
+	resetCallback,
+	isPending,
+	children,
+}) => {
 	const navigate = useNavigate()
 	return (
 		<header className="header-form">
@@ -24,13 +31,30 @@ export const HeaderForm = ({ nameForm, resetCallback, children }) => {
 					isStroke={false}
 					callback={() => resetCallback()}
 					type="button"
+					data-lock={isPending}
 				>
-					<Close />
-					<span>Сброс</span>
+					{isPending ? (
+						<Loader size={"small"} />
+					) : (
+						<>
+							<Close />
+							<span>Сброс</span>
+						</>
+					)}
 				</BtnDefault>
-				<BtnDefault isStroke={false} form={nameForm}>
-					<Save />
-					<span>Сохранить</span>
+				<BtnDefault
+					isStroke={false}
+					form={nameForm}
+					data-lock={isPending}
+				>
+					{isPending ? (
+						<Loader size={"small"} />
+					) : (
+						<>
+							<Save />
+							<span>Сохранить</span>
+						</>
+					)}
 				</BtnDefault>
 			</div>
 		</header>
