@@ -20,6 +20,7 @@ const breakpoints = {
 export const CreateTitle = () => {
 	const [response, setResponse] = useState({})
 	const [imgFile, setImgFile] = useState()
+	const formData = new FormData()
 
 	const {
 		register,
@@ -37,7 +38,6 @@ export const CreateTitle = () => {
 
 	const createPosterMutation = useMutation({
 		mutationFn: async (uuid) => {
-			const formData = new FormData()
 			formData.append("poster", imgFile.poster)
 			await api.post(`/admin/anime/titles/${uuid}/poster`, formData)
 		},
@@ -45,7 +45,6 @@ export const CreateTitle = () => {
 
 	const createBannerMutation = useMutation({
 		mutationFn: async (uuid) => {
-			const formData = new FormData()
 			formData.append("banner", imgFile.banner)
 			await api.post(`/admin/anime/titles/${uuid}/banners`, formData)
 		},
@@ -53,14 +52,24 @@ export const CreateTitle = () => {
 
 	const createTitleMutation = useMutation({
 		mutationFn: async (data) => {
-			return await api.post("/admin/anime/titles", data)
+			const response = await api.post("/admin/anime/titles", data)
+			const uuid = response.data.uuid
+
+			const tasks = []
+
+			if (imgFile.poster) {
+				tasks.push(createPosterMutation.mutateAsync(uuid))
+			}
+
+			if (imgFile.banner) {
+				tasks.push(createBannerMutation.mutateAsync(uuid))
+			}
+
+			await Promise.all(tasks)
+
+			return response
 		},
 		onSuccess: (r) => {
-			const uuid = r.data.uuid
-
-			if (imgFile?.poster) createPosterMutation.mutate(uuid)
-			if (imgFile?.banner) createBannerMutation.mutate(uuid)
-
 			setResponse({
 				id: crypto.randomUUID(),
 				statusCode: r.status,
@@ -75,6 +84,14 @@ export const CreateTitle = () => {
 		},
 	})
 
+	const mutations = [
+		createTitleMutation,
+		createPosterMutation,
+		createBannerMutation,
+	]
+
+	const isPending = mutations.some((m) => m.isPending)
+
 	const onSubmit = (data) => {
 		if (data.sub_title === "") data.sub_title = null
 		else if (data.alias === "") data.alias = null
@@ -86,6 +103,7 @@ export const CreateTitle = () => {
 			<div className="root-container">
 				<HeaderForm
 					nameForm={"root-create-title-form"}
+					isPending={isPending}
 					resetCallback={() => {
 						setImgFile()
 						reset()
