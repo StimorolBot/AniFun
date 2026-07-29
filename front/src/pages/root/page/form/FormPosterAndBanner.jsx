@@ -4,7 +4,7 @@ import { InputDragAndDrop } from "../../../../ui/input/InputDragAndDrop"
 
 import { LblRequired } from "../../../../ui/label/LblRequired"
 
-export const FormPosterAndBanner = ({ id, imgFile, setImgFile }) => {
+export const FormPosterAndBanner = ({ id, imgFile, setImgFile, isLoading }) => {
 	return (
 		<div>
 			<h3 className="form-title__header">
@@ -30,6 +30,7 @@ export const FormPosterAndBanner = ({ id, imgFile, setImgFile }) => {
 						setPayloadFile={setImgFile}
 						paramName={"poster"}
 						ratio={"2:3"}
+						isLoading={isLoading}
 					/>
 				</form>
 				<form>
@@ -42,6 +43,7 @@ export const FormPosterAndBanner = ({ id, imgFile, setImgFile }) => {
 						setPayloadFile={setImgFile}
 						paramName={"banner"}
 						ratio={"21:9"}
+						isLoading={isLoading}
 					/>
 				</form>
 			</div>
