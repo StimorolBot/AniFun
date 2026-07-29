@@ -1,5 +1,4 @@
-@use "/src/style/color.sass" as * 
-
+@use "/src/style/color.sass" as *
 
 .textarea-default__inner
     position: relative
@@ -14,6 +13,15 @@
     overflow: hidden
     font-weight: 600
     font-family: "Jura", sans-serif
+
+    &[data-disabled="true"]
+        pointer-events: none
+
+.textarea-default__loader
+    top: 50%
+    position: absolute
+    right: 14px
+    transform: translateY(-50%)
 
 .textarea-default__error
     color: $red
