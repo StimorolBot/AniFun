@@ -6,6 +6,7 @@ export const TextareaValidate = ({
 	errorMsg,
 	register,
 	param,
+	isLoading,
 	...props
 }) => {
 	return (
@@ -15,6 +16,7 @@ export const TextareaValidate = ({
 			maxLength={1000}
 			countLineBreak={countLineBreak}
 			errorMsg={errorMsg}
+			isLoading={isLoading}
 			{...props}
 			register={register(param, {
 				minLength: { value: 10, message: "От 10" },
