@@ -1,0 +1,78 @@
+@use "/src/style/color.sass" as *
+
+
+.input-drag-and-drop__container
+    position: relative
+    width: 100%
+    height: 100%
+
+    &.is-drag-over .input-drag-and-drop__label
+        border-color: $sub-red
+        background-color: $t-red
+        opacity: 0.5
+
+.input-drag-and-drop
+    position: absolute
+    opacity: 0
+    pointer-events: none
+
+.input-drag-and-drop__label
+    width: 100%
+    border: 1px dashed $sub-white
+    border-radius: 10px
+    background-color: $sub-gray
+    display: flex
+    flex-direction: column
+    align-items: center
+    justify-content: center
+    cursor: pointer
+    transition: border-color 0.3s, background-color 0.3s, opacity 0.3s
+    height: 100%
+    gap: 10px
+    overflow: hidden
+
+    &:hover
+        border-color: $sub-red
+        background-color: $t-red
+
+    &[data-ratio="2:3"]
+        width: 210px
+        aspect-ratio: 2 / 3
+
+    &[data-ratio="21:9"]
+        width: 540px
+        aspect-ratio: 21 / 9
+
+    &[data-ratio="16:9"]
+        width: 400px
+        aspect-ratio: 16 / 9
+
+.input-drag-and-drop__preview
+    width: 100%
+    height: 100%
+    object-fit: cover
+    object-position: center
+
+.input-drag-and-drop__placeholder
+    width: 54px
+    height: 54px
+    border-radius: 50%
+    border: 1px solid $sub-white
+    display: inline-flex
+    align-items: center
+    justify-content: center
+    font-size: 28px
+    font-weight: 600
+    color: $sub-white-2
+
+.input-drag-and-drop__title,
+.input-drag-and-drop__type-file
+    font-size: 16px
+    font-weight: 900
+
+.input-drag-and-drop__error
+    color: $red
+    text-align: center
+    font-weight: 900
+    padding: 4px
+    font-size: 16px
