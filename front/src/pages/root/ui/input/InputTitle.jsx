@@ -1,11 +1,19 @@
 import { InputDefault } from "../../../../ui/input/InputDefault"
 
-export const InputTitle = ({ id, errorMsg, register, param, ...props }) => {
+export const InputTitle = ({
+	id,
+	errorMsg,
+	register,
+	param,
+	isLoading,
+	...props
+}) => {
 	return (
 		<InputDefault
 			id={id}
 			minLength={5}
 			maxLength={150}
+			isLoading={isLoading}
 			{...props}
 			errorMsg={errorMsg}
 			register={register(param, {
