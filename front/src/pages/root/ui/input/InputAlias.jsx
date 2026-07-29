@@ -1,12 +1,13 @@
 import { InputDefault } from "../../../../ui/input/InputDefault"
 
-export const InputAlias = ({ id, errorMsg, register, ...props }) => {
+export const InputAlias = ({ id, errorMsg, register, isLoading, ...props }) => {
 	return (
 		<InputDefault
 			id={id}
 			minLength={5}
 			maxLength={150}
 			placeholder="Alias"
+			isLoading={isLoading}
 			{...props}
 			errorMsg={errorMsg}
 			register={register("alias", {
