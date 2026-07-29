@@ -204,11 +204,13 @@ export const EditTitle = memo(() => {
 						errors={errors}
 						register={register}
 						control={control}
+						isLoading={isLoading}
 					/>
 					<FormPosterAndBanner
 						id={"root-edit-poster-form"}
 						imgFile={imgData}
 						setImgFile={setImgData}
+						isLoading={isLoading}
 					/>
 				</Masonry>
 				<AlertAPI
