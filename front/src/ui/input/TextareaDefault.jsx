@@ -1,10 +1,20 @@
 import { forwardRef, useEffect, useRef } from "react"
 
+import { Loader } from "../../components/loader/Loader"
+
 import "./style/textarea_default.sass"
 
 export const TextareaDefault = forwardRef(
 	(
-		{ id, placeholder, register, errorMsg, countLineBreak = 4, ...props },
+		{
+			id,
+			placeholder,
+			register,
+			errorMsg,
+			isLoading,
+			countLineBreak = 4,
+			...props
+		},
 		forwardedRef,
 	) => {
 		const textareaRef = useRef(null)
@@ -57,9 +67,15 @@ export const TextareaDefault = forwardRef(
 					ref={bindRefs}
 					placeholder={placeholder}
 					onChange={handleChange}
+					data-disabled={isLoading}
 					{...restRegister}
 					{...props}
 				/>
+				{isLoading && (
+					<div className="textarea-default__loader">
+						<Loader size="small" />
+					</div>
+				)}
 				<span className="input-default__error">{errorMsg}</span>
 			</div>
 		)
