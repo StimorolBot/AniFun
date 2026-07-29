@@ -46,6 +46,7 @@ export const FormTitle = ({
 	register,
 	control,
 	id,
+	isLoading,
 	isRequiredFields = true,
 }) => {
 	return (
@@ -70,6 +71,7 @@ export const FormTitle = ({
 								param={"title"}
 								errorMsg={errors?.title?.message}
 								required={isRequiredFields}
+								isLoading={isLoading}
 							/>
 						</li>
 						<li className="form-title__item">
@@ -81,6 +83,7 @@ export const FormTitle = ({
 								register={register}
 								param={"sub_title"}
 								errorMsg={errors?.sub_title?.message}
+								isLoading={isLoading}
 							/>
 						</li>
 						<li className="form-title__item">
@@ -96,6 +99,7 @@ export const FormTitle = ({
 								errorMsg={errors?.alias?.message}
 								placeholder=""
 								required={isRequiredFields}
+								isLoading={isLoading}
 							/>
 						</li>
 						<li className="form-title__item">
@@ -112,6 +116,7 @@ export const FormTitle = ({
 								errorMsg={errors?.description?.message}
 								countLineBreak={8}
 								required={isRequiredFields}
+								isLoading={isLoading}
 							/>
 						</li>
 						<li className="form-title__item">
@@ -122,6 +127,7 @@ export const FormTitle = ({
 								control={control}
 								required={isRequiredFields}
 								placeholder={""}
+								isLoading={isLoading}
 							/>
 						</li>
 						<li
@@ -143,6 +149,7 @@ export const FormTitle = ({
 										name={"status"}
 										placeholder={""}
 										required={isRequiredFields}
+										isLoading={isLoading}
 									/>
 								</div>
 								<div className="form-title__item">
@@ -155,6 +162,7 @@ export const FormTitle = ({
 										name={"season"}
 										placeholder={""}
 										required={isRequiredFields}
+										isLoading={isLoading}
 									/>
 								</div>
 							</div>
@@ -169,6 +177,7 @@ export const FormTitle = ({
 										name={"age_restrict"}
 										placeholder={""}
 										required={isRequiredFields}
+										isLoading={isLoading}
 									/>
 								</div>
 								<div className="form-title__item">
@@ -181,6 +190,7 @@ export const FormTitle = ({
 										name={"type"}
 										placeholder={""}
 										required={isRequiredFields}
+										isLoading={isLoading}
 									/>
 								</div>
 							</div>
@@ -201,6 +211,7 @@ export const FormTitle = ({
 									register={register}
 									errorMsg={errors?.year?.message}
 									required={isRequiredFields}
+									isLoading={isLoading}
 								/>
 							</div>
 							<div style={{ flex: 1 }}>
@@ -216,6 +227,7 @@ export const FormTitle = ({
 									param={"total_episode"}
 									errorMsg={errors?.total_episode?.message}
 									required={isRequiredFields}
+									isLoading={isLoading}
 								/>
 							</div>
 						</li>
