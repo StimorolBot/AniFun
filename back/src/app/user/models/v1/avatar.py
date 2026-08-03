@@ -7,7 +7,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from src.model import Base
 
 if TYPE_CHECKING:
-    from src.app.auth.models.v1.main.auth import AuthTable
+    from app.auth.models.v1 import AuthTable
 
 
 class AvatarTable(Base):
