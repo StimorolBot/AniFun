@@ -15,8 +15,8 @@ class AgeRestrictSubTable(Base):
     __tablename__ = "age_r_sub_table"
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-    label: Mapped[str] = mapped_column(unique=True)
-    value: Mapped[str] = mapped_column()
+    label: Mapped[str] = mapped_column()
+    value: Mapped[str] = mapped_column(unique=True)
 
     anime_rs: Mapped["AnimeTable"] = relationship(back_populates="age_restrict_rs")
 
@@ -26,5 +26,5 @@ class AgeRestrictSubTable(Base):
             await crud.create(
                 session=session,
                 table=cls,
-                data={"label": data.value["label"], "value": data.value["value"]}
+                data={"label": data.label, "value": data.value}
             )
