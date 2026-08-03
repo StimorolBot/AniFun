@@ -10,12 +10,13 @@ if TYPE_CHECKING:
     from src.app.anime.models.v1.main.anime import AnimeTable
 
 
+# pylint: disable=too-few-public-methods
 class PosterTable(Base):
     __tablename__ = "poster_table"
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-    title: Mapped[str] = mapped_column(
-        ForeignKey("anime_table.title", onupdate="CASCADE", ondelete="CASCADE"),
+    title_uuid: Mapped[UUID] = mapped_column(
+        ForeignKey("anime_table.uuid", ondelete="CASCADE"),
         index=True
     )
     poster_uuid: Mapped[UUID] = mapped_column()
@@ -26,9 +27,9 @@ class BannerTable(Base):
     __tablename__ = "banner_table"
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-    title: Mapped[str] = mapped_column(
-        ForeignKey("anime_table.title", onupdate="CASCADE", ondelete="CASCADE"),
+    title_uuid: Mapped[UUID] = mapped_column(
+        ForeignKey("anime_table.uuid", ondelete="CASCADE"),
         index=True
     )
-    uuid_banner: Mapped[UUID] = mapped_column()
+    banner_uuid: Mapped[UUID] = mapped_column()
     anime_rs: Mapped["AnimeTable"] = relationship(back_populates="banner_rs")
