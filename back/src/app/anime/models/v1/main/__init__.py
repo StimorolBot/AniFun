@@ -3,6 +3,7 @@ from src.app.anime.models.v1.main.comment import (CommentTable,
                                                   ReactionCommentTable)
 from src.app.anime.models.v1.main.episode import (EpisodePreviewTable,
                                                   EpisodeTable,
+                                                  EpisodeVideoTable,
                                                   EpisodeWatchProgress)
 from src.app.anime.models.v1.main.genres_anime import GenresTable
 from src.app.anime.models.v1.main.img import BannerTable, PosterTable
@@ -15,6 +16,7 @@ __all__ = (
     AnimeTable, PosterTable,
     EpisodeTable, GenresTable,
     EpisodePreviewTable, EpisodeWatchProgress,
+    EpisodeVideoTable,
     ScheduleTable, SequelTable,
     RatingTable, CommentTable,
     ReactionCommentTable,
