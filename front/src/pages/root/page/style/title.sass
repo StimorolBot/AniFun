@@ -1,21 +1,5 @@
 @use "/src/style/color.sass" as *
 
-.root-title
-    flex: 1
-
-.root-container
-    padding: 30px
-    max-width: 1578px
-
-.root__header
-    display: flex
-    align-items: center
-    justify-content: space-between
-    margin-bottom: 10px
-
-.root__checkbox-container
-    display: flex
-    gap: 20px
 
 .root__search-title
     display: flex
@@ -28,81 +12,11 @@
         width: 30px
         height: 30px
 
-.root__header-link
-    display: flex
-    padding: 10px
-    border-radius: 6px
-    background-color: $red
-    font-size: 18px
-    font-weight: 600
-    gap: 5px
-
-.root-title__table
-    margin: 24px 0
-    border: 1px solid $sub-gray
-    border-radius: 12px
-    overflow: hidden
-
-.root-title__table-container
-    table
-        width: 100%
-        table-layout: fixed
-
-        thead
-            background: $sub-black-2
-
-            tr
-                th
-                    font-size: 18px
-                    font-weight: 600
-                    padding: 12px
-
-            &:first-child
-                th:first-child
-                    width: 120px
-
-.root-confirm__title
-    font-weight: 600
-    font-size: 20px
-    display: flex
-    align-items: center
-    gap: 10px
-    padding: 20px 20px 0 20px
-
-.root-confirm__body
-    font-size: 16px
-    padding: 30px
-    text-align: center
-    font-weight: 600
-    position: relative
-
-    &::after,
-    &::before
-        position: absolute
-        content: ""
-        left: 0
-        right: 0
-        width: 100%
-        height: 2px
-        background-color: $sub-black
-
-    &::after
-        bottom: 15px
-
-    &::before
-        top: 15px
-
-.root-title__msg
-    color: $red
-    font-weight: 900
-    margin: 5px 0
-
 .root-title__error
     margin: 0 auto
     text-align: center
-    max-height: 250px
-    max-width: 250px
-    border: 1px solid red
+    max-height: 350px
+    max-width: 350px
 
     img
         object-fit: cover
