@@ -82,13 +82,12 @@ export const Title = memo(() => {
 			await api.delete(`/admin/anime/titles/${uuid}`),
 		onSuccess: (r) => {
 			queryClient.invalidateQueries({
-				queryKey: ["root-title-data", page],
+				queryKey: ["root-title-data", page, status],
 			})
 			setIsShowPopup(false)
 			setResponse({
 				id: crypto.randomUUID(),
 				statusCode: r.status,
-				details: r.data,
 			})
 		},
 		onError: (e) => {
@@ -103,7 +102,7 @@ export const Title = memo(() => {
 
 	const titleRef = useAutoFontSize({
 		minSize: 12,
-		maxSize: 18,
+		maxSize: 26,
 		deps: [deleteData.current.title],
 	})
 
@@ -117,6 +116,7 @@ export const Title = memo(() => {
 							callback={() => setStatus(null)}
 							text={"Все"}
 							name={"status"}
+							defaultChecked
 						/>
 						<InputRadio
 							id={"root-title-ongoing"}
@@ -219,26 +219,26 @@ export const Title = memo(() => {
 								ref={popupRef}
 								onClose={() => setIsShowPopup(false)}
 							>
-								<div>
-									<div className="root-confirm__title">
+								<>
+									<div className="root-confirm__action">
 										<Warning />
 										Подтверждение удаления
 									</div>
 									<div className="root-confirm__body">
 										<p>Вы уверены, что хотите удалить</p>
 										<p
-											className="root-title__msg"
+											className="root-confirm__msg"
 											ref={titleRef}
 										>
 											&#34;
 											{deleteData.current.title}
 											&#34;
 										</p>
-										<p style={{ fontSize: 14 }}>
+										<p style={{ fontSize: 16 }}>
 											Это действие нельзя будет отменить
 										</p>
 									</div>
-								</div>
+								</>
 							</Confirm>
 						</CSSTransition>
 					</div>
@@ -258,7 +258,7 @@ export const Title = memo(() => {
 				)}
 				<AlertAPI
 					id={response.id}
-					msg={response.details}
+					msg={response?.details}
 					statusCode={response.statusCode}
 				/>
 			</div>
