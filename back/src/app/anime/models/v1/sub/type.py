@@ -1,6 +1,5 @@
 from typing import TYPE_CHECKING
 
-from sqlalchemy import Enum
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -27,5 +26,5 @@ class TypeSubTable(Base):
             await crud.create(
                 session=session,
                 table=cls,
-                data={"label": data.value["label"], "value": data.value["value"]}
+                data={"label": data.label, "value": data.value}
             )

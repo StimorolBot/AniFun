@@ -1,7 +1,5 @@
-from typing import TYPE_CHECKING
-
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy.orm import Mapped, mapped_column
 
 from src.app.anime.enums.v1.sub.day_week import DayWeek
 from src.model import Base
@@ -23,7 +21,7 @@ class DayWeekSubTable(Base):
                 session=session,
                 table=cls,
                 data={
-                    "label": data.value["label"],
-                    "value": data.value["value"]
+                    "label": data.label,
+                    "value": data.value
                 }
             )
