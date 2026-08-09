@@ -6,6 +6,9 @@
     height: 14px
     position: relative
 
+    &[data-size="large"]
+        height: 20px !important
+
 .input-checkbox
     z-index: -1
     opacity: 0
@@ -41,3 +44,13 @@
 
     &:checked + .input-checkbox__label:after
         left: 18px
+
+    & + .input-checkbox__label[data-size="large"]
+            &::before
+                width: 40px
+                height: 20px
+
+            &::after
+                left: -8px
+                width: 16px
+                height: 16px
