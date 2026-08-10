@@ -1,5 +1,10 @@
 import { memo } from "react"
+
 import { Link } from "react-router-dom"
+
+import { Discord } from "../../ui/icon/Discord"
+import { Logo } from "../../ui/icon/Logo"
+import { Telegram } from "../../ui/icon/Telegram"
 
 import "./style/footer.sass"
 
@@ -10,9 +15,7 @@ export const Footer = memo(() => {
 				<div className="footer__top">
 					<div className="footer__top-inner">
 						<div className="footer__top-svg-container">
-							<svg className="footer__top-svg">
-								<use href="/public/logo/logo.svg" />
-							</svg>
+							<Logo />
 						</div>
 						<div className="footer__title-container">
 							<p className="footer__title">AniFun</p>
@@ -93,16 +96,12 @@ export const Footer = memo(() => {
 					<ul className="footer__social-list">
 						<li className="footer__social-item">
 							<Link className="footer__social-link" to={"#"}>
-								<svg>
-									<use xlinkHref="/public/svg/social.svg#discord-svg" />
-								</svg>
+								<Discord />
 							</Link>
 						</li>
 						<li className="footer__social-item">
 							<Link className="footer__social-link" to={"#"}>
-								<svg>
-									<use xlinkHref="/public/svg/social.svg#tg-svg" />
-								</svg>
+								<Telegram />
 							</Link>
 						</li>
 					</ul>
