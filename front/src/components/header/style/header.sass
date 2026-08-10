@@ -1,4 +1,4 @@
-@use "/src/style/color.sass" as * 
+@use "/src/style/color.sass" as *
 
 
 .header
@@ -11,6 +11,10 @@
     left: 0
     z-index: 10
     height: 85px
+
+    svg
+        width: 100%
+        height: 100%
 
 .header__inner
     display: flex
@@ -25,8 +29,6 @@
 
 .header__logo
     margin-right: 25px
-
-.header__logo-svg
     height: 50px
     width: 60px
 
@@ -34,15 +36,6 @@
     margin-right: auto
     margin-left: 0
 
-.header__svg
-    transition: stroke 0.3s, fill 0.3s
-    stroke: $white
-    fill: $white
-
-    &:hover
-        stroke: $gray
-        fill: $gray
-    
 .header__list-item
     display: flex
     align-items: center
@@ -50,18 +43,25 @@
     font-size: 20px
     font-weight: 900
 
-.header__link
-    transition: color 0.3s
+    svg
+        transition: stroke 0.3s, fill 0.3s
 
-    &:hover
-        color: $gray
+        &:hover
+            stroke: $gray
+            fill: $gray
 
-.header__avatar-link
-    max-width: 40px
-    max-height: 40px
-    cursor: pointer
+    a
+        transition: color 0.3s
+
+        &:hover
+            color: $gray
+
+.header-burger
+    display: none
 
 .header__avatar
+    max-width: 35px
+    max-height: 35px
     width: 100%
     object-fit: cover
     border-radius: 5px
