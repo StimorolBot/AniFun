@@ -8,8 +8,6 @@ export const Close = ({ ...props }) => {
 			{...props}
 		>
 			<path
-				fill="none"
-				stroke="currentColor"
 				strokeLinecap="round"
 				strokeLinejoin="round"
 				strokeWidth="1.5"
