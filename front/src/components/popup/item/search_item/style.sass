@@ -1,15 +1,23 @@
-@use "/src/style/color.sass" as * 
+@use "/src/style/color.sass" as *
 
-  
-.search-popup__item
+
+.search-popup__link
     margin: 10px 0
-    position: relative
     height: 90px
     display: flex
-    position: relative
+    border-radius: 6px
+    padding: 6px
+    transition: background-color 0.3s
+
+    &:hover
+        background-color: #111
 
     &:first-child
         margin-top: 20px
+
+.search-popup__link,
+.search-popup_skeleton
+    position: relative
 
     &:not(:last-child)::before
         content: ""
@@ -21,46 +29,39 @@
         background-color: $gray
 
 .search-popup__img-inner
-    position: relative
-    width: 60px
+    max-width: 60px
 
-.search-popup__img
-    width: 100%
-    height: 100%
-    vertical-align: middle
-    object-fit: cover 
-    border-radius: 6px
+    img
+        width: 100%
+        height: 100%
+        vertical-align: middle
+        object-fit: cover
+        border-radius: 6px
 
 .search-popup__content
     margin-left: 15px
     display: flex
     flex-direction: column
-    max-width: 280px
+    max-width: 370px
     height: 100%
+    width: 100%
     padding: 4px 0
-    
-.search-popup__title
-    font-size: 16px
-    overflow: hidden
-    display: -webkit-box
-    -webkit-line-clamp: 3
-    -webkit-box-orient: vertical
-    text-overflow: ellipsis
+    justify-content: space-between
+
+    h4
+        color: $gray
+        margin-top: 2px
 
 .search-popup__bottom
     margin-top: 10px
     font-size: 14px
     color: $gray
     font-weight: 600
+    display: flex
+    gap: 20px
+
+    li
+        position: relative
 
     li::first-letter
         text-transform: capitalize
-
-.search-popup__link
-    font-size: 14px
-    margin-top: auto
-    margin-bottom: 0
-    transition: color 0.3s
-
-    &:hover
-        color: $gray
