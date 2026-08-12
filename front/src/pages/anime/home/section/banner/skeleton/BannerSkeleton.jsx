@@ -12,14 +12,14 @@ export const BannerSkeleton = () => {
 						borderRadius: 20,
 					}}
 				/>
-				<div className="slide__inner">
+				<div className="banner__inner">
 					<Skeleton style={{ width: 250, height: 30 }} />
-					<ul className="slide-desc__list" style={{ gap: 20 }}>
+					<ul className="banner-desc__list" style={{ gap: 20 }}>
 						<Skeleton style={{ width: 70, height: 25 }} />
 						<Skeleton style={{ width: 70, height: 25 }} />
 						<Skeleton style={{ width: 70, height: 25 }} />
 					</ul>
-					<ul className="slide-desc__list" style={{ gap: 20 }}>
+					<ul className="banner-desc__list" style={{ gap: 20 }}>
 						<Skeleton style={{ width: 80, height: 25 }} />
 						<Skeleton style={{ width: 80, height: 25 }} />
 						<Skeleton style={{ width: 80, height: 25 }} />
