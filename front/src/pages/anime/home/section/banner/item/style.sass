@@ -1,0 +1,91 @@
+@use "/src/style/color.sass" as *
+
+
+.banner
+    position: relative
+    width: 100%
+    height: 100%
+    color: $white
+    font-size: 16px
+
+.banner__inner-rating
+    width: fit-content
+    margin-right: 15px
+    margin-left: auto
+    position: relative
+
+    p
+        font-size: 18px
+        font-weight: 900
+        position: absolute
+        top: 0
+        right: 50%
+        transform: translate(50%, 50%)
+
+    div
+        border-width: 40px 25px 20px
+        border-style: solid
+        border-color: $red $red transparent
+        opacity: 0.6
+
+.banner__bg
+    display: block
+    width: 100%
+    height: 100%
+    object-fit: cover
+    position: absolute
+    opacity: 0.1
+    transition: opacity 0.3s
+
+.banner__inner
+    position: absolute
+    top: 50%
+    left: 30px
+    right: 30px
+    transform: translate(0, -50%)
+
+.banner__title
+    font-weight: 900
+    line-height: 1.2
+    margin-bottom: 15px
+    max-width: 1200px
+    word-break: break-word
+    max-height: 70px
+    overflow: hidden
+
+    &::first-letter
+        text-transform: capitalize
+
+.banner-desc__list
+    display: flex
+    margin-top: 10px
+
+.banner-desc__item
+    position: relative
+    margin-right: 20px
+    font-weight: 600
+
+    &::first-letter
+        text-transform: capitalize
+
+.banner__description
+    margin: 15px 0
+    line-height: 1.2
+    color: $gray
+    overflow: hidden
+    display: -webkit-box
+    -webkit-line-clamp: 6
+    -webkit-box-orient: vertical
+    text-overflow: ellipsis
+    white-space: pre-line
+
+.banner__link
+    display: flex
+    justify-content: center
+    align-items: center
+    background-color: $sub-white
+    border-radius: 6px
+    font-weight: 900
+    font-size: 14px
+    justify-self: flex-start
+    padding: 4px 12px 4px 4px
