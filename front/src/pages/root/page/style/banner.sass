@@ -1,0 +1,31 @@
+@use "/src/style/color.sass" as *
+
+.root-banner__list
+    display: grid
+    grid-template-columns: repeat(2, 1fr)
+
+.root-header__btn
+    .btn-default
+        padding: 10px
+        border-radius: 6px
+        font-size: 18px
+        font-weight: 600
+        background-color: $t-red
+        color: $red
+
+        opacity: 0
+        visibility: hidden
+        pointer-events: none
+        transition: opacity 0.3s, visibility 0.3s
+
+    &_active
+        .btn-default
+            opacity: 1
+            visibility: visible
+            pointer-events: auto
+
+
+
+
+
+
