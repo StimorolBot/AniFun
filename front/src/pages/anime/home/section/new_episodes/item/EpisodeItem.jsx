@@ -1,5 +1,8 @@
 import { memo } from "react"
+
 import { Link } from "react-router-dom"
+
+import { Play } from "../../../../../../ui/icon/Play"
 
 import { useAutoFontSize } from "../../../../../../hook/useAutoFontSize"
 
@@ -12,46 +15,36 @@ export const EpisodeItem = memo(({ item, storageUrl, ...props }) => {
 		deps: [item.anime.title],
 	})
 	return (
-		<li className={"episode__item"} {...props}>
-			<img
-				className="episode__img"
-				src={`${storageUrl}/anime-${item.anime.uuid}/${item.anime.poster?.poster_uuid}.webp`}
-				loading="lazy"
-				alt="poster"
-			/>
+		<li className="episode__item" {...props}>
+			<Link className="episode__img" to={`/anime/${item.anime.alias}`}>
+				<img
+					src={`${storageUrl}/anime-${item.anime.uuid}/${item.anime.poster?.poster_uuid}.webp`}
+					onError={(e) => {
+						const img = e.currentTarget
+						img.onerror = null
+						img.src = `${storageUrl}/stickers/6093866d92af49f68292ba298b383eea.png`
+					}}
+					loading="lazy"
+					alt="poster"
+				/>
+			</Link>
 			<div className="episode__description">
-				<p className="episode__number">{item.number} эпизод</p>
-
-				<Link
-					className="episode__title"
-					to={`/anime/${item.anime.alias}`}
-					ref={ref}
-				>
+				<p className="episode__number">{item.episode_number} эпизод</p>
+				<h2 className="episode__title" ref={ref}>
 					{item.anime.title}
-				</Link>
+				</h2>
 				<ul className="episode__desc-list">
 					<li className="episode__desc-item point">
-						<Link to={`/anime`} state={item.anime.year}>
-							{item.anime.year}
-						</Link>
+						{item.anime.year}
 					</li>
 					<li className="episode__desc-item point">
-						<Link to={`/anime`} state={item.anime.season.value}>
-							{item.anime.season.label}
-						</Link>
+						{item.anime.season.label}
 					</li>
 					<li className="episode__desc-item point">
-						<Link to={`/anime`} state={item.anime.type.value}>
-							{item.anime.type.label}
-						</Link>
+						{item.anime.type.label}
 					</li>
 					<li className="episode__desc-item point">
-						<Link
-							to={`/anime`}
-							state={item.anime.age_restrict.value}
-						>
-							{item.anime.age_restrict.label}
-						</Link>
+						{item.anime.age_restrict.label}
 					</li>
 				</ul>
 				<ul className="episode__desc-list">
@@ -61,9 +54,7 @@ export const EpisodeItem = memo(({ item, storageUrl, ...props }) => {
 								className="episode__desc-item episode__desc-item_tag point"
 								key={index}
 							>
-								<Link to={`anime/genres/${genre.value}`}>
-									{genre.label}
-								</Link>
+								{genre}
 							</li>
 						)
 					})}
@@ -72,6 +63,7 @@ export const EpisodeItem = memo(({ item, storageUrl, ...props }) => {
 					className="episode__link"
 					to={`anime/${item.anime.alias}/episode/${item.uuid_episode}`}
 				>
+					<Play style={{ fill: "currentColor" }} />
 					Смотреть
 				</Link>
 			</div>
