@@ -1,19 +1,22 @@
+import { BtnDefault } from "../../../../../../ui/btn/BtnDefault"
+
 import "./style/switch_day.sass"
 
-
-export function SwitchDay({value, setValue}){
-    return(
-        <ul className="switch-container">
-            <li className={value === "today" ? "switch switch_active" : "switch"}
-                onClick={() => setValue("today")}
-            >
-                Сегодня
-            </li>
-            <li className={value === "tomorrow" ? "switch switch_active" : "switch"}
-                onClick={() => setValue("tomorrow")}
-            >
-                Завтра
-            </li>
-        </ul>
-    )
+export const SwitchDay = ({ value, setValue, ...props }) => {
+	return (
+		<div className="switch-day__container" {...props}>
+			<BtnDefault
+				callback={() => setValue("today")}
+				data-day-active={value === "today" && "today"}
+			>
+				Сегодня
+			</BtnDefault>
+			<BtnDefault
+				callback={() => setValue("tomorrow")}
+				data-day-active={value === "tomorrow" && "tomorrow"}
+			>
+				Завтра
+			</BtnDefault>
+		</div>
+	)
 }
