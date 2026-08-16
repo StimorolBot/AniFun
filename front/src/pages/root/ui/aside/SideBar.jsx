@@ -10,6 +10,7 @@ import { Images } from "../../../../ui/icon/Images"
 import { Img } from "../../../../ui/icon/Img"
 import { Logo } from "../../../../ui/icon/Logo"
 import { Msg } from "../../../../ui/icon/Msg"
+import { Relations } from "../../../../ui/icon/Relations"
 import { Settings } from "../../../../ui/icon/Settings"
 import { Terminal } from "../../../../ui/icon/Terminal"
 import { Usr } from "../../../../ui/icon/Usr"
@@ -112,6 +113,19 @@ export const SideBar = memo(() => {
 							>
 								<Watch />
 								<span>Расписание</span>
+							</NavLink>
+						</li>
+						<li className="sidebar__nav-item">
+							<NavLink
+								className={({ isActive }) =>
+									isActive
+										? "sidebar__link_active"
+										: "sidebar__link"
+								}
+								to={"/root/franchises"}
+							>
+								<Relations />
+								<span>Франшизы</span>
 							</NavLink>
 						</li>
 						<li className="sidebar__nav-item">
