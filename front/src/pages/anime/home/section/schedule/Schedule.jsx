@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react"
+
 import Masonry from "react-masonry-css"
 
 import { useQuery } from "@tanstack/react-query"
@@ -7,13 +8,12 @@ import { SwitchDay } from "./ui/SwitchDay"
 
 import { ScheduleItem } from "./item/ScheduleItem"
 
-import { LoaderSkeleton } from "./loader/LoaderSkeleton"
-
 import { WrapperSection } from "../../../wrapper/WrapperSection"
 
-import { useObserverImg } from "../../../../../hook/useObserverImgProvider"
+import { useObserverImg } from "../../../../../hook/UseObserverImgProvider"
 
 import { api } from "../../../../../api"
+import { ScheduleSkeleton } from "./skeleton/ScheduleSkeleton"
 
 import "./style.sass"
 
@@ -29,20 +29,18 @@ export const Schedule = ({ storageUrl }) => {
 
 	const sectionRef = useRef()
 	const transitionRef = useRef()
-
 	const [isView, setIsView] = useState(false)
-	const [schedule, setSchedule] = useState("today")
+	const [day, setDay] = useState("today")
 
-	const { data: scheduleData, isFetching } = useQuery({
-		queryKey: ["schedule-section-list-data", schedule],
+	const { data: scheduleData, isLoading } = useQuery({
+		queryKey: ["schedule-data", day],
 		staleTime: 1000 * 60 * 3,
 		enabled: isView,
 		queryFn: async () => {
 			return await api
-				.get("/schedules", { params: { schedule: schedule } })
+				.get("/schedules", { params: { day: day } })
 				.then((r) => r.data)
 		},
-		placeholderData: [],
 	})
 
 	useEffect(() => {
@@ -59,43 +57,46 @@ export const Schedule = ({ storageUrl }) => {
 					title={"Расписание релизов"}
 					link={"/anime/schedules"}
 					ref={transitionRef}
-					value={isFetching}
+					value={isLoading}
 				>
 					<>
-						<div className="switch-day__wrapper">
-							<SwitchDay
-								value={schedule}
-								setValue={setSchedule}
-							/>
-						</div>
+						<SwitchDay
+							value={day}
+							setValue={setDay}
+							style={{ marginLeft: "auto" }}
+						/>
 						<ul
 							className="schedules__list transition"
 							ref={transitionRef}
 						>
-							{isFetching ? (
-								<LoaderSkeleton count={4} />
-							) : scheduleData.length >= 1 ? (
-								<Masonry
-									breakpointCols={breakpoints}
-									className="masonry"
-									columnClassName="masonry__column"
-								>
-									{scheduleData?.map((item, index) => {
-										return (
-											<ScheduleItem
-												item={item}
-												storageUrl={storageUrl}
-												key={index}
-											/>
-										)
-									})}
-								</Masonry>
-							) : (
-								<li className="schedules__empty">
-									К сожалению, в ближайшее время новых серий
-									не ожидается :(
-								</li>
-							)}
+							<Masonry
+								breakpointCols={breakpoints}
+								className="masonry"
+								columnClassName="masonry__column"
+							>
+								{isLoading
+									? Array.from({ length: 4 }, (_, index) => (
+											<ScheduleSkeleton key={index} />
+										))
+									: scheduleData?.map((item) => {
+											return (
+												<ScheduleItem
+													item={item}
+													storageUrl={storageUrl}
+													key={item.uuid}
+												/>
+											)
+										})}
+							</Masonry>
+							{isLoading === false &&
+								scheduleData?.length === 0 && (
+									<li className="schedules__empty">
+										<img
+											src={`${storageUrl}/stickers/72b0282a20594165a6511c8fbd8c5dfd.png`}
+											alt="Нет результата"
+										/>
+									</li>
+								)}
 						</ul>
 					</>
 				</WrapperSection>
