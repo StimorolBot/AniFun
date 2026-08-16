@@ -4,18 +4,15 @@ import { useQuery } from "@tanstack/react-query"
 
 import { EpisodeItem } from "./item/EpisodeItem"
 
-import { LoaderSkeleton } from "./loader/LoaderSkeleton"
-
 import { WrapperSection } from "../../../wrapper/WrapperSection"
 
-import { useObserverImg } from "../../../../../hook/useObserverImgProvider"
+import { useObserverImg } from "../../../../../hook/UseObserverImgProvider"
 import { useViewport } from "../../../../../hook/useViewport"
 
 import { api } from "../../../../../api"
+import { EpisodeSkeleton } from "./skeleton/EpisodeSkeleton"
 
-import "./style.sass"
-
-const getLimit = (w) => {
+const getSize = (w) => {
 	if (w > 1300 || w < 960) return 6
 	return 4
 }
@@ -29,15 +26,15 @@ export const NewEpisodes = memo(({ storageUrl }) => {
 	const [isView, setIsView] = useState(false)
 
 	const widthViewport = useViewport()
-	const limit = getLimit(widthViewport)
+	const size = getSize(widthViewport)
 
-	const { data: episodeData, isFetching } = useQuery({
-		queryKey: ["new-episode-section", limit],
+	const { data: episodeData, isLoading } = useQuery({
+		queryKey: ["episode-data", size],
 		staleTime: 1000 * 60 * 3,
 		enabled: isView,
 		queryFn: async () => {
 			return await api
-				.get("/new-episode", { params: { limit: limit } })
+				.get("/episodes", { params: { size: size } })
 				.then((r) => r.data)
 		},
 	})
@@ -56,17 +53,23 @@ export const NewEpisodes = memo(({ storageUrl }) => {
 					title={"Новые эпизоды"}
 					link={"anime/new-episode"}
 					ref={transitionRef}
-					value={isFetching}
+					value={isLoading}
 				>
-					<div
-						className="container-new-episodes transition"
+					<ul
+						className="episode__list transition"
 						ref={transitionRef}
+						style={{
+							display: "flex",
+							justifyContent: "space-between",
+							width: "100%",
+							gap: 10,
+						}}
 					>
-						{isFetching ? (
-							<LoaderSkeleton count={limit} />
+						{isLoading ? (
+							<EpisodeSkeleton count={size} />
 						) : (
-							<ul className="episode__list">
-								{episodeData?.map((item, index) => {
+							<>
+								{episodeData?.items?.map((item, index) => {
 									return (
 										<EpisodeItem
 											item={item}
@@ -75,9 +78,9 @@ export const NewEpisodes = memo(({ storageUrl }) => {
 										/>
 									)
 								})}
-							</ul>
+							</>
 						)}
-					</div>
+					</ul>
 				</WrapperSection>
 			</div>
 		</section>
