@@ -15,15 +15,18 @@ export const ScheduleItem = ({ item, storageUrl, ...props }) => {
 			<Link className="schedule__link" to={`/anime/${item.anime.alias}`}>
 				<img
 					className="schedule__bg"
-					src={`${storageUrl}/anime-${item.anime.uuid}/${item.anime.poster.poster_uuid}.webp`}
+					src={`${storageUrl}/anime-${item.anime.uuid}/${item.anime.poster?.poster_uuid}.webp`}
+					onError={(e) => {
+						const img = e.currentTarget
+						img.onerror = null
+						img.src = `${storageUrl}/stickers/6093866d92af49f68292ba298b383eea.png`
+					}}
 					loading="lazy"
-					alt="preview"
+					alt="постер"
 				/>
-				<div className="schedule__title" ref={ref}>
-					{item.anime.title}
-				</div>
+				<h3 ref={ref}>{item.anime.title}</h3>
 				<p className="schedule__episode">
-					{`${item.episode_number} ${"Эпизод"}`}
+					{`${item.episode_number} ${"эпизод"}`}
 				</p>
 				<ul className="schedule__desc-list">
 					<li className="schedule__desc-item point">
@@ -40,13 +43,13 @@ export const ScheduleItem = ({ item, storageUrl, ...props }) => {
 					</li>
 				</ul>
 				<ul className="schedule__desc-list">
-					{item?.anime.genres?.slice(-2)?.map((genre, index) => {
+					{item?.anime.genres?.slice(-3)?.map((genre, index) => {
 						return (
 							<li
 								className="schedule__desc-item point"
 								key={index}
 							>
-								{genre.label}
+								{genre}
 							</li>
 						)
 					})}
