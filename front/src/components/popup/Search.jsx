@@ -3,6 +3,8 @@ import { memo, useRef } from "react"
 import { useForm } from "react-hook-form"
 import { CSSTransition, SwitchTransition } from "react-transition-group"
 
+import { api } from "../../api"
+import { SkeletonSearch } from "./skeleton/SkeletonSearch"
 import { useQuery } from "@tanstack/react-query"
 
 import { Close } from "../../ui/icon/Close"
@@ -16,9 +18,6 @@ import { SearchItem } from "./item/search_item/SearchItem"
 
 import { useClickOutside } from "../../hook/useClickOutside"
 import { useDebounce } from "../../hook/useDebounce"
-
-import { api } from "../../api"
-import { SkeletonSearch } from "./skeleton/SkeletonSearch"
 
 import "./style/search.sass"
 
