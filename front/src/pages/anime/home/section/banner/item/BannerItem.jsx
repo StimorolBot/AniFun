@@ -61,21 +61,17 @@ export const BannerItem = memo(({ item, storageUrl }) => {
 					})}
 				</ul>
 				<p className="banner__description">{item.anime.description}</p>
-				<Link
-					className="banner__link"
-					to={`/anime/${item.anime.alias}`}
-				>
-					<Play
-						style={{
-							width: 30,
-							height: 30,
-							fill: "currentColor",
-							marginRight: 5,
-						}}
-					/>
-					<span>Смотреть</span>
-				</Link>
 			</div>
+			<Link className="banner__link" to={`/anime/${item.anime.alias}`}>
+				<Play
+					style={{
+						width: 23,
+						height: 23,
+						fill: "currentColor",
+					}}
+				/>
+				<span>Смотреть</span>
+			</Link>
 		</div>
 	)
 })
