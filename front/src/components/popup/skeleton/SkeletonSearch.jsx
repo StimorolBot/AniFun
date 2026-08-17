@@ -14,6 +14,9 @@ export const SkeletonSearch = ({ count }) => {
 									justifyContent: "space-between",
 									height: 90,
 									marginTop: 20,
+									backgroundColor: "#201f1f",
+									padding: "0 10px",
+									borderRadius: 6,
 								}}
 							>
 								<div
