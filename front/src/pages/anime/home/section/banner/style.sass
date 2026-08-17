@@ -2,14 +2,12 @@
 
 
 .banner__container
-    aspect-ratio: 32 / 9
-    height: 380px
-    margin-top: 10px
     width: 100%
+    aspect-ratio: 35 / 9
 
 .swiper
     width: 100%
-    border-radius: 20px
+    border-radius: 10px
     height: 100%
 
     &:hover
@@ -17,29 +15,33 @@
             opacity: 0.2
 
 .swiper-pagination-bullet
-    width: 20px
-    height: 3px
-    border-radius: 4px
-    background-color: $black
+    width: 10px
+    height: 10px
+    border-radius: 50%
+    background-color: $accent
 
 .swiper-pagination-bullet-active
-    background-color: $red
+   background-color: $accent-active
 
 .banner__btn
     position: absolute
-    bottom: 30px
-    right: 30px
+    top: 50%
+    left: 0
+    padding: 0 14px
+    width: 100%
     z-index: 9
     display: flex
+    justify-content: space-between
     gap: 10px
 
     .btn-default
-        padding: 4px 6px
         border-radius: 6px
-        background-color: rgb(0 0 0 / 30%)
-        width: 30px
-        height: 30px
+        width: 35px
+        height: 35px
+        border-radius: 50%
+        background: $bg-secondary
+        border: 1px solid $border-light
 
         svg
-            width: 100%
-            height: 100%
+            width: 20px
+            height: 20px
