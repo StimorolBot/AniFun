@@ -45,7 +45,7 @@ CustomLogger(loger_name="s3_log", path=f"{PATH}/s3.log")
 
 auth_log = logging.getLogger("auth_logger")
 server_log = logging.getLogger("server_log")
-anime_log = logging.getLogger("anime_log")
+anime_log = logging.getLogger("anime_log") # ?
 admin_log = logging.getLogger("admin_log")
 user_log = logging.getLogger("user_log")
 s3_log = logging.getLogger("s3_log")

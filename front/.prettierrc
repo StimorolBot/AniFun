@@ -47,8 +47,13 @@
 		".*/providers/.*",
 		".*/hooks?/.*",
 
-		"^[./](?!.*\\.(css|sass|scss)$)",
-		".*\\.(css|sass|scss)$"
+		"^[./].*\\.jsx$",
+		"^[./].*\\.js$",
+
+		"^\\./style/reset\\.sass$",
+		"^\\./style/main\\.sass$",
+
+		"^[./].*\\.(css|sass|scss)$"
 	],
 
 	"importOrderSeparation": true,
