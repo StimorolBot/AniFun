@@ -2,6 +2,8 @@ import { memo, useEffect, useRef } from "react"
 
 import { CSSTransition, SwitchTransition } from "react-transition-group"
 
+import { api } from "../../../../../api"
+import { BannerSkeleton } from "./skeleton/BannerSkeleton"
 import { useQuery } from "@tanstack/react-query"
 import "swiper/css"
 import "swiper/css/navigation"
@@ -17,9 +19,6 @@ import { BtnDefault } from "../../../../../ui/btn/BtnDefault"
 import { BannerItem } from "./item/BannerItem"
 
 import { useViewport } from "../../../../../hook/useViewport"
-
-import { api } from "../../../../../api"
-import { BannerSkeleton } from "./skeleton/BannerSkeleton"
 
 import "./style.sass"
 
@@ -103,10 +102,10 @@ export const Banner = memo(({ storageUrl }) => {
 									)
 								})}
 								<div className="banner__btn">
-									<BtnDefault ref={prevRef}>
+									<BtnDefault ref={prevRef} isStroke={false}>
 										<ArrowLeft />
 									</BtnDefault>
-									<BtnDefault ref={nextRef}>
+									<BtnDefault ref={nextRef} isStroke={false}>
 										<ArrowRight />
 									</BtnDefault>
 								</div>
