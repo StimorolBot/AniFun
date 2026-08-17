@@ -18,7 +18,7 @@ export const SearchItem = memo(({ item, storageUrl, ...props }) => {
 		deps: [item.sut_title],
 	})
 	return (
-		<li {...props}>
+		<li className="search-popup__item" {...props}>
 			<Link className="search-popup__link" to={`/anime/${item?.alias}`}>
 				<div className="search-popup__img-inner">
 					<img
@@ -36,9 +36,9 @@ export const SearchItem = memo(({ item, storageUrl, ...props }) => {
 					<h3 ref={titleRef}>{item.title}</h3>
 					<h4 ref={subTitleRef}>{item?.sub_title}</h4>
 					<ul className="search-popup__bottom">
-						<li className="point">{item.type}</li>
-						<li className="point">{item.season}</li>
-						<li className="point">{item.year}</li>
+						<li>{item.type}</li>
+						<li>{item.season}</li>
+						<li>{item.year}</li>
 					</ul>
 				</div>
 			</Link>
