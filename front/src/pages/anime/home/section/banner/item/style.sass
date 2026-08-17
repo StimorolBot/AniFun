@@ -40,8 +40,8 @@
 .banner__inner
     position: absolute
     top: 50%
-    left: 70px
-    right: 70px
+    left: 30px
+    right: 30px
     transform: translate(0, -50%)
 
 .banner__title
@@ -63,11 +63,11 @@
 .banner-desc__item
     font-size: 15px
     margin-right: 10px
-    padding: 3px 8px
-    border: 1px solid $border-light
+    padding: 4px 10px
     border-radius: 4px
-    background-color: rgba($disabled, 0.5)
+    background-color: rgba($disabled, 0.7)
     font-weight: 600
+    color: rgba($primary, 0.8)
 
     &::first-letter
         text-transform: capitalize
@@ -78,18 +78,21 @@
     color: $muted
     overflow: hidden
     display: -webkit-box
-    -webkit-line-clamp: 6
+    -webkit-line-clamp: 5
     -webkit-box-orient: vertical
     text-overflow: ellipsis
     white-space: pre-line
 
 .banner__link
+    position: absolute
+    bottom: 50px
+    left: 30px
     display: flex
     justify-content: center
     align-items: center
-    background-color: rgba($disabled, 0.8)
+    background-color: rgba($accent, 0.5)
     border-radius: 6px
     font-weight: 900
-    font-size: 14px
+    font-size: 16px
     justify-self: flex-start
-    padding: 4px 12px 4px 4px
+    padding: 8px 18px 8px 8px
