@@ -1,9 +1,10 @@
 import { memo, useEffect, useRef, useState } from "react"
 
 import Skeleton from "react-loading-skeleton"
-import { Link, useNavigate } from "react-router-dom"
+import { Link, NavLink, useNavigate } from "react-router-dom"
 import { CSSTransition } from "react-transition-group"
 
+import { api } from "../../api"
 import { useQuery } from "@tanstack/react-query"
 
 import { Logo } from "../../ui/icon/Logo"
@@ -11,14 +12,9 @@ import { Random } from "../../ui/icon/Random"
 import { Search as SearchIcon } from "../../ui/icon/Search"
 import { Usr } from "../../ui/icon/Usr"
 
-import { BtnBurger } from "../../ui/btn/BtnBurger"
 import { BtnDefault } from "../../ui/btn/BtnDefault"
 
-import { AsideMobileMenu } from "../../ui/aside/AsideMobileMenu"
-
 import { Search } from "../popup/Search"
-
-import { api } from "../../api"
 
 import "./style/header.sass"
 
@@ -28,7 +24,6 @@ export const Header = memo(() => {
 	const navigate = useNavigate()
 
 	const [isShowPopup, setIsShowPopup] = useState(false)
-	const [isShowMenu, setIsShowMenu] = useState(false)
 
 	const { data: userData, isLoading } = useQuery({
 		queryKey: ["user-data"],
@@ -64,19 +59,59 @@ export const Header = memo(() => {
 				<div className="container">
 					<div className="header__inner">
 						<div className="header__logo">
-							<Link className="header__link" to={"/"}>
+							<NavLink className="header__link" to={"/"}>
 								<Logo />
-							</Link>
+							</NavLink>
 						</div>
 						<nav className="header__navigation">
 							<ul className="header__list">
 								<li className="header__list-item">
-									<Link to={"/anime"}>Аниме</Link>
+									<NavLink
+										className={({ isActive }) =>
+											isActive
+												? "header-nav-link header-nav-link_active"
+												: "header-nav-link"
+										}
+										to={"/"}
+									>
+										Главная
+									</NavLink>
 								</li>
 								<li className="header__list-item">
-									<Link to={"/anime/schedules"}>
+									<NavLink
+										className={({ isActive }) =>
+											isActive
+												? "header-nav-link header-nav-link_active"
+												: "header-nav-link"
+										}
+										to={"/anime"}
+									>
+										Аниме
+									</NavLink>
+								</li>
+								<li className="header__list-item">
+									<NavLink
+										className={({ isActive }) =>
+											isActive
+												? "header-nav-link header-nav-link_active"
+												: "header-nav-link"
+										}
+										to={"/anime/schedules"}
+									>
 										Расписание
-									</Link>
+									</NavLink>
+								</li>
+								<li className="header__list-item">
+									<NavLink
+										className={({ isActive }) =>
+											isActive
+												? "header-nav-link_active"
+												: "header-nav-link"
+										}
+										to={"/anime/genres"}
+									>
+										Жанры
+									</NavLink>
 								</li>
 							</ul>
 						</nav>
@@ -139,12 +174,6 @@ export const Header = memo(() => {
 									</Link>
 								)}
 							</li>
-							<li className="header__list-item header-burger">
-								<BtnBurger
-									state={isShowMenu}
-									callback={() => setIsShowMenu((s) => !s)}
-								/>
-							</li>
 						</ul>
 					</div>
 				</div>
@@ -164,7 +193,6 @@ export const Header = memo(() => {
 					storageUrl={storageUrl}
 				/>
 			</CSSTransition>
-			<AsideMobileMenu isShow={isShowMenu} setIsShow={setIsShowMenu} />
 		</>
 	)
 })
