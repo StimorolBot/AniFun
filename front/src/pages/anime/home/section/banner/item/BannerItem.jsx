@@ -2,11 +2,11 @@ import { memo } from "react"
 
 import { Link } from "react-router-dom"
 
+import { pluralize } from "../../../../../../utils/text"
+
 import { Play } from "../../../../../../ui/icon/Play"
 
 import { useAutoFontSize } from "../../../../../../hook/useAutoFontSize"
-
-import { pluralize } from "../../../../../../utils/text"
 
 import "./style.sass"
 
@@ -34,13 +34,11 @@ export const BannerItem = memo(({ item, storageUrl }) => {
 					{item.anime.title}
 				</h2>
 				<ul className="banner-desc__list">
-					<li className="banner-desc__item point">
+					<li className="banner-desc__item">
 						{item.anime.season.label}
 					</li>
-					<li className="banner-desc__item point">
-						{item.anime.year}
-					</li>
-					<li className="banner-desc__item point">
+					<li className="banner-desc__item">{item.anime.year}</li>
+					<li className="banner-desc__item">
 						{item.anime.total_episode &&
 							`${item.anime.total_episode} ${pluralize(
 								item.anime.episode_count,
@@ -49,14 +47,14 @@ export const BannerItem = memo(({ item, storageUrl }) => {
 								"эпизодов",
 							)}`}
 					</li>
-					<li className="banner-desc__item point">
+					<li className="banner-desc__item">
 						{item.anime.age_restrict.label}
 					</li>
 				</ul>
 				<ul className="banner-desc__list">
 					{item?.anime.genres?.map((genre, index) => {
 						return (
-							<li className="banner-desc__item point" key={index}>
+							<li className="banner-desc__item" key={index}>
 								{genre}
 							</li>
 						)
