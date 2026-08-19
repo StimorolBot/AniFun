@@ -86,6 +86,26 @@ export const Footer = memo(() => {
 							</Link>
 						</li>
 					</ul>
+					<div>
+						<li
+							className="footer__item_title"
+							style={{ textAlign: "center" }}
+						>
+							Мы в сети
+						</li>
+						<ul className="footer__social-list">
+							<li className="footer__social-item">
+								<Link className="footer__social-link" to={"#"}>
+									<Discord />
+								</Link>
+							</li>
+							<li className="footer__social-item">
+								<Link className="footer__social-link" to={"#"}>
+									<Telegram />
+								</Link>
+							</li>
+						</ul>
+					</div>
 				</div>
 				<span className="footer__separation" />
 				<div className="footer__bottom">
@@ -93,20 +113,8 @@ export const Footer = memo(() => {
 						Весь материал на сайте представлен исключительно для
 						домашнего ознакомительного просмотра
 					</p>
-					<ul className="footer__social-list">
-						<li className="footer__social-item">
-							<Link className="footer__social-link" to={"#"}>
-								<Discord />
-							</Link>
-						</li>
-						<li className="footer__social-item">
-							<Link className="footer__social-link" to={"#"}>
-								<Telegram />
-							</Link>
-						</li>
-					</ul>
+					<p className="footer__design">RU • Russia</p>
 				</div>
-				<p className="footer__design">RU • Russia</p>
 			</div>
 		</footer>
 	)
