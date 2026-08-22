@@ -66,7 +66,6 @@ export const Banner = memo(({ storageUrl }) => {
 							<BannerSkeleton />
 						) : (
 							<Swiper
-								className="mySwiper"
 								id="banner-custom"
 								slidesPerView={1}
 								spaceBetween={30}
