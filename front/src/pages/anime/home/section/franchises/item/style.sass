@@ -1,59 +1,38 @@
-@use "/src/style/color.sass" as * 
+@use "/src/style/color.sass" as *
+@use "/src/style/fonts_.sass" as *
 
 
-.franchises__link
+.franchise__link
     display: flex
-    background-color: $sub-gray
-    border-radius: 8px
+    background-color: rgba($bg-secondary, 0.7)
+    border-radius: 6px
     overflow: hidden
-    position: relative
-    aspect-ratio: 6 / 3
+    width: 370px
 
     &:hover
-        .franchises__bg-container
-            opacity: 0.7
+        .franchise__img
+            img
+                opacity: 0.9
 
-.franchises__bg-container
-    min-width: 160px
-    transition: opacity 0.3s
-    opacity: 0.4
-    height: 100%
-    position: relative
-    border-radius: 10px
+.franchise__img
+    max-width: 180px
 
-.franchises__bg
-    height: 100%
-    display: block
-    width: 100%
-    object-fit: cover
+    img
+        width: 100%
+        height: 100%
+        object-fit: cover
+        border-radius: 6px
+        opacity: 0.6
+        transition: opacity 0.3s
 
-.franchises__container
-    width: 100%
-    padding: 10px 18px
+.franchise__info
     display: flex
     flex-direction: column
-    align-items: flex-start
+    padding: 10px 16px
 
-.franchises__desc_title
-    width: 100%
-    max-width: 500px
-    min-width: 0
-    white-space: break-word
-    overflow: hidden
-    font-weight: 500
-
-.franchises__desc-list
+.franchise__item-bottom
     margin-top: auto
     margin-bottom: 0
-
-.franchises__desc-item
+    font-family: $font-number
+    color: $muted
     font-size: 14px
-    
-    .point + .point
-        position: relative
-        margin-left: 15px
-
-    .point::before
-        width: 5px
-        height: 5px
-        left: -8px
