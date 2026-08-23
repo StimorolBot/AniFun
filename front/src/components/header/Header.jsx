@@ -73,6 +73,7 @@ export const Header = memo(() => {
 												: "header-nav-link"
 										}
 										to={"/"}
+										end
 									>
 										Главная
 									</NavLink>
@@ -85,6 +86,7 @@ export const Header = memo(() => {
 												: "header-nav-link"
 										}
 										to={"/anime"}
+										end
 									>
 										Аниме
 									</NavLink>
@@ -97,6 +99,7 @@ export const Header = memo(() => {
 												: "header-nav-link"
 										}
 										to={"/anime/schedules"}
+										end
 									>
 										Расписание
 									</NavLink>
@@ -105,10 +108,11 @@ export const Header = memo(() => {
 									<NavLink
 										className={({ isActive }) =>
 											isActive
-												? "header-nav-link_active"
+												? "header-nav-link header-nav-link_active"
 												: "header-nav-link"
 										}
 										to={"/anime/genres"}
+										end
 									>
 										Жанры
 									</NavLink>
