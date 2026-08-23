@@ -1,46 +1,24 @@
 @use "/src/style/color.sass" as *
-    
 
-.genres__item
-    position: relative
-    border-radius: 10px
-    overflow: hidden
-    width: 100%
-    aspect-ratio: 2 / 3
-
-    &:hover
-        .genres__bg
-            opacity: 0.7
 
 .genres__item-link
     display: flex
     justify-content: center
+    border-radius: 10px
+    gap: 10px
+    background-color: rgba($bg-secondary, 0.7)
+    padding: 12px 6px
+    height: fit-content
 
-.genres__bg
-    transition: opacity 0.3s
-    height: 100%
-    width: 100%
-    object-fit: cover
-    opacity: 0.3
+    &:hover
+        svg
+            color: $accent
 
-.genres__desc-list
-    position: absolute
-    bottom: 20px
-    width: 100%
-    text-align: center
-    transition: color 0.3s
-    color: $white
+    svg
+        width: 22px
+        height: 22px
+        color: $accent-dark
+        transition: color 0.3s
 
-    &::first-letter
+    h4::first-letter
         text-transform: capitalize
-
-.genres__desc-item
-    font-weight: 600
-    opacity: 0.6
-    font-size: 14px
-
-.genres__desc_title
-    font-size: 16px
-    font-weight: 900
-    opacity: 1
-    
