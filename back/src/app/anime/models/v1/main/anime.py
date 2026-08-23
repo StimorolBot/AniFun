@@ -48,7 +48,6 @@ class AnimeTable(Base):
     total_episode: Mapped[int] = mapped_column(CheckConstraint("total_episode > 1 AND total_episode < 1000"))
 
     date_add: Mapped[datetime] = mapped_column(default=get_unc_now, server_default=func.now())
-    is_origin: Mapped[bool] = mapped_column(default=True, server_default=true())
 
     type: Mapped[str] = mapped_column(ForeignKey("type_sub_table.value"))
     season: Mapped[str] = mapped_column(ForeignKey("season_sub_table.value"))
