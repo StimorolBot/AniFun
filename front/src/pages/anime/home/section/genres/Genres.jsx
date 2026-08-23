@@ -1,44 +1,29 @@
 import { memo, useEffect, useRef, useState } from "react"
 
+import { api } from "../../../../../api"
+import { GenreSkeleton } from "./skeleton/GenreSkeleton"
 import { useQuery } from "@tanstack/react-query"
+import { SwiperSlide } from "swiper/react"
 
 import { GenresItem } from "./item/GenresItem"
 
-import { LoaderSkeleton } from "./loader/LoaderSkeleton"
-
 import { WrapperSection } from "../../../wrapper/WrapperSection"
 
-import { useObserverImg } from "../../../../../hook/useObserverImgProvider"
-import { useViewport } from "../../../../../hook/useViewport"
+import { useObserverImg } from "../../../../../hook/UseObserverImgProvider"
 
-import { api } from "../../../../../api"
-
-import "./style.sass"
-
-const getLimit = (w) => {
-	if (w > 1300) return 6
-	return 4
-}
-
-export const Genres = memo(({ storageUrl }) => {
+export const Genres = memo(() => {
 	const { observe } = useObserverImg()
 
 	const sectionRef = useRef()
-	const transitionRef = useRef()
 
 	const [isView, setIsView] = useState(false)
 
-	const widthViewport = useViewport()
-	const limit = getLimit(widthViewport)
-
-	const { data: genresData, isFetching } = useQuery({
-		queryKey: ["genres-section-list-data", limit],
+	const { data: genresData, isLoading } = useQuery({
+		queryKey: ["genres-data"],
 		enabled: isView,
 		staleTime: 1000 * 60 * 3,
 		queryFn: async () => {
-			return await api
-				.get("/genres", { params: { limit: limit } })
-				.then((r) => r.data)
+			return await api.get("/genres").then((r) => r.data)
 		},
 	})
 
@@ -50,31 +35,29 @@ export const Genres = memo(({ storageUrl }) => {
 	}, [observe])
 
 	return (
-		<section className="genres" ref={sectionRef}>
+		<section ref={sectionRef}>
 			<div className="container">
 				<WrapperSection
 					title={"Жанры"}
 					link={"/anime/genres"}
-					ref={transitionRef}
-					value={isFetching}
+					isLoading={isLoading}
+					linkText={"Все жанры"}
+					slidesPerView={5}
+					spaceBetween={18}
 				>
-					<div className="transition" ref={transitionRef}>
-						{isFetching ? (
-							<LoaderSkeleton count={limit} />
-						) : (
-							<ul className="genres__list">
-								{genresData?.map((item, index) => {
-									return (
-										<GenresItem
-											item={item}
-											storageUrl={storageUrl}
-											key={index}
-										/>
-									)
-								})}
-							</ul>
-						)}
-					</div>
+					{isLoading ? (
+						<GenreSkeleton count={5} />
+					) : (
+						<>
+							{genresData?.items?.map((item, index) => {
+								return (
+									<SwiperSlide key={index}>
+										<GenresItem item={item} />
+									</SwiperSlide>
+								)
+							})}
+						</>
+					)}
 				</WrapperSection>
 			</div>
 		</section>
