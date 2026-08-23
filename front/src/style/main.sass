@@ -1,5 +1,5 @@
-@use "/src/style/color.sass" as * 
-    
+@use "/src/style/color.sass" as *
+@use "/src/style/fonts_.sass" as *
 
 html
     box-sizing: border-box
@@ -29,7 +29,7 @@ img:not([src])
     justify-content: space-between
 
 .container
-    max-width: 1420px
+    max-width: 1600px
     padding: 10px
     margin: 0 auto
     position: relative
@@ -51,19 +51,20 @@ img:not([src])
     overflow: hidden
 
 body
-    background-color: $sub-black
-    color: $white
+    background-color: $bg-primary
+    color: $primary
     font-size: 18px
-    font-family: "Jura", sans-serif
+    font-family: $font-primary
     line-height: normal
     cursor: default
+    overflow-x: hidden
 
     &::-webkit-scrollbar
         width: 10px
 
     &::-webkit-scrollbar-track
         background: linear-gradient(#1E1E1E, #2c2c2c)
-    
+
     &::-webkit-scrollbar-thumb
         background-color: #525151
         border-radius: 10px
@@ -77,22 +78,16 @@ body
     opacity: 1
     visibility: visible
     transition: opacity 0.3s, visibility 0.3s
-  
+
 .transition-exit
     opacity: 1
     visibility: visible
-    
-.transition-exit-active 
+
+.transition-exit-active
     opacity: 0
     visibility: hidden
-    transition: opacity 0.3s, visibility 0.3s 
+    transition: opacity 0.3s, visibility 0.3s
 
-.point + .point::before
-    content: ""
-    position: absolute
-    top: 7px
-    left: -11px
-    width: 6px
-    height: 6px
-    background-color: $gray
-    border-radius: 50%
+.skeleton__background
+    --base-color: #181818 !important
+    --highlight-color: #232323 !important
