@@ -2,7 +2,7 @@ import { memo } from "react"
 
 import { NavLink } from "react-router-dom"
 
-import "./style/sub_nav.sass"
+import "./style/main_nav.sass"
 
 export const MainNav = memo(({ subNav }) => {
 	return (
