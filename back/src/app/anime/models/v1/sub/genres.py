@@ -1,5 +1,4 @@
 from typing import TYPE_CHECKING
-from uuid import UUID
 
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -20,12 +19,8 @@ class GenresSubTable(Base):
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     label: Mapped[str] = mapped_column(unique=True)
     value: Mapped[str] = mapped_column(unique=True)
-    uuid_poster: Mapped[UUID | None] = mapped_column()
 
-    genres_anime_rs: Mapped["GenresTable"] = relationship(
-        back_populates="genres_rs",
-        foreign_keys="[GenresTable.value]"
-    )
+    genre_anime_rs: Mapped["GenresTable"] = relationship(back_populates="genre_rs")
 
     @classmethod
     async def fill(cls, session: AsyncSession):
@@ -34,7 +29,7 @@ class GenresSubTable(Base):
                 session=session,
                 table=cls,
                 data={
-                    "label": data.value.get("label"),
-                    "value": data.value.get("value"),
+                    "label": data.label,
+                    "value": data.value,
                 }
             )
