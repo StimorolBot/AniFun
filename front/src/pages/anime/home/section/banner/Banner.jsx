@@ -3,7 +3,6 @@ import { memo, useEffect, useRef } from "react"
 import { CSSTransition, SwitchTransition } from "react-transition-group"
 
 import { api } from "../../../../../api"
-import { BannerSkeleton } from "./skeleton/BannerSkeleton"
 import { useQuery } from "@tanstack/react-query"
 import "swiper/css"
 import "swiper/css/navigation"
@@ -17,6 +16,8 @@ import { ArrowRight } from "../../../../../ui/icon/ArrowRight"
 import { BtnDefault } from "../../../../../ui/btn/BtnDefault"
 
 import { BannerItem } from "./item/BannerItem"
+
+import { BannerSkeleton } from "./skeleton/BannerSkeleton"
 
 import { useViewport } from "../../../../../hook/useViewport"
 
