@@ -1,33 +1,23 @@
 import { memo } from "react"
+
 import { Link } from "react-router-dom"
 
-import { getPostfix } from "../../../../utils/utils"
+import { genres } from "../../../../../../ui/icon/genres/genres"
 
 import "./style.sass"
 
-export const GenresItem = memo(({ item, storageUrl, ...props }) => {
+export const GenresItem = memo(({ item, ...props }) => {
+	const GenreIcon = genres?.[item.value]
+
 	return (
-		<li className={"genres__item"} {...props}>
+		<li {...props}>
 			<Link
 				className="genres__item-link"
 				to={`/anime/genres/${item.value}`}
 			>
-				<div className="genres__bg-container">
-					<img
-						className="genres__bg"
-						src={`${storageUrl}/img-genres-poster/${item.poster_uuid}.webp`}
-						loading="lazy"
-						alt="genres-bg"
-					/>
-				</div>
-				<ul className="genres__desc-list">
-					<li className="genres__desc-item genres__desc_title">
-						{item.label}
-					</li>
-					<li className="genres__desc-item">
-						{`${item.genres_count} ${getPostfix("релиз", item.genres_count)}`}
-					</li>
-				</ul>
+				{GenreIcon && <GenreIcon />}
+				<h4>{item.label}</h4>
+				<p>{item.genres_count}</p>
 			</Link>
 		</li>
 	)
