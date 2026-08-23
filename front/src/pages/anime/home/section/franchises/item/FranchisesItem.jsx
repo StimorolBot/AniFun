@@ -1,50 +1,69 @@
 import { memo } from "react"
+
 import { Link } from "react-router-dom"
 
-import { useAutoFontSize } from "../../../../../../hook/useAutoFontSize"
+import { pluralize } from "../../../../../../utils/text"
 
-import { getPostfix } from "../../../../utils/utils"
+import { useAutoFontSize } from "../../../../../../hook/useAutoFontSize"
 
 import "./style.sass"
 
 export const FranchisesItem = memo(({ item, storageUrl, ...props }) => {
 	const ref = useAutoFontSize({
-		minSize: 18,
-		maxSize: 26,
+		minSize: 12,
+		maxSize: 18,
 		deps: [item?.title],
 	})
 	return (
-		<li className="franchises__item" {...props}>
+		<li {...props}>
 			<Link
-				className="franchises__link"
+				className="franchise__link"
 				to={`anime/franchises/${item?.sequel_uuid}`}
 			>
-				<div className="franchises__bg-container">
+				<div className="franchise__img">
 					<img
-						className="franchises__bg"
-						src={`${storageUrl}/anime-${item.title_uuid}/${item.poster_uuid}.webp`}
+						src={`${storageUrl}/anime-${item.title_uuid}/${item.franchise_uuid}.webp`}
+						onError={(e) => {
+							const img = e.currentTarget
+							img.onerror = null
+							img.src = `${storageUrl}/stickers/6093866d92af49f68292ba298b383eea.png`
+						}}
 						loading="lazy"
-						alt="franchises"
+						alt="постер"
 					/>
 				</div>
-				<div className="franchises__container">
-					<div className="franchises__desc_title" ref={ref}>
-						{item?.title}
+				<ul className="franchise__info">
+					<li className="franchise__item-top">
+						<h3 ref={ref}>{item?.franchise_name}</h3>
+					</li>
+					<div className="franchise__item-bottom">
+						<li>2 сезона </li>
+						<li style={{ margin: "2px 0" }}>
+							<span>{item.episode_count} </span>
+							<span>
+								{pluralize(
+									item.episode_count,
+									"серия",
+									"серии",
+									"серий",
+								)}
+							</span>
+						</li>
+						{item?.film_count && (
+							<li>
+								<span>{item?.film_count}</span>
+								<span>
+									{pluralize(
+										item.film_count,
+										"фильм",
+										"фильма",
+										"фильмов",
+									)}
+								</span>
+							</li>
+						)}
 					</div>
-					<ul className="franchises__desc-list">
-						<li className="franchises__desc-item">
-							{item.start_year} - {item.end_year}
-						</li>
-						<li className="franchises__desc-item">
-							<span className="point">
-								{`${item.seasons_count} ${getPostfix("сезон", item.seasons_count)}`}
-							</span>
-							<span className="point">
-								{`${item.total_episodes} ${getPostfix("эпизод", item.total_episodes)}`}
-							</span>
-						</li>
-					</ul>
-				</div>
+				</ul>
 			</Link>
 		</li>
 	)
