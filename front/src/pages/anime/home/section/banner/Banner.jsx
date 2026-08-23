@@ -40,13 +40,17 @@ export const Banner = memo(({ storageUrl }) => {
 	})
 
 	useEffect(() => {
-		if (!swiperRef.current) return
+		const swiper = swiperRef.current
 
-		swiperRef.current.params.navigation.prevEl = prevRef.current
-		swiperRef.current.params.navigation.nextEl = nextRef.current
+		if (!swiper) return
 
-		swiperRef.current.navigation.init()
-		swiperRef.current.navigation.update()
+		swiper.navigation.destroy()
+
+		swiper.params.navigation.prevEl = prevRef.current
+		swiper.params.navigation.nextEl = nextRef.current
+
+		swiper.navigation.init()
+		swiper.navigation.update()
 	}, [bannerData])
 
 	return (
