@@ -1,42 +1,44 @@
 import Skeleton from "react-loading-skeleton"
 
-export const ScheduleSkeleton = () => {
+export const ScheduleSkeleton = ({ count }) => {
 	return (
-		<li className="schedule__item">
-			<div className="schedule__link">
-				<Skeleton
-					className="skeleton__background"
-					style={{ width: 120, height: 20 }}
-				/>
-				<Skeleton
-					className="skeleton__background"
-					style={{ width: 100, height: 14 }}
-				/>
-				<ul className="schedule__desc-list">
-					<Skeleton
-						className="skeleton__background"
-						style={{ width: 40, height: 14 }}
-					/>
-					<Skeleton
-						className="skeleton__background"
-						style={{ width: 40, height: 14 }}
-					/>
-					<Skeleton
-						className="skeleton__background"
-						style={{ width: 40, height: 14 }}
-					/>
-				</ul>
-				<ul className="schedule__desc-list">
-					<Skeleton
-						className="skeleton__background"
-						style={{ width: 60, height: 14 }}
-					/>
-					<Skeleton
-						className="skeleton__background"
-						style={{ width: 60, height: 14 }}
-					/>
-				</ul>
-			</div>
-		</li>
+		<>
+			{Array(count)
+				.fill(0)
+				.map((_, index) => {
+					return (
+						<li className="schedule__item" key={index}>
+							<div className="schedule__link">
+								<div className="schedule__container">
+									<Skeleton
+										className="skeleton__background"
+										style={{ width: 40, height: 60 }}
+									/>
+									<div>
+										<Skeleton
+											className="skeleton__background"
+											style={{ width: 70, height: 14 }}
+										/>
+										<Skeleton
+											className="skeleton__background"
+											style={{ width: 40, height: 14 }}
+										/>
+									</div>
+								</div>
+								<div>
+									<Skeleton
+										className="skeleton__background"
+										style={{ width: 80, height: 14 }}
+									/>
+									<Skeleton
+										className="skeleton__background"
+										style={{ width: 80, height: 14 }}
+									/>
+								</div>
+							</div>
+						</li>
+					)
+				})}
+		</>
 	)
 }
