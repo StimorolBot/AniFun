@@ -1,0 +1,25 @@
+@use "/src/style/color.sass" as *
+
+
+.rating-title__list
+    display: flex
+    justify-content: flex-start
+    margin-bottom: 5px
+
+    li:not(:has(.rating-star_active))
+        &:has(~ li:hover),
+        &:hover
+            .rating-star
+                color: $accent-dark
+
+    .input-radio__label
+        padding: 0
+
+.rating-star
+    width: 25px
+    height: 25px
+    color: $disabled
+    transition: color 0.3s
+
+    &_active
+        color: $accent
