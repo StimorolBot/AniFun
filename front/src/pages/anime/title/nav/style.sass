@@ -1,34 +1,27 @@
-@use "/src/style/color.sass" as * 
+@use "/src/style/color.sass" as *
 
 
-.title-nav
-    margin-top: 10px
-    margin-bottom: 25px
-    padding: 10px 0
-    border-bottom: 1px solid $gray
-    
 .title-nav__list
+    margin-top: 25px
     display: flex
-    align-items: center
     gap: 20px
-    justify-content: start
-    font-size: 18px
-    font-weight: 900
-    position: relative
+    padding: 10px 0
+    width: fit-content
 
-.title-nav__btn
-    font-family: "Jura", sans-serif
-    line-height: normal
-    font-size: 18px
+.title-nav-link
+    display: flex
     font-weight: 900
-    color: $white
+    padding-bottom: 10px
 
-.title-active-btn
-    position: absolute
-    bottom: -11px
-    left: 0
-    height: 3px
-    background-color: $red
-    display: block
-    transition: width 0.3s, transform 0.3s
-    border-radius: 8px
+    svg
+        fill: $primary
+        color: $primary
+        margin-right: 5px
+
+    &_active
+        color: $accent
+        border-bottom: 1px solid $accent
+
+        svg
+            fill: $accent
+            color: $accent
