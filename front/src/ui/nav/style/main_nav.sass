@@ -1,0 +1,36 @@
+@use "/src/style/color.sass" as *
+@use "/src/style/fonts_.sass" as *
+
+
+.sub-nav
+    font-family: $font-heading
+    font-size: 14px
+    margin: 10px 0
+
+.sub-nav__list
+    display: flex
+    column-gap: 20px
+
+.sub-nav__item
+    position: relative
+    color: $muted
+
+    &:last-child
+        pointer-events: none
+        cursor: default
+        color: $primary
+        overflow: hidden
+        display: -webkit-box
+        -webkit-line-clamp: 1
+        -webkit-box-orient: vertical
+        text-overflow: ellipsis
+        max-width: 500px
+
+    &::after
+        position: absolute
+        content: ">"
+        color: $muted
+        top: 50%
+        transform: translateY(-50%)
+        font-size: 16px
+        right: -15px
