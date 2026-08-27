@@ -1,0 +1,45 @@
+@use "/src/style/color.sass" as *
+@use "/src/style/fonts_.sass" as *
+
+.rating__stat-list
+    margin-top: 20px
+
+    li
+        display: flex
+        gap: 10px
+        justify-content: space-between
+        font-family: $font-number
+        color: $muted
+        align-items: center
+
+        progress
+            height: 6px
+            appearance: none
+
+            &::-webkit-progress-bar
+                border-radius: 4px
+                overflow: hidden
+                background-color: $disabled
+
+            &::-webkit-progress-value
+                background-color: $accent
+                border-radius: 4px
+
+        div
+            display: flex
+            gap: 5px
+            justify-content: space-between
+            width: 40px
+            height: 25px
+
+            span
+                width: 25px
+
+            svg
+                width: 100%
+                color: $accent
+
+        p
+            width: 45px
+
+
