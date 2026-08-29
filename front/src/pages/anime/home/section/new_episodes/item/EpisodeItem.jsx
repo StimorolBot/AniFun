@@ -15,7 +15,7 @@ export const EpisodeItem = memo(({ item, storageUrl, ...props }) => {
 
 	return (
 		<li className="episode__item" {...props}>
-			<Link className="episode__img" to={`/anime/${item.alias}`}>
+			<Link className="episode__img" to={`/anime/${item.alias}/episodes`}>
 				<img
 					src={`${storageUrl}/anime-${item.title_uuid}/${item?.poster_uuid}.webp`}
 					onError={(e) => {
