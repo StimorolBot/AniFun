@@ -18,7 +18,7 @@ export const FranchisesItem = memo(({ item, storageUrl, ...props }) => {
 		<li {...props}>
 			<Link
 				className="franchise__link"
-				to={`anime/franchises/${item?.sequel_uuid}`}
+				to={`anime/franchises/${item?.franchise_uuid}`}
 			>
 				<div className="franchise__img">
 					<img
