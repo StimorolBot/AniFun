@@ -1,46 +1,32 @@
 import { memo, useEffect, useRef, useState } from "react"
 
+import { api } from "../../../../../api"
 import { useQuery } from "@tanstack/react-query"
+import { SwiperSlide } from "swiper/react"
 
 import { FranchisesItem } from "./item/FranchisesItem"
 
-import { LoaderSkeleton } from "./loader/LoaderSkeleton"
+import { FranchisesSkeleton } from "./skeleton/FranchisesSkeleton"
 
 import { WrapperSection } from "../../../wrapper/WrapperSection"
 
-import { useObserverImg } from "../../../../../hook/useObserverImgProvider"
-import { useViewport } from "../../../../../hook/useViewport"
-
-import { api } from "../../../../../api"
-
-import "./style.sass"
-
-const getLimit = (w) => {
-	if (w > 1300) return 3
-	return 2
-}
+import { useObserverImg } from "../../../../../hook/UseObserverImgProvider"
 
 export const Franchises = memo(({ storageUrl }) => {
 	const { observe } = useObserverImg()
-
 	const sectionRef = useRef()
-	const transitionRef = useRef()
 
 	const [isView, setIsView] = useState(false)
 
-	const widthViewport = useViewport()
-	const limit = getLimit(widthViewport)
-
-	const { data: FranchisesData, isFetching } = useQuery({
-		queryKey: ["franchises-section-list-data", limit],
+	const { data: FranchisesData, isLoading } = useQuery({
+		queryKey: ["franchises-data"],
 		enabled: isView,
 		staleTime: 1000 * 60 * 3,
 		queryFn: async () => {
 			return await api
-				.get("/franchises", { params: { limit: limit } })
+				.get("/franchises", { params: { limit: 5 } })
 				.then((r) => r.data)
 		},
-		placeholderData: [],
 	})
 
 	useEffect(() => {
@@ -52,38 +38,33 @@ export const Franchises = memo(({ storageUrl }) => {
 
 	return (
 		<section className="franchises" ref={sectionRef}>
-			<div className="container">
-				<WrapperSection
-					title={"Франшизы"}
-					link={"/anime/franchises"}
-					ref={transitionRef}
-					value={isFetching}
-				>
-					<div className="transition" ref={transitionRef}>
-						{isFetching ? (
-							<LoaderSkeleton count={limit} />
-						) : (
-							<ul
-								className={
-									FranchisesData.length == 1
-										? "franchises__list franchises__list_one-item"
-										: "franchises__list"
-								}
-							>
-								{FranchisesData?.map((item, index) => {
-									return (
-										<FranchisesItem
-											item={item}
-											storageUrl={storageUrl}
-											key={index}
-										/>
-									)
-								})}
-							</ul>
-						)}
-					</div>
-				</WrapperSection>
-			</div>
+			<WrapperSection
+				id={"franchises-swiper"}
+				title={"Франшизы"}
+				link={"/anime/franchises"}
+				linkText={"Все франшизы"}
+				data={FranchisesData?.items || []}
+				isLoading={isLoading}
+				slidesPerView={3}
+				spaceBetween={25}
+			>
+				{isLoading ? (
+					<FranchisesSkeleton count={3} />
+				) : (
+					<>
+						{FranchisesData?.items?.map((item, index) => {
+							return (
+								<SwiperSlide key={index}>
+									<FranchisesItem
+										item={item}
+										storageUrl={storageUrl}
+									/>
+								</SwiperSlide>
+							)
+						})}
+					</>
+				)}
+			</WrapperSection>
 		</section>
 	)
 })
