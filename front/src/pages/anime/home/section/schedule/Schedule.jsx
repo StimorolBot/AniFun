@@ -1,28 +1,20 @@
 import { useEffect, useRef, useState } from "react"
 
-import Masonry from "react-masonry-css"
+import { Link } from "react-router-dom"
+import { CSSTransition, SwitchTransition } from "react-transition-group"
 
+import { api } from "../../../../../api"
 import { useQuery } from "@tanstack/react-query"
 
-import { SwitchDay } from "./ui/SwitchDay"
+import { Watch } from "../../../../../ui/icon/Watch"
 
 import { ScheduleItem } from "./item/ScheduleItem"
 
-import { WrapperSection } from "../../../wrapper/WrapperSection"
+import { ScheduleSkeleton } from "./skeleton/ScheduleSkeleton"
 
 import { useObserverImg } from "../../../../../hook/UseObserverImgProvider"
 
-import { api } from "../../../../../api"
-import { ScheduleSkeleton } from "./skeleton/ScheduleSkeleton"
-
 import "./style.sass"
-
-const breakpoints = {
-	default: 4,
-	1300: 3,
-	960: 2,
-	650: 1,
-}
 
 export const Schedule = ({ storageUrl }) => {
 	const { observe } = useObserverImg()
@@ -30,15 +22,14 @@ export const Schedule = ({ storageUrl }) => {
 	const sectionRef = useRef()
 	const transitionRef = useRef()
 	const [isView, setIsView] = useState(false)
-	const [day, setDay] = useState("today")
 
 	const { data: scheduleData, isLoading } = useQuery({
-		queryKey: ["schedule-data", day],
+		queryKey: ["schedule-data"],
 		staleTime: 1000 * 60 * 3,
 		enabled: isView,
 		queryFn: async () => {
 			return await api
-				.get("/schedules", { params: { day: day } })
+				.get("/schedules", { params: { size: 6 } })
 				.then((r) => r.data)
 		},
 	})
@@ -49,58 +40,51 @@ export const Schedule = ({ storageUrl }) => {
 
 		observe(el, () => setIsView(true))
 	}, [observe])
-
 	return (
-		<section className="schedules" ref={sectionRef}>
-			<div className="container">
-				<WrapperSection
-					title={"Расписание релизов"}
-					link={"/anime/schedules"}
-					ref={transitionRef}
-					value={isLoading}
+		<div className="schedules" ref={sectionRef}>
+			<header className="schedules__header">
+				<Watch />
+				<h2>Расписание на сегодня</h2>
+			</header>
+			<SwitchTransition mode="out-in">
+				<CSSTransition
+					classNames="transition"
+					key={isLoading}
+					nodeRef={transitionRef}
+					timeout={300}
 				>
-					<>
-						<SwitchDay
-							value={day}
-							setValue={setDay}
-							style={{ marginLeft: "auto" }}
-						/>
-						<ul
-							className="schedules__list transition"
-							ref={transitionRef}
-						>
-							<Masonry
-								breakpointCols={breakpoints}
-								className="masonry"
-								columnClassName="masonry__column"
-							>
-								{isLoading
-									? Array.from({ length: 4 }, (_, index) => (
-											<ScheduleSkeleton key={index} />
-										))
-									: scheduleData?.map((item) => {
-											return (
-												<ScheduleItem
-													item={item}
-													storageUrl={storageUrl}
-													key={item.uuid}
-												/>
-											)
-										})}
-							</Masonry>
-							{isLoading === false &&
-								scheduleData?.length === 0 && (
-									<li className="schedules__empty">
-										<img
-											src={`${storageUrl}/stickers/72b0282a20594165a6511c8fbd8c5dfd.png`}
-											alt="Нет результата"
-										/>
-									</li>
-								)}
-						</ul>
-					</>
-				</WrapperSection>
-			</div>
-		</section>
+					<ul
+						className="schedules__list transition"
+						ref={transitionRef}
+					>
+						{isLoading ? (
+							<ScheduleSkeleton count={6} />
+						) : (
+							scheduleData?.items?.map((item, index) => {
+								return (
+									<ScheduleItem
+										item={item}
+										storageUrl={storageUrl}
+										key={index}
+									/>
+								)
+							})
+						)}
+
+						{isLoading === false && scheduleData?.length === 0 && (
+							<li className="schedules__empty">
+								<img
+									src={`${storageUrl}/stickers/72b0282a20594165a6511c8fbd8c5dfd.png`}
+									alt="Нет результата"
+								/>
+							</li>
+						)}
+					</ul>
+				</CSSTransition>
+			</SwitchTransition>
+			<Link className="schedules__link" to={"anime/schedules"}>
+				Весь график
+			</Link>
+		</div>
 	)
 }

@@ -1,22 +1,24 @@
-.masonry
-    margin-top: 20px
-    display: -webkit-box
-    display: -ms-flexbox
-    display: flex
-    margin-left: -30px
-    width: auto
+@use "/src/style/color.sass" as *
 
-.masonry__column
-    padding-left: 30px
+.schedules
+    background-color: rgba($bg-secondary, 0.7)
+    border-radius: 6px
+    padding: 20px 14px
+
+.schedules__header
+    display: flex
+    justify-content: flex-start
+    gap: 5px
+
+    svg
+        width: 20px
+        height: 20px
+        fill: $accent
 
 .schedules__list
-    width: 100%
-
-    .point::before
-        width: 4px
-        height: 4px
-        left: -7px
-        top: 6px
+    padding: 20px 0
+    max-height: 600px
+    overflow: hidden
 
 .schedules__empty
     width: 250px
@@ -25,3 +27,11 @@
     img
         max-width: 100%
         max-height: 100%
+
+.schedules__link
+    display: block
+    border: 1px solid $border
+    margin: 0 auto
+    padding: 4px 8px
+    text-align: center
+    border-radius: 6px
