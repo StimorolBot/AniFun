@@ -1,11 +1,12 @@
 import { memo, useEffect, useRef, useState } from "react"
 
 import { api } from "../../../../../api"
-import { GenreSkeleton } from "./skeleton/GenreSkeleton"
 import { useQuery } from "@tanstack/react-query"
 import { SwiperSlide } from "swiper/react"
 
 import { GenresItem } from "./item/GenresItem"
+
+import { GenreSkeleton } from "./skeleton/GenreSkeleton"
 
 import { WrapperSection } from "../../../wrapper/WrapperSection"
 
