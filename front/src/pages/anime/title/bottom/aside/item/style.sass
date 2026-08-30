@@ -1,0 +1,47 @@
+@use "/src/style/color.sass" as *
+@use "/src/style/fonts_.sass" as *
+
+
+.rec-title__item
+    margin-top: 20px
+    width: 130px
+
+    p
+        font-family: $font-number
+        color: $muted
+        font-size: 16px
+
+    h4
+        margin: 5px 0
+
+.rec-title__img
+    aspect-ratio: 2 / 3
+    width: 130px
+    position: relative
+    border-radius: 6px
+    overflow: hidden
+
+    img
+        opacity: 0.5
+        width: 100%
+        height: 100%
+        object-fit: cover
+
+.rec-title__rating
+    position: absolute
+    border-width: 30px 15px 10px
+    border-style: solid
+    border-color: $accent $accent transparent
+    opacity: 0.7
+    z-index: 1
+
+    span
+        position: absolute
+        color: $primary
+        top: -25px
+        left: -10px
+        font-size: 20px
+        font-weight: 600
+        font-family: $font-number
+
+
