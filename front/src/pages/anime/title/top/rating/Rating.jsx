@@ -1,4 +1,6 @@
-import { memo } from "react"
+import { memo, useRef } from "react"
+
+import { CSSTransition, SwitchTransition } from "react-transition-group"
 
 import { api } from "../../../../../api"
 import { pluralize } from "../../../../../utils/text"
@@ -7,10 +9,13 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { RatingStar } from "./item/rating_star/RatingStar"
 import { RatingStat } from "./item/rating_stat/RatingStat"
 
+import { RatingSkeleton } from "./skeleton/RatingSkeleton"
+
 import "./style.sass"
 
 export const Rating = memo(({ titleUUID }) => {
 	const queryClient = useQueryClient()
+	const transitionRef = useRef()
 
 	const { data: ratingData, isLoading } = useQuery({
 		queryKey: ["rating-data", titleUUID],
@@ -52,36 +57,58 @@ export const Rating = memo(({ titleUUID }) => {
 
 	return (
 		<div className="rating">
-			<div className="rating__top">
-				<h3>{ratingData?.avg}</h3>
-				<div>
-					<RatingStar
-						count={10}
-						myRating={ratingData?.my_rating}
-						callback={(rating) => mutation.mutate(rating)}
-					/>
-					<p>
-						<span style={{ marginLeft: 5 }}>
-							{pluralize(
-								ratingCount,
-								"Оценил",
-								"Оценили",
-								"Оценило",
-							)}
-						</span>
-						<span style={{ margin: "0 5px" }}>{ratingCount}</span>
-						<span>
-							{pluralize(
-								ratingCount,
-								"человек",
-								"человека",
-								"людей",
-							)}
-						</span>
-					</p>
-				</div>
-			</div>
-			<RatingStat count={10} ratingPer={ratingPer} />
+			<SwitchTransition mode="out-in">
+				<CSSTransition
+					classNames="transition"
+					key={isLoading}
+					nodeRef={transitionRef}
+					timeout={300}
+				>
+					{isLoading ? (
+						<RatingSkeleton />
+					) : (
+						<>
+							<div
+								className="rating__top transition"
+								ref={transitionRef}
+							>
+								<h3>{ratingData?.avg}</h3>
+								<div>
+									<RatingStar
+										count={10}
+										myRating={ratingData?.my_rating}
+										callback={(rating) =>
+											mutation.mutate(rating)
+										}
+									/>
+									<p>
+										<span style={{ marginLeft: 5 }}>
+											{pluralize(
+												ratingCount,
+												"Оценил",
+												"Оценили",
+												"Оценило",
+											)}
+										</span>
+										<span style={{ margin: "0 5px" }}>
+											{ratingCount}
+										</span>
+										<span>
+											{pluralize(
+												ratingCount,
+												"человек",
+												"человека",
+												"людей",
+											)}
+										</span>
+									</p>
+								</div>
+							</div>
+							<RatingStat count={10} ratingPer={ratingPer} />
+						</>
+					)}
+				</CSSTransition>
+			</SwitchTransition>
 		</div>
 	)
 })
