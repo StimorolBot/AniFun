@@ -39,7 +39,7 @@
 		".*/pages/error/.*",
 
 		".*/item/.*",
-		".*/loader/.*",
+		".*/skeleton/.*",
 		".*/wrapper/.*",
 		".*/popup/.*",
 
