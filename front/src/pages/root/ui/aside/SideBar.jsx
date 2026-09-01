@@ -2,6 +2,7 @@ import { memo } from "react"
 
 import { Link, NavLink } from "react-router-dom"
 
+import { api } from "../../../../api"
 import { useQuery } from "@tanstack/react-query"
 
 import { Bookmark } from "../../../../ui/icon/Bookmark"
@@ -16,8 +17,6 @@ import { Terminal } from "../../../../ui/icon/Terminal"
 import { Usr } from "../../../../ui/icon/Usr"
 import { Video as VideoIcons } from "../../../../ui/icon/Video"
 import { Watch } from "../../../../ui/icon/Watch"
-
-import { api } from "../../../../api"
 
 import "./style/side_bar.sass"
 
