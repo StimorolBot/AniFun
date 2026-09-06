@@ -11,8 +11,9 @@ class RedisNameSpace(Enum):
     TITLE = "title"
     TITLE_EPISODE = "title:episode"
     TITLE_RECOMMEND = "title:recommend"
-    TITLE_SEQUEL = "title:sequel"
+    TITLE_FRANCHISE = "title:franchise"
     TITLE_SCHEDULE = "title:schedule"
+    TITLE_VOICE_TEAM = "title:voice_team"
 
 
 class Expire(IntEnum):
