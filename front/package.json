@@ -31,11 +31,11 @@
     "react-transition-group": "^4.4.5",
     "sass": "^1.89.2",
     "swiper": "^12.1.4",
-    "universal-cookie": "^8.0.1",
-    "video.js": "^8.23.3"
+    "universal-cookie": "^8.0.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.4",
+    "@ianvs/prettier-plugin-sort-imports": "^4.7.1",
     "@trivago/prettier-plugin-sort-imports": "^6.0.2",
     "@types/react": "^19.1.9",
     "@types/react-dom": "^19.1.7",
