@@ -12,7 +12,6 @@ if TYPE_CHECKING:
     from src.app.anime.models.v1.main.episode import EpisodeTable
     from src.app.anime.models.v1.main.genres_anime import GenresTable
     from src.app.anime.models.v1.main.img import BannerTable, PosterTable
-    from src.app.anime.models.v1.main.release_day import ReleaseDayTable
     from src.app.anime.models.v1.main.schedule import ScheduleTable
     from src.app.anime.models.v1.sub import (AgeRestrictSubTable,
                                              SeasonSubTable, StatusSubTable,
@@ -73,5 +72,4 @@ class AnimeTable(Base):
         cascade="all, delete-orphan"
     )
     episode_rs: Mapped["EpisodeTable"] = relationship(back_populates="anime_rs")
-    release_day_rs: Mapped["ReleaseDayTable"] = relationship(back_populates="anime_rs")
     schedule_rs: Mapped["ScheduleTable"] = relationship(back_populates="anime_rs")
