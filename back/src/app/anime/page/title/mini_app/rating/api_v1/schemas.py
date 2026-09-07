@@ -1,14 +1,29 @@
-from pydantic import BaseModel, field_validator
+from decimal import Decimal
+from typing import List
+from uuid import UUID
 
-from src.utils.valid import ValidNumber, ValidText
+from pydantic import BaseModel
+
+from src.app.validation.number import ValidNumber
 
 
-class Rating(BaseModel):
-    star: ValidNumber[0, 10]
-    title: ValidText[5, 150]
+class RatingPer(BaseModel):
+    star: int
+    count: int
+    percentage: Decimal
 
 
-class ResponseRatingDTO(BaseModel):
-    total_count: ValidNumber[0, 9999]
-    avg: float
+class RatingDTO(BaseModel):
+    total_count: ValidNumber[0, 9999] | None
+    avg: Decimal
     my_rating: ValidNumber[0, 10] | None = None
+    rating_per: List[RatingPer]
+
+
+class SetRating(BaseModel):
+    title_uuid: UUID
+    star: ValidNumber[0, 10]
+
+
+class UpdateRating(SetRating):
+    ...
