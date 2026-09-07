@@ -26,5 +26,5 @@ class StatusSubTable(Base):
             await crud.create(
                 session=session,
                 table=cls,
-                data={"label": data.value["label"], "value": data.value["value"]}
+                data={"label": data.label, "value": data.value}
             )
