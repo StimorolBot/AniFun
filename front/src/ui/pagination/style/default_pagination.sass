@@ -1,5 +1,6 @@
 @use "/src/style/color.sass" as *
-    
+@use "/src/style/fonts_.sass" as *
+
 .default-pagination__list
     display: flex
     justify-content: end
@@ -11,13 +12,15 @@
     transition: background-color 0.3s
 
     &:hover
-        background-color: $sub-red
+        background-color: $accent-dark
 
     &_active
-        background-color: $red
+        background-color: $accent
 
         &:hover
-            background-color: $red !important
+            background-color: $accent !important
 
     .btn-default
         padding: 5px 10px
+        font-family: $font-number
+        font-size: 18px
