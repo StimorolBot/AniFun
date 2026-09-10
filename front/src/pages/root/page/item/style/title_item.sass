@@ -1,8 +1,10 @@
 @use "/src/style/color.sass" as *
+@use "/src/style/fonts_.sass" as *
+
 
 .root-title__item
     transition: background-color 0.3s
-    border-bottom: 1px solid $sub-gray
+    border-bottom: 1px solid $border
 
     td
         padding: 14px 10px
@@ -22,24 +24,24 @@
 
         &[data-status="ongoing"]
             p
-                color: $green
-                background-color: $t-green
+                color: $success
+                background-color: rgba($success, 0.2)
 
         &[data-status="completed"]
             p
-                color: $blue
-                background-color: $t-blue
+                color: $info
+                background-color: rgba($info, 0.2)
 
         h4
             word-break: break-all
 
     &:hover
-        background-color: $sub-gray
+        background-color: rgba($bg-secondary, 0.7)
 
 .root-title__img-container
-    max-width: 70px
-    max-height: 120px
+    width: 70px
     margin: 0 auto
+    aspect-ratio: 2 / 3
 
     img
         border-radius: 4px
@@ -47,11 +49,34 @@
         height: 100%
         object-fit: cover
 
+.rot-title_number
+    font-family: $font-number
+    font-size: 20px
+
 .root-title__sub
-    color: $gray
+    color: $muted
 
 .root-title__btn
     vertical-align: middle
     display: inline-flex
     gap: 15px
+
+    .btn-default
+        color: $accent
+
+    .btn-default, a
+        padding: 8px
+        border-radius: 4px
+        background-color: $border
+
+.root-title__rating
+    display: flex
+    align-items: center
+    justify-content: center
+    gap: 5px
+
+    svg
+        width: 30px
+        height: 30px
+        color: $accent
 

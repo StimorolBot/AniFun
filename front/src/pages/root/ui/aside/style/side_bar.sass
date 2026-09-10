@@ -1,21 +1,23 @@
 @use "/src/style/color.sass" as *
+@use "/src/style/fonts_.sass" as *
 
 .sidebar
     width: 260px
     position: relative
+    font-family: $font-heading
 
 .sidebar__wrapper
     position: sticky
     top: 0
-    background-color: $sub-black
-    border-right: 1px solid $sub-gray
+    background-color: rgba($bg-secondary, 0.7)
+    border-right: 1px solid $border
     display: flex
     flex-direction: column
     min-height: 100dvh
 
 .sidebar__header
     padding: 14px
-    border-bottom: 1px solid $sub-gray
+    border-bottom: 1px solid $border
     display: flex
     align-items: center
     gap: 12px
@@ -37,11 +39,11 @@
             font-family: sans-serif
             font-size: 26px
             font-weight: 900
-            color: $white
+            color: $primary
 
     span
         font-size: 14px
-        color: $gray
+        color: $muted
         font-weight: 600
 
 .sidebar__nav
@@ -54,7 +56,7 @@
 .sidebar__nav-title
     font-size: 20px
     font-weight: 600
-    color: $gray
+    color: $muted
     padding: 0 12px
     margin-bottom: 8px
 
@@ -65,37 +67,37 @@
         gap: 12px
         padding: 10px 12px
         cursor: pointer
-        color: $gray
+        color: $muted
         font-size: 16px
         font-weight: 600
         border-radius: 8px
         transition: background-color 0.3s, color 0.3s
 
         &:hover
-            background-color: $sub-gray
-            color: $white
+            background-color: $disabled
+            color: $primary
 
             svg
-                fill: $white
+                fill: $primary
 
     svg
-        fill: $gray
+        fill: $muted
         transition: fill 0.3s
 
 .sidebar__link_active
-    background-color: $t-red
-    color: $red !important
+    background-color: $accent-transparent
+    color: $accent !important
 
     svg
-        fill: $red !important
+        fill: $accent !important
 
     &:hover
-        background-color: $t-red !important
-        color: $red !important
+        background-color: $accent-transparent !important
+        color: $accent !important
 
 .sidebar__footer
     padding: 16px
-    border-top: 1px solid $sub-gray
+    border-top: 1px solid $border
 
 .sidebar__footer-wrapper
     display: flex
@@ -119,7 +121,7 @@
     font-size: 18px
 
 .sidebar__user-role
-    color: $gray
+    color: $muted
     font-size: 16px
 
 .sidebar__user-name::first-letter,
