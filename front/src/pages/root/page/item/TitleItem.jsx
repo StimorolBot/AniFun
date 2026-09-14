@@ -2,8 +2,11 @@ import { memo } from "react"
 
 import { Link } from "react-router-dom"
 
+import { pluralize } from "../../../../utils/text"
+
 import { Edit } from "../../../../ui/icon/Edit"
 import { Remove } from "../../../../ui/icon/Remove"
+import { Star } from "./../../../../ui/icon/Star"
 
 import { BtnDefault } from "../../../../ui/btn/BtnDefault"
 
@@ -30,7 +33,8 @@ export const TitleItem = memo(({ item, storageUrl, callback, ...props }) => {
 				<div className="root-title__img-container">
 					<img
 						loading="lazy"
-						src={`${storageUrl}/anime-${item.anime.uuid}/${item.anime?.poster?.poster_uuid}.webp`}
+						src={`${storageUrl}/anime-${item.anime.uuid}/${item.anime?.poster?.poster_uuid}
+							.${item.anime?.poster?.extension}`}
 						alt="постер"
 						onError={(e) => {
 							const img = e.currentTarget
@@ -51,15 +55,35 @@ export const TitleItem = memo(({ item, storageUrl, callback, ...props }) => {
 			<td data-status={item.anime.status.value}>
 				<p>{item.anime.status.label}</p>
 			</td>
-			<td>{`${item.anime.last_episode || 0}/${item.anime.total_episode}`}</td>
-
-			<td>{item.anime.year}</td>
+			<td className="rot-title_number">{`${item.anime.last_episode || 0}/${item.anime.total_episode}`}</td>
+			<td className="rot-title_number">{item.anime.year}</td>
 			<td>
 				<p>{item.anime.season.label}</p>
 			</td>
 			<td>
-				<p>{item?.avg || "-"}</p>
-				<p>{item.total_count}</p>
+				{item?.avg ? (
+					<>
+						<div className="root-title__rating rot-title_number">
+							<span>{item.avg || "-"}</span>
+							{item?.avg && <Star />}
+						</div>
+						<div>
+							<span className="rot-title_number">
+								{item.total_count}
+							</span>
+							<span>
+								{` ${pluralize(
+									item.total_count,
+									"Человек",
+									"Человека",
+									"Людей",
+								)}`}
+							</span>
+						</div>
+					</>
+				) : (
+					<span>-</span>
+				)}
 			</td>
 			<td>
 				<div className="root-title__btn">
