@@ -1,0 +1,71 @@
+@use "/src/style/color.sass" as *
+@use "/src/style/fonts_.sass" as *
+
+
+.custom-select
+    width: 100% !important
+    font-size: 18px
+    color: $secondary
+    max-width: 350px
+    font-family: $font-heading !important
+
+    &__placeholder
+        &:first-letter
+            text-transform: capitalize
+
+    &__control
+        background-color: rgba($bg-primary, 0.7)!important
+        border-radius: 8px !important
+        border-style: none !important
+        cursor: pointer !important
+        padding: 0 4px !important
+        height: 46px !important
+
+        &--is-focused
+            box-shadow: none !important
+
+    &__single-value
+        color: $primary !important
+
+        &:first-letter
+            text-transform: capitalize
+
+    &__indicator-separator
+        background-color: $disabled !important
+
+    &__input-container
+        height: 30px !important
+
+    &__menu
+        width: 100% !important
+        max-width: 350px !important
+        top: 45px !important
+        background-color: $bg-secondary !important
+        border-radius: 8px !important
+
+        &-list::-webkit-scrollbar
+            width: 6px !important
+            height: 0px !important
+
+        &-list::-webkit-scrollbar-track
+            background-color: $disabled !important
+
+        &-list::-webkit-scrollbar-thumb
+            background-color: $muted !important
+            border-radius: 10px !important
+            cursor: pointer !important
+
+    &__option
+        transition: background-color 0.3s !important
+        border-radius: 6px !important
+        cursor: pointer !important
+        padding: 12px 8px !important
+        background-color: transparent !important
+        color: $primary !important
+
+        &:first-letter
+            text-transform: uppercase
+
+        &:hover
+            background-color: $accent-dark !important
+
