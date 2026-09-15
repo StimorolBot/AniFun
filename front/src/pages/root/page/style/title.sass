@@ -2,6 +2,10 @@
 
 
 .root__search-title
+    position: absolute
+    top: 50%
+    left: 50%
+    transform: translate(-50%, -50%)
     display: flex
     align-items: center
     gap: 10px
@@ -11,6 +15,17 @@
     svg
         width: 30px
         height: 30px
+
+.root__select-container
+    width: 430px
+    height: 40px
+
+    .custom-select
+        border: 1px solid $border
+        border-radius: 8px
+
+        &__control
+            height: 40px !important
 
 .root-title__error
     margin: 0 auto
