@@ -4,17 +4,18 @@ import { useForm } from "react-hook-form"
 import { Link } from "react-router-dom"
 import { CSSTransition, SwitchTransition } from "react-transition-group"
 
+import { api } from "../../../api"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 
 import { Add } from "../../../ui/icon/Add"
 import { Search as SearchIcon } from "../../../ui/icon/Search"
 import { Warning } from "../../../ui/icon/Warning"
 
-import { InputRadio } from "../../../ui/input/InputRadio"
 import { InputSearch } from "../../../ui/input/InputSearch"
 
 import { AlertAPI } from "../../../ui/alert/AlertAPI"
 import { DefaultPagination } from "../../../ui/pagination/DefaultPagination"
+import { CustomSelect } from "../../../ui/select/CustomSelect"
 import { TitleSkeleton } from "../ui/skeleton/TitleSkeleton"
 
 import { Confirm } from "../../../components/popup/Confirm"
@@ -24,9 +25,24 @@ import { TitleItem } from "./item/TitleItem"
 import { useAutoFontSize } from "../../../hook/useAutoFontSize"
 import { useDebounce } from "../../../hook/useDebounce"
 
-import { api } from "../../../api"
-
 import "./style/title.sass"
+
+const dateFilters = [
+	{ value: "desc", label: "Новые" },
+	{ value: "asc", label: "Старые" },
+]
+
+const ratingFilters = [
+	{ value: "all", label: "Все" },
+	{ value: "desc", label: "Высокий" },
+	{ value: "asc", label: "Низкий" },
+]
+
+const statusFilters = [
+	{ value: "all", label: "Все" },
+	{ value: "ongoing", label: "Онгоинг" },
+	{ value: "completed", label: "Завершенные" },
+]
 
 export const Title = memo(() => {
 	const storageUrl = import.meta.env.VITE_STORAGE_URL
@@ -44,9 +60,13 @@ export const Title = memo(() => {
 
 	const [isShowPopup, setIsShowPopup] = useState(false)
 	const [page, setPage] = useState(1)
-	const [status, setStatus] = useState(null)
+	const [filter, setFilter] = useState({ date: "desc", status: "all" })
 
-	const { register, watch } = useForm({
+	const {
+		register,
+		watch,
+		formState: { isValid },
+	} = useForm({
 		mode: "onChange",
 		defaultValues: {
 			title: null,
@@ -61,7 +81,8 @@ export const Title = memo(() => {
 	})
 
 	const { data: titleData, isLoading } = useQuery({
-		queryKey: ["root-title-data", page, debounceSearchVal, status],
+		queryKey: ["root-title-data", page, debounceSearchVal, filter],
+		enabled: isValid,
 		staleTime: 1000 * 60 * 3,
 		queryFn: async () => {
 			return await api
@@ -70,7 +91,9 @@ export const Title = memo(() => {
 						page: page,
 						size: 20,
 						title: debounceSearchVal || null,
-						status_: status,
+						status_: filter.status,
+						date: filter.date,
+						rating_: filter?.rating || null,
 					},
 				})
 				.then((r) => r.data)
@@ -82,7 +105,7 @@ export const Title = memo(() => {
 			await api.delete(`/admin/anime/titles/${uuid}`),
 		onSuccess: (r) => {
 			queryClient.invalidateQueries({
-				queryKey: ["root-title-data", page, status],
+				queryKey: ["root-title-data", page, filter],
 			})
 			setIsShowPopup(false)
 			setResponse({
@@ -110,25 +133,39 @@ export const Title = memo(() => {
 		<div className="root">
 			<div className="root-container">
 				<header className="root__header">
-					<div className="root__checkbox-container">
-						<InputRadio
-							id={"root-title-all"}
-							callback={() => setStatus(null)}
-							text={"Все"}
-							name={"status"}
-							defaultChecked
+					<div className="root__select-container">
+						<CustomSelect
+							className={"custom-select"}
+							onChange={(value) =>
+								setFilter((s) => ({
+									...s,
+									status: value.value,
+								}))
+							}
+							options={statusFilters}
+							isSearchable={false}
+							defaultValue={statusFilters[0]}
 						/>
-						<InputRadio
-							id={"root-title-ongoing"}
-							callback={() => setStatus("ongoing")}
-							text={"Онгоинг"}
-							name={"status"}
+						<CustomSelect
+							className={"custom-select"}
+							onChange={(value) =>
+								setFilter((s) => ({ ...s, date: value.value }))
+							}
+							options={dateFilters}
+							isSearchable={false}
+							defaultValue={dateFilters[0]}
 						/>
-						<InputRadio
-							id={"root-title-completed"}
-							callback={() => setStatus("completed")}
-							text={"Вышедшие"}
-							name={"status"}
+						<CustomSelect
+							className={"custom-select"}
+							onChange={(value) =>
+								setFilter((s) => ({
+									...s,
+									rating: value.value,
+								}))
+							}
+							placeholder={"Рейтинг"}
+							options={ratingFilters}
+							isSearchable={false}
 						/>
 					</div>
 					<search className="root__search-title">
@@ -138,11 +175,11 @@ export const Title = memo(() => {
 							autoComplete={"off"}
 							placeholder={"Введите название аниме"}
 						/>
-						<SearchIcon />
+						<SearchIcon style={{ fill: "currentColor" }} />
 					</search>
 					<Link className="root__header-link" to={"create"}>
 						<Add />
-						Создать тайтл
+						Создать
 					</Link>
 				</header>
 				<div className="root__table">
@@ -211,10 +248,8 @@ export const Title = memo(() => {
 							unmountOnExit
 						>
 							<Confirm
-								onConfirm={async () =>
-									await mutation.mutate(
-										deleteData.current.uuid,
-									)
+								onConfirm={() =>
+									mutation.mutate(deleteData.current.uuid)
 								}
 								ref={popupRef}
 								onClose={() => setIsShowPopup(false)}
@@ -248,7 +283,8 @@ export const Title = memo(() => {
 						setPage={setPage}
 					/>
 				</div>
-				{isLoading === false && titleData?.items.length === 0 && (
+				{((!isLoading && titleData?.items.length === 0) ||
+					!isValid) && (
 					<div className="root-title__error">
 						<img
 							src={`${storageUrl}/stickers/72b0282a20594165a6511c8fbd8c5dfd.png`}
