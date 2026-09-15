@@ -15,16 +15,16 @@
     .btn-default
         padding: 10px 14px
         border-radius: 8px
-        color: $gray
-        background-color: $sub-gray
+        color: $muted
+        background-color: rgba($disabled, 0.7)
         transition: color 0.3s, background-color 0.3s
         display: flex
         align-self: center
         gap: 4px
 
         &:hover
-            color: $white
-            background-color: $sub-black-2
+            color: $primary
+            background-color: rgba($disabled, 0.9)
 
 .header-form__btn
     display: flex
@@ -45,17 +45,19 @@
             pointer-events: none
 
         &:first-child
-            color: $gray
-            background-color: $sub-gray
+            color: $muted
+            background-color: rgba($disabled, 0.7)
 
             &:hover
-                color: $white
-                background-color: $sub-black-2
+                color: $primary
+                background-color: rgba($disabled, 0.9)
 
         &:last-child
-            color: $sub-white
-            background-color: $sub-red
+            color: $accent
+            background-color: $accent-transparent
 
-            &:hover
-                color: $white
-                background-color: $red
+.header-form__children
+    p
+        font-size: 14px
+        color: $muted
+        font-weight: 900
