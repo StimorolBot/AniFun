@@ -37,7 +37,12 @@ export const HeaderForm = ({
 						<Loader size={"small"} />
 					) : (
 						<>
-							<Close />
+							<Close
+								style={{
+									stroke: "currentColor",
+									marginRight: 5,
+								}}
+							/>
 							<span>Сброс</span>
 						</>
 					)}
