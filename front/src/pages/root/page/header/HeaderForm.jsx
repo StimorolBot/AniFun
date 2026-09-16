@@ -19,48 +19,50 @@ export const HeaderForm = ({
 	const navigate = useNavigate()
 	return (
 		<header className="header-form">
-			<div className="header-form__container">
-				<BtnDefault isStroke={false} callback={() => navigate(-1)}>
-					<Back />
-					<span>Назад</span>
-				</BtnDefault>
-				{children}
-			</div>
-			<div className="header-form__btn">
-				<BtnDefault
-					isStroke={false}
-					callback={() => resetCallback()}
-					type="button"
-					data-lock={isPending}
-				>
-					{isPending ? (
-						<Loader size={"small"} />
-					) : (
-						<>
-							<Close
-								style={{
-									stroke: "currentColor",
-									marginRight: 5,
-								}}
-							/>
-							<span>Сброс</span>
-						</>
-					)}
-				</BtnDefault>
-				<BtnDefault
-					isStroke={false}
-					form={nameForm}
-					data-lock={isPending}
-				>
-					{isPending ? (
-						<Loader size={"small"} />
-					) : (
-						<>
-							<Save />
-							<span>Сохранить</span>
-						</>
-					)}
-				</BtnDefault>
+			<div className="header-form__wrapper">
+				<div className="header-form__container">
+					<BtnDefault isStroke={false} callback={() => navigate(-1)}>
+						<Back />
+						<span>Назад</span>
+					</BtnDefault>
+					{children}
+				</div>
+				<div className="header-form__btn">
+					<BtnDefault
+						isStroke={false}
+						callback={() => resetCallback()}
+						type="button"
+						data-lock={isPending}
+					>
+						{isPending ? (
+							<Loader size={"small"} />
+						) : (
+							<>
+								<Close
+									style={{
+										stroke: "currentColor",
+										marginRight: 5,
+									}}
+								/>
+								<span>Сброс</span>
+							</>
+						)}
+					</BtnDefault>
+					<BtnDefault
+						isStroke={false}
+						form={nameForm}
+						data-lock={isPending}
+					>
+						{isPending ? (
+							<Loader size={"small"} />
+						) : (
+							<>
+								<Save />
+								<span>Сохранить</span>
+							</>
+						)}
+					</BtnDefault>
+				</div>
 			</div>
 		</header>
 	)
