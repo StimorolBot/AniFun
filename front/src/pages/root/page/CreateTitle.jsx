@@ -3,14 +3,14 @@ import { useState } from "react"
 import { useForm } from "react-hook-form"
 import Masonry from "react-masonry-css"
 
-import { useMutation } from "@tanstack/react-query"
-
-import { AlertAPI } from "../../../ui/alert/AlertAPI"
-
 import { api } from "../../../api"
 import { FormPosterAndBanner } from "./form/FormPosterAndBanner"
 import { FormTitle } from "./form/FormTitle"
 import { HeaderForm } from "./header/HeaderForm"
+import { PreviewTitle } from "./preview/PreviewTitle"
+import { useMutation } from "@tanstack/react-query"
+
+import { AlertAPI } from "../../../ui/alert/AlertAPI"
 
 const breakpoints = {
 	default: 2,
@@ -22,10 +22,13 @@ export const CreateTitle = () => {
 	const [imgFile, setImgFile] = useState()
 	const formData = new FormData()
 
+	const storageUrl = import.meta.env.VITE_STORAGE_URL
+
 	const {
 		register,
 		handleSubmit,
 		control,
+		watch,
 		formState: { errors },
 		reset,
 	} = useForm({
@@ -100,15 +103,15 @@ export const CreateTitle = () => {
 
 	return (
 		<div className="root">
+			<HeaderForm
+				nameForm={"root-create-title-form"}
+				isPending={isPending}
+				resetCallback={() => {
+					setImgFile()
+					reset()
+				}}
+			/>
 			<div className="root-container">
-				<HeaderForm
-					nameForm={"root-create-title-form"}
-					isPending={isPending}
-					resetCallback={() => {
-						setImgFile()
-						reset()
-					}}
-				/>
 				<Masonry
 					breakpointCols={breakpoints}
 					className="masonry"
@@ -121,11 +124,18 @@ export const CreateTitle = () => {
 						register={register}
 						control={control}
 					/>
-					<FormPosterAndBanner
-						id={"root-create-poster-form"}
-						imgFile={imgFile}
-						setImgFile={setImgFile}
-					/>
+					<div>
+						<FormPosterAndBanner
+							id={"root-create-poster-form"}
+							imgFile={imgFile}
+							setImgFile={setImgFile}
+						/>
+						<PreviewTitle
+							storageUrl={storageUrl}
+							watch={watch}
+							img={imgFile}
+						/>
+					</div>
 				</Masonry>
 				<AlertAPI
 					id={response.id}
