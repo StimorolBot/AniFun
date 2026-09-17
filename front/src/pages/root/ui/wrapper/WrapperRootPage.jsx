@@ -1,10 +1,9 @@
 import { Outlet } from "react-router-dom"
 
-import { jwtDecode } from "jwt-decode"
-
 import { cookies } from "../../../../cookie"
 import { Error } from "../../../error/Error"
 import { SideBar } from "../aside/SideBar"
+import { jwtDecode } from "jwt-decode"
 
 import "./root.sass"
 

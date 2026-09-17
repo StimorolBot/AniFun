@@ -7,7 +7,7 @@ import { LblRequired } from "../../../../ui/label/LblRequired"
 export const FormPosterAndBanner = ({ id, imgFile, setImgFile, isLoading }) => {
 	return (
 		<div>
-			<h3 className="form-title__header">
+			<h3 className="form-root__header">
 				<Images />
 				<span>Медия</span>
 			</h3>
@@ -22,7 +22,7 @@ export const FormPosterAndBanner = ({ id, imgFile, setImgFile, isLoading }) => {
 			>
 				<form className="form-title" id={id}>
 					<LblRequired htmlFor="form-title-poster">
-						Для тайтла
+						Постер
 					</LblRequired>
 					<InputDragAndDrop
 						id={"form-title-poster"}
@@ -35,14 +35,14 @@ export const FormPosterAndBanner = ({ id, imgFile, setImgFile, isLoading }) => {
 				</form>
 				<form>
 					<LblRequired htmlFor="form-title-banner">
-						Для баннер
+						Баннер
 					</LblRequired>
 					<InputDragAndDrop
 						id={"form-title-banner"}
 						payload={imgFile}
 						setPayloadFile={setImgFile}
 						paramName={"banner"}
-						ratio={"21:9"}
+						ratio={"32:9"}
 						isLoading={isLoading}
 					/>
 				</form>
